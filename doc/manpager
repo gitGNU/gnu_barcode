@@ -1,6 +1,4 @@
-#! /usr/bin/gawk -f
-
-# Warning: this uses gnu-awk features
+#! /usr/bin/awk -f
 
 BEGIN {IN=0}
 
@@ -23,18 +21,32 @@ SKIP==1         {next}
 
 	        { gsub("^%M ?",""); }
 
-# itz Wed Sep 30 10:28:58 PDT 1998
+# Use gensub for converting tags: itz Sep 30 1998
+#
+# However, the gensub function is gawk-specific, and we want things
+# to work with original-awk too (for portability).
+# Therefore, use a normal gsub, even though it's a subobptimal solution
+# as it may step in extra braces. The good solution will be piping to sed,
+# or match, extract subesxpression, replace, reinsert -- bleah...
+# (ARub, Oct 10 2000)
 /@b\{/ {
-  $0 = gensub(/@b\{([^}]+)\}/, "\\\\fB\\1\\\\fP","g");
+  #$0 = gensub(/@b\{([^}]+)\}/, "\\\\fB\\1\\\\fP","g");
+  gsub("@b\{","\\fB");
+  gsub("\}","\\fP");
+} 
+
+/@var\{/ {
+  #$0 = gensub(/@var\{([^}]+)\}/, "\\\\fI\\1\\\\fP","g");
+  gsub("@var\{","\\fB");
+  gsub("\}","\\fP");
 } 
 
 /@(samp|code|file)\{/ {
-  $0 = gensub(/@(samp|code|file)\{([^}]+)\}/, "`\\2'","g");
+  #$0 = gensub(/@(samp|code|file)\{([^}]+)\}/, "`\\2'","g");
+  gsub("@(samp|code|file)\{","");
+  gsub("\}","");
 }
 
-/@var\{/ {
-  $0 = gensub(/@var\{([^}]+)\}/, "\\\\fI\\1\\\\fP","g");
-} 
 
 /@xref\{.*\}\./ {
   gsub(/@xref\{.*\}\./,"");
