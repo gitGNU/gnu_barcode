@@ -1,6 +1,27 @@
 2002-03-01  Alessandro Rubini  <rubini@linux.it>
 
+	* library.c (Barcode_Encode): handle bitsets separately, like
+		in Barcode_Print (otherwise, you might loose NO_CHECKSUM).
+
+	* debian/changelog: moved to 0.98 (but should fix all debian/ stuff)
+
+	* contrib/barcode-for-delphi.tar.gz: new, contributed by Michael Geddes
+
+	* contrib/barcode-for-delphi.tar.gz.README: short info for file above
+
+	* main.c (main): allow "-g" to set size of code in a table as well
+		-- suggested and initiallt implemented by Joachim Reichelt.
+	(main): fixed missing "Page: 1 1" in postscript for tables
+	(main): for tables don't use Encode_and_Print, use a local
+		unrolled version, so the default margin can be removed and
+		we avoid problems with negative xoff in the output phase
+		(first column may be offset, as noted by Karl Magnus Kolstoe)
+
+	* doc/doc.barcode: documented change above.
+	
 	* README: removed refernces to systemy.it, I'm no more there
+	Added link to FreeBSD ports tree and GLabels
+	Organized as sections with titles
 
 	* contrib/barcode-SVG.tar.gz: new contribution, by David J. Humphreys
 
