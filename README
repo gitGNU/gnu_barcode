@@ -35,5 +35,10 @@ I would like to thank both Judah Milgram and Michele Comitini
 (mcm@glisco.it) for their help with this tool, as well as Jim Westveer
 for introducing me to Debian packaging.
 
+There is a mailing list where development is coordinated, called
+barcode@prosa.it . To get subscribed you should
+	echo subscribe | mail barcode-request@prosa.it
+or anything equivalent.
+
 /alessandro (rubini@gnu.org)
 
