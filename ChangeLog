@@ -1,3 +1,9 @@
+2000-10-10  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* doc/manpager: use gsub instead of gensub, even though it may
+		leas to problems with some input. This achieves compatibility
+		with the original awk, so gawk is not needed any more
+
 2000-10-02  Alessandro Rubini  <rubini@morgana.systemy.it>
 
 	* ps.c (Barcode_ps_print): add a backslash in front of '(' too.
