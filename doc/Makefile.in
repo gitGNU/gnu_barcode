@@ -71,7 +71,7 @@ clean: terse
 
 $(TARGET).texinfo: doc.$(TARGET)
 	@rm -f $@ 2> /dev/null
-	sed -f ./infofilter doc.$(TARGET) > $@
+	sed -f ./infofilter doc.$(TARGET) | $(REMOVEHTMLTAGS) > $@
 	chmod 400 $@
 
 
@@ -119,7 +119,7 @@ $(TARGET).info: $(TARGET).texinfo
 	makeinfo $(TARGET).texinfo -o $@
 
 $(TARGET).html: $(TARGET).texinfo
-	perl ./texi2html $(TARGET).texinfo
+	$(INFOTOHTML) -o $@ $<
 
 #$(TARGET).man: doc.$(TARGET)
 #		manpages are created by the toplevel Makefile
