@@ -311,6 +311,7 @@ library:
 @itemx BARCODE_CBR
 @itemx BARCODE_MSI
 @itemx BARCODE_PLS
+@itemx BARCODE_93
 
 	The currently supported encoding types: EAN (13 digits, 8
 	digits, 13 + 2 addon and 13 + 5 addon), UPC (UPC-A, UPC-E,
@@ -786,6 +787,27 @@ the library uses when auto-detecting a suitable encoding for a string.
 	MSI can only encode the decimal digits. While the standard
 	specifies either one or two check digits, the current
 	implementation in this library only generates one check digit.
+
+@item code 93
+      The code-93 standard can natively encode 48 different characters,
+      including uppercase letters, digits, the blank space, plus, minus,
+      dot, star, dollar, slash, percent, as well as five special
+      characters:  a start/stop delimiter and four "shift characters" used
+      for extended encoding.    Using this "extended encoding" method, any
+      standard 7-bit ASCII character can be encoded, but it takes up two
+      symbol lengths in barcode if the character is not natively supported
+      (one of the 48).
+      The encoder here fully implements the code 93 encoding standard.
+      Any characters natively supported (A-Z, 0-9, ".+-/$&%") will be
+      encoded as such - for any other characters (such as lower case
+      letters, brackets, parentheses, etc.), the encoder will revert
+      to extended encoding.
+      As a note, the option to exclude the checksum will eliminate the
+      two modulo-47 checksums (called C and K) from the barcode, but this
+      probably will make it unreadable by 99% of all scanning systems.
+      These checksums are specified to be used at the firmware level,
+      and their absence will be interpreted as an invalid barcode.
+
 
 @end table
 
