@@ -259,8 +259,8 @@ int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
 	    printable ? bc->ascii : "<unprintable string>");
 
     if (!(bc->flags & BARCODE_OUT_NOHEADERS)) {
-	fprintf(f,"showpage\n");
 	if (bc->flags & BARCODE_OUT_PS)  {
+	    fprintf(f,"showpage\n");
 	    fprintf(f, "%%%%Trailer\n\n");
 	}
     }
