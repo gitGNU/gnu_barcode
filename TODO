@@ -3,8 +3,6 @@
 
 * verbose mode, printing position information to stderr
 
-* document the intermediate representation in the real docs (instead of ps.c)
-
 * document how a new encoding standard can be added
 
 * add Barcode_String, which has been contributed
