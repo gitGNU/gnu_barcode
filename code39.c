@@ -65,6 +65,8 @@ int Barcode_39_verify(unsigned char *text)
 {
     int i, lower=0, upper=0;
 
+    if (!strlen(text))
+	return -1;
     for (i=0; text[i]; i++) {
         if isupper(text[i]) upper++;
         if islower(text[i]) lower++;
@@ -152,7 +154,7 @@ int Barcode_39_encode(struct Barcode_Item *bc)
         c = strchr(checkbet,*c);
         if (c) /* the '*' is not there */
             checksum += (c-checkbet);
-        sprintf(textptr, "%i:13:%c ", textpos, toupper(text[i]));
+        sprintf(textptr, "%i:12:%c ", textpos, toupper(text[i]));
         
         textpos += 16; /* width of each code */
         textptr += strlen(textptr);
