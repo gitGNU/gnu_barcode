@@ -30,7 +30,7 @@ warranty, according to the GPL Licence (see ./COPYING).
 
 If you're specifically interested in making an ISBN (Bookland EAN)
 symbol, you might try to get "bookland.py" by Judah Milgram
-(http://www.cgpp.com/bookland/, whose version 0.06 is also included in
+(http://www.cgpp.com/bookland/, whose version 0.92 is also included in
 the directory "bookland" within this package, for your convenience).
 While my main target is flexibility his main target is strict
 adherence to the standards. Bookland is free software like the barcode
