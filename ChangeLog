@@ -1,3 +1,7 @@
+2002-02-27  Alessandro Rubini  <rubini@linux.it>
+
+	* bookland/bookland.py: updated to version 0.92 by Judah Milgram
+
 2001-11-13  Alessandro Rubini  <rubini@linux.it>
 
 	* README: Added a pointer to the Windows port.
