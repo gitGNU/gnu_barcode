@@ -30,7 +30,8 @@ that the symbol is valid (and, obviously, I'd like to know about any
 problem you encounter). [This paragraph copied verbatim from bookland.py]
 
 I would like to thank both Judah Milgram and Michele Comitini
-(mcm@glisco.it) for their help with this tool
+(mcm@glisco.it) for their help with this tool, as well as Jim Westveer
+for introducing me to Debian packaging.
 
 /alessandro (rubini@prosa.it, rubini@gnu.org)
 
