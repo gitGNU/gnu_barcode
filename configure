@@ -1279,7 +1279,7 @@ $MAKEINFO --help | grep .--html > /dev/null && MAKEINFOHTML=yes
 echo "$ac_t""$MAKEINFOHTML" 1>&6
 if test "$MAKEINFOHTML" = "yes"; then
    REMOVEHTMLTAGS="cat"
-   INFOTOHTML="$MAKEINFO --html"
+   INFOTOHTML="$MAKEINFO --html --no-split"
 else
    REMOVEHTMLTAGS="sed 's/ifnottex/ifinfo/; s/ifnotinfo/iftex/'"
    INFOTOHTML="perl texi2html -monolithic"
