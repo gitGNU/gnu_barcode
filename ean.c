@@ -252,7 +252,7 @@ static int width_of_partial(char *partial)
  */
 int Barcode_ean_encode(struct Barcode_Item *bc)
 {
-    static char text[16];
+    static char text[24];
     static char partial[256];
     static char textinfo[256];
     char *mirror, *ptr1, *ptr2, *tptr = textinfo; /* where text is written */
