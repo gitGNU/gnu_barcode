@@ -1,5 +1,10 @@
 2000-04-20  Alessandro Rubini  <rubini@morgana.systemy.it>
 
+	* Makefile.in (.depend): removed gmake-specific features.
+		Thanks to Jukka A. Ukkonen for reporting.
+
+	* configure.in: detect gmake and avoid its features if not there
+
 	* ps.c (Barcode_ps_print): fix: codes with (relatively) short bars
 		were enlarged in height instead of reduced in width (also
 		the enlarging was wrong). Thanks to Rob Seace for reporting.
