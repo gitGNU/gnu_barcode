@@ -380,7 +380,7 @@ int Barcode_isbn_verify(unsigned char *text)
 {
     int i, ndigit=0;
 
-    for (i=0; i < strlen(text); i++) {
+    for (i=0; text[i]; i++) {
 	if (text[i] == '-')
 	    continue;
 	if (isdigit(text[i])) {
