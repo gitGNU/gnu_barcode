@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  */
-
+	
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,6 +27,10 @@
 
 #include "cmdline.h"
 #include "barcode.h"
+
+#ifdef HAVE_LIBPAPER
+#include <paper.h>
+#endif
 
 /*
  * Most of this file deals with command line options, by exploiting
@@ -99,6 +103,9 @@ int lines, columns;                   /* "-t" for tables */
 int xmargin, ymargin;                 /* both for "-g" and "-t" */
 int ximargin, yimargin;               /* "-m": internal margins */
 int eps, ps, noascii, nochecksum;     /* boolean flags */
+int page_wid, page_hei;               /* page size in points */
+char *page_name;                      /* name of the media */
+
 /*
  * Functions to handle command line arguments
  */
@@ -196,6 +203,65 @@ int get_margin(void *arg)
     return 0;
 }
 
+/* convert a page geometry specification */
+int get_page_geometry(void *arg)
+{
+    int n;
+    double dpw, dph; /* page width, height in mm or inches */
+
+    page_name = arg; /* if undecipherable, we won't run the program :) */
+    /*
+     * try to decode a "mm" string (eg. "210mmx297mm" or "210x297mm")
+     */
+    n = sscanf((char *)arg, "%lfmmx%lfmm", &dpw, &dph);
+    if (n != 2) n =  sscanf((char *)arg, "%lfx%lfmm", &dpw, &dph);
+    if (n == 2) {
+	/* Ok, convert to points: 1in is 25.4mm, 1in is also 72p */
+	page_wid = (int)(dpw / 25.4 * 72.0 + 0.5);
+	page_hei = (int)(dph / 25.4 * 72.0 + 0.5);
+	return 0;
+    }
+
+    /*
+     * try to decode an "in" string (eg. "8.5inx11in" or "8.5x11in")
+     */
+    n = sscanf((char *)arg, "%lfinx%lfin", &dpw, &dph);
+    if (n != 2) n =  sscanf((char *)arg, "%lfx%lfin", &dpw, &dph);
+    if (n == 2) {
+	page_wid = (int)(dpw * 72.0 + 0.5); /* round to points */
+	page_hei = (int)(dph * 72.0 + 0.5);
+	return 0;
+    }
+
+    /*
+     * try to decode a point specification
+     */
+    n = sscanf((char *)arg, "%dx%d", &page_wid, &page_hei);
+    if (n == 2)
+	return 0;
+
+#ifdef HAVE_LIBPAPER 
+    /*
+     * try to use libpaper, since it is available
+     */
+    {
+    const struct paper* paptr;
+
+    paperinit();
+    paptr = paperinfo(arg);
+    if (!paptr) { /* unknown name */
+	paperdone();
+	return -1;
+    }
+    page_wid = (int)(paperpswidth(paptr) + 0.5);
+    page_hei = (int)(paperpsheight(paptr) + 0.5);
+    paperdone();
+    return 0;
+    }
+#endif
+    /* If we got here, the argument is undecipherable: fail */
+    return -1;
+}
 
 /*
  * The table of possible arguments
@@ -221,6 +287,8 @@ struct commandline option_table[] = {
                     "no Checksum character, if the chosen encoding allows it"},
     {'E', CMDLINE_NONE, &eps, NULL, NULL, NULL,
                     "print a single code as eps file, else do multi-page ps"},
+    {'p', CMDLINE_S, NULL, get_page_geometry, NULL, NULL,
+                    "page size (refer to the man page)"},
     {0,}
 };
 	 
@@ -242,12 +310,26 @@ int main(int argc, char **argv)
 	list_encodes(stderr);
 	exit(1);
     }
+    /* Also, accept "--version" as a special case */
+    if (argc == 2 && (!strcmp(argv[1],"--version"))) {
+	printf("barcode frontend (GNU barcode) " BARCODE_VERSION "\n");
+	exit(0);
+    }
 
     /* Otherwise, parse the commandline */
     if (commandline(option_table, argc, argv, "Use: %s [options]\n")<0) {
 	/* error: add information about the encoding types and exit */
 	list_encodes(stderr);
 	exit(1);
+    }
+
+    /* If no paper size has been specified, use the default, if any */
+    if (!page_name) {
+	page_wid = 595; page_hei = 842;
+	page_name = "A4"; /* I live in Europe :) */
+#ifdef HAVE_LIBPAPER
+	get_page_geometry(systempapername()); /* or the system default */
+#endif
     }
 
     /* FIXME: print warnings for incompatible options */
@@ -295,8 +377,11 @@ int main(int argc, char **argv)
     if (ps) { /* The header is independent of single/table mode */
 	/* Headers. Don't let the library do it, we may need multi-page */
 	fprintf(ofile, "%%!PS-Adobe-2.0\n");
+	/* It would be nice to know the bounding box. Leave it alone */
 	fprintf(ofile, "%%%%Creator: \"barcode\", "
 		"libbarcode sample frontend\n");
+	if (page_name)
+	    fprintf(ofile, "%%%%DocumentPaperSizes: %s\n", page_name);
 	fprintf(ofile, "%%%%EndComments\n");
 	fprintf(ofile, "%%%%EndProlog\n\n");
     }
@@ -312,8 +397,10 @@ int main(int argc, char **argv)
 	    if (ps) {
 		fprintf(ofile, "%%%%Page: %i %i\n\n",page,page);
 	    }
-	    Barcode_Encode_and_Print(line, ofile, code_width, code_height,
-				     xmargin, ymargin, flags);
+	    if (Barcode_Encode_and_Print(line, ofile, code_width, code_height,
+					 xmargin, ymargin, flags) < 0) {
+		fprintf(stderr, "%s: can't encode \"%s\"\n", argv[0], line);
+	    }
 	    if (eps) break; /* if output is eps, do it once only */
 	    fprintf(ofile, "showpage\n");
 	}
@@ -325,14 +412,13 @@ int main(int argc, char **argv)
 
 	/* table mode, the header has been already printed */
 	
-	/* A4 is 210x297mm, 1in is 25.4mm, 1in is 72p .... */
-	int page_wid = 595;  /* FIXME: should support different page sizes */
-	int page_hei = 842;
 	int xstep = (page_wid - 2 * xmargin)/columns;
 	int ystep = (page_hei - 2 * xmargin)/lines;
 	int x = columns, y = -1; /* position in the table, start off-page */
 
 	page=0;
+
+
 	while ( (line = retrieve_input_string(ifile)) ) {
 	    x++;  /* fit x and y */
 	    if (x >= columns) {
@@ -349,11 +435,13 @@ int main(int argc, char **argv)
 	     * In order to remove the extra (default) margin, subtract it
 	     * in advance (dirty)
 	     */
-	    Barcode_Encode_and_Print(line, ofile,
+	    if (Barcode_Encode_and_Print(line, ofile,
 		    xstep - 2*ximargin, ystep - 2*yimargin,
 		    xmargin + ximargin + x * xstep - BARCODE_DEFAULT_MARGIN,
 		    ymargin + yimargin + y * ystep - BARCODE_DEFAULT_MARGIN,
-		    flags);
+		    flags)<0) {
+		fprintf(stderr, "%s: can't encode \"%s\"\n", argv[0], line);
+	    }
 	}
 	fprintf(ofile, "showpage\n\n%%%%Trailer\n\n");
     }
