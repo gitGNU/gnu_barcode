@@ -1,3 +1,24 @@
+====> Version 0.91.4 released to ftp.prosa.it
+
+1999-08-23  Thad Floryan <thad@thadlabs.com>
+
+	* main.c (strerror): replacement strerror selected by autoconf
+
+1999-08-06  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* changed all "ENODATA" in "EINVAL", as some system miss ENODATA
+
+	* Makefile.in (all): removed ".depend" from all, as it needs gcc
+
+	* i25.c (Barcode_i25_encode): fixed wrong free() in an unlinely path
+
+	* ean.c (Barcode_ean_encode): don't use sprintf's result, as some
+	systems return a char pointer instead of the number of chars.
+
+	* configure.in: new file, as autoconf support is being added
+
+====> Version 0.91.3 released to ftp.prosa.it
+
 1999-08-05  Alessandro Rubini  <rubini@morgana.systemy.it>
 
 	* code128.c (Barcode_128c_encode): fixed malloc of textinfo (was short)
@@ -18,7 +39,7 @@
 
 	* code128.c (Barcode_128c_encode): fixed checksum calculation
 
-====> Version 0.91.1 released to ftp.prosa.it and ftp.gnu.org
+====> Version 0.91.1 released to ftp.prosa.it
 
 1999-07-09  Alessandro Rubini  <rubini@morgana.systemy.it>
 
