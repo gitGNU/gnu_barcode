@@ -1,7 +1,7 @@
 /*
  * library.c -- external functions of libbarcode
  *
- * Copyright (c) 1999 Alessandro Rubini (rubini@prosa.it)
+ * Copyright (c) 1999 Alessandro Rubini (rubini@gnu.org)
  * Copyright (c) 1999 Prosa Srl. (prosa@prosa.it)
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -80,6 +80,8 @@ extern int Barcode_128b_verify(unsigned char *text);
 extern int Barcode_128b_encode(struct Barcode_Item *bc);
 extern int Barcode_128c_verify(unsigned char *text);
 extern int Barcode_128c_encode(struct Barcode_Item *bc);
+extern int Barcode_128_verify(unsigned char *text);
+extern int Barcode_128_encode(struct Barcode_Item *bc);
 extern int Barcode_i25_verify(unsigned char *text);
 extern int Barcode_i25_encode(struct Barcode_Item *bc);
 
@@ -97,6 +99,7 @@ struct encoding encodings[] = {
     {BARCODE_128C, Barcode_128c_verify, Barcode_128c_encode},
     {BARCODE_39,   Barcode_39_verify,   Barcode_39_encode},
     {BARCODE_I25,  Barcode_i25_verify,  Barcode_i25_encode},
+    {BARCODE_128,  Barcode_128_verify,  Barcode_128_encode},
     {0,            NULL,                NULL}
 };
 
