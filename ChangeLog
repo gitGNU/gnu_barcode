@@ -1,3 +1,7 @@
+2003-11-26  Alessandro Rubini  <rubini@linux.it>
+
+	* configure.in (INFOTOHTML): added --no-split if using makeinfo
+
 2003-04-30  Alessandro Rubini  <rubini@linux.it>
 
 	* main.c (main): return 1 if at least one encoding failed
