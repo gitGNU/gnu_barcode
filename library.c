@@ -136,7 +136,7 @@ int Barcode_Encode(struct Barcode_Item *bc, int flags)
     if (!(flags & BARCODE_ENCODING_MASK))
 	flags |= bc->flags & BARCODE_ENCODING_MASK;
     if (!(flags & BARCODE_NO_CHECKSUM))
-	flags |= bc->flags & BARCODE_NO_CHECKUM;
+	flags |= bc->flags & BARCODE_NO_CHECKSUM;
     flags = bc->flags = (flags & validbits) | (bc->flags & ~validbits);
 
     if (!(flags & BARCODE_ENCODING_MASK)) {
