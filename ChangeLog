@@ -1,3 +1,7 @@
+2002-07-20  ??? <roynia@iconlab.co.kr>
+
+	* code93.c (Barcode_93_encode): need 1byte more in allocating partial
+
 2002-07-19  Leonid A Broukhis  <leob@mailcom.com>
 
 	* plessey.c (Barcode_pls_encode): added three missing free()
