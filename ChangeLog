@@ -1,3 +1,9 @@
+2000-04-20  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* ps.c (Barcode_ps_print): fix: codes with (relatively) short bars
+		were enlarged in height instead of reduced in width (also
+		the enlarging was wrong). Thanks to Rob Seace for reporting.
+
 2000-04-09  Alessandro Rubini  <rubini@morgana.systemy.it>
 
 	* code128.c (Barcode_128_encode): removed extra messages to stderr,
