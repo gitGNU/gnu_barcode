@@ -2,6 +2,7 @@
 # This Makefile should run fine with both pmake and gmake
 #
 
+AWK = @AWK@
 CC = @CC@
 CFLAGS = @CFLAGS@ @DEFS@ @NO_GETOPT@ @NO_LIBPAPER@ @NO_STRERROR@
 RANLIB = @RANLIB@
@@ -56,7 +57,7 @@ $(LIBRARY): $(LIBOBJECTS)
 	$(RANLIB) $(LIBRARY)
 
 $(MAN1) $(MAN3): doc/doc.$(TARGET)
-	awk -f doc/manpager doc/doc.$(TARGET)
+	$(AWK) -f doc/manpager doc/doc.$(TARGET)
 
 
 # Unfortunately, pmake has no "-C". Also, "pmake -n" doesn't follow the cd.
