@@ -1,8 +1,18 @@
 2002-03-01  Alessandro Rubini  <rubini@linux.it>
 
-	* contrib/barcode-SVG.tar.gz: new stuff, by David J. Humphreys
+	* README: removed refernces to systemy.it, I'm no more there
+
+	* contrib/barcode-SVG.tar.gz: new contribution, by David J. Humphreys
 
 	* contrib/barcode-SVG.tar.gz.README: short description of file above
+
+	* contrib/grab-0.0.4.tar.gz: new program, by Tuukka Toivonen.
+
+	* contrib/grab-0.0.4.tar.gz.README: short description of file above
+	
+2002-03-01  Boszormenyi Zoltan <zboszor@externet.hu>
+
+	* barcode.spec: new file
 
 2002-02-27  Alessandro Rubini  <rubini@linux.it>
 
