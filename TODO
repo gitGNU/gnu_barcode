@@ -1,6 +1,8 @@
 
 Possible enhancements that I'd like to add
 
+* verbose mode, printing position information to stderr
+
 * code 128 (a) support
 
 	The code can represent ascii 0-96 (control chars, no lowercase)
@@ -13,23 +15,10 @@ Possible enhancements that I'd like to add
 	alghorithm to shrink the bars is needed to get lighter prints
 	at small sizes without loosing readability.
 
-* support millimeters, centimeters, inches
-
-	Using "points" as a measure is definitely inpractical
-
-* use autoconf instead of the dirty Makefile tricks
-
 * document the intermediate representation in the real docs (instead of ps.c)
 
 * document how a new encoding standard can be added
 
-* allow the ``barcode'' executable to read a cfg file.
-
-	This would allow creating descriptions of barcode output that
-	 exploit all the implemented features, but I'm not sure it is useful.
-
-* should make Debian package (paci@prosa.it is working on it)
-
-
+* include the debian/ directory by Jim Westveer as soon as it is ready for prime time
 
 
