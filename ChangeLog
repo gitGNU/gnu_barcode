@@ -1,4 +1,10 @@
+2002-03-27  Peter Schlaile  <udbz@rz.uni-karlsruhe.de>
+	
+	* code93.c: fixed a typo in the encoding strings
+
 2002-03-01  Alessandro Rubini  <rubini@linux.it>
+
+	====> Version 0.98 released to arcana.linux.it and ftp.gnu.org
 
 	* library.c (Barcode_Encode): handle bitsets separately, like
 		in Barcode_Print (otherwise, you might loose NO_CHECKSUM).
