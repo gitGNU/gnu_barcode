@@ -1,3 +1,10 @@
+2002-03-28  Alessandro Rubini  <rubini@linux.it>
+
+	* configure.in (MAKEINFOHTML): fixed. It didn't generate html
+		unless MAKEINFO was set in the environment (as I used to do)
+
+	* configure: regenerated with autoconf 2.13 (what I currently have)
+
 2002-03-27  Peter Schlaile  <udbz@rz.uni-karlsruhe.de>
 	
 	* code93.c: fixed a typo in the encoding strings
