@@ -3,7 +3,7 @@
 #
 
 CC = @CC@
-CFLAGS = @CFLAGS@ @NO_GETOPT@ @NO_LIBPAPER@ @NO_STRERROR@
+CFLAGS = @CFLAGS@ @DEFS@ @NO_GETOPT@ @NO_LIBPAPER@ @NO_STRERROR@
 RANLIB = @RANLIB@
 
 INSTALL = @INSTALL@
@@ -110,6 +110,9 @@ tar:
 	    n=`basename \`pwd\``; cd ..; tar cvf - $$n | gzip > $$n.tar.gz; \
 	    echo 'you can set a numeric $$(RELEASE) to make a named tar'; \
 	else \
+	    if [ -d ../$(TARGET)-$(RELEASE) ]; then \
+		rm -rf ../$(TARGET)-$(RELEASE); \
+	    fi
 	    mkdir ../$(TARGET)-$(RELEASE) || exit 1; \
 	    cp -a . ../$(TARGET)-$(RELEASE) && cd .. && \
 	        tar --exclude '*/CVS*' \
