@@ -15,60 +15,6 @@
 #
 ###################################################################
 
-%.texinfo: doc.%
-	@rm -f $@ 2> /dev/null
-	sed -f ./infofilter $< > $@
-	chmod 400 $@
-
-
-# This rule is somewhat a rewrite of texi2dvi. I like make more than sh :-)
-
-%.dvi: %.texinfo
-
-# create a spurious  index file to please silly sh (bash will work anyway)
-	touch $*.oo
-
-# get the index list
-	if test "x`ls $*.?? $*.aux`" != "x"; then \
-	  for i in `ls $*.?? $*.aux`; do \
-	    cp $$i $$i~; \
-	  done; \
-	fi
-	tex $<
-
-#check the file list, the file and if needed run TeX again
-	old="`ls $*.??~ $*.aux~ | sed 's/~//g'`"; \
-	new="`ls $*.?? $*.aux`"; \
-	need="n"; \
-	if test "$$old" != "$$new"; then need="y"; \
-	else \
-	  for i in  `ls $*.?? $*.aux`; do \
-	    cmp -s $$i $$i~; if test $$? -ne 0; then need="y" break; fi; \
-	  done; \
-	fi; \
-	if test "$$need" = "y"; then \
-	  texindex $*.?? && tex $<; \
-	fi
-
-
-%.ps: %.dvi
-	dvips -f $< > $@
-
-%.lj: %.dvi
-	dvilj -e- $< > $@
-
-%.info: %.texinfo
-	makeinfo $< -o $@
-
-%.html: %.texinfo
-	perl ./texi2html $<
-
-#%.man: doc.%
-#		manpages are created by the toplevel Makefile
-
-%doc.txt: %.info
-	gawk -f ./mktxt $< > $@
-
 ##############################################
 
 
@@ -81,18 +27,9 @@ info: $(TARGET).info
 
 $(TARGET)doc.txt: mktxt
 
-check: _err.ps
-	gs -sDEVICE=linux -r320x200x16 $<
-
-gs: $(TARGET).ps
-	gs -sDEVICE=linux -r640x480x2 $<
-
-gv: $(TARGET).ps
-	ghostview $(TARGET).ps -magstep -1 -a4
-
 mpage: all
 	mv $(TARGET).ps $(TARGET)1.ps
-	mpage -2AP $(TARGET)1.ps > $(TARGET)2.ps && rm $(TARGET)1.ps
+	mpage -2A $(TARGET)1.ps > $(TARGET)2.ps && rm $(TARGET)1.ps
 
 terse:
 	rm -f *~ *.dvi *.log *.aux \
@@ -104,4 +41,74 @@ terse:
 
 clean: terse
 	rm -f $(ALL) $(TARGET)_toc.html
+
+
+####################################################
+
+# These rules used to be expressed as "%.texinfo: doc.%" etc. However, this
+# is gmake-specific, so I turned every % to $(TARGET), thus loosing generality
+# but gaining portability. I also had to drop "$^" and while "$<" works
+# with gmake and not pmake, "$<" works with gmake and not pmake.
+#    ARub 2000-04-21
+
+$(TARGET).texinfo: doc.$(TARGET)
+	@rm -f $@ 2> /dev/null
+	sed -f ./infofilter doc.$(TARGET) > $@
+	chmod 400 $@
+
+
+# This rule is somewhat a rewrite of texi2dvi. I like make more than sh :-)
+# This had to be rewritten too, as "$*" is different in gmake and pmake
+
+$(TARGET).dvi: $(TARGET).texinfo
+
+# create a spurious  index file to please silly sh (bash will work anyway)
+	touch $(TARGET).oo
+
+# get the index list
+	if test "x`ls $(TARGET).?? $(TARGET).aux`" != "x"; then \
+	  for i in `ls $(TARGET).?? $(TARGET).aux`; do \
+	    cp $$i $$i~; \
+	  done; \
+	fi
+	tex $(TARGET).texinfo
+
+#check the file list, the file and if needed run TeX again
+	old="`ls $(TARGET).??~ $(TARGET).aux~ | sed 's/~//g'`"; \
+	new="`ls $(TARGET).?? $(TARGET).aux`"; \
+	need="n"; \
+	if test "$$old" != "$$new"; then need="y"; \
+	else \
+	  for i in  `ls $(TARGET).?? $(TARGET).aux`; do \
+	    cmp -s $$i $$i~; if test $$? -ne 0; then need="y" break; fi; \
+	  done; \
+	fi; \
+	if test "$$need" = "y"; then \
+	  texindex $(TARGET).?? && tex $(TARGET).texinfo; \
+	fi
+
+
+$(TARGET).ps: $(TARGET).dvi
+	dvips -f $(TARGET).dvi > $@
+
+$(TARGET).lj: $(TARGET).dvi
+	dvilj -e- $(TARGET).dvi > $@
+
+$(TARGET).info: $(TARGET).texinfo
+	makeinfo $(TARGET).texinfo -o $@
+
+$(TARGET).html: $(TARGET).texinfo
+	perl ./texi2html $(TARGET).texinfo
+
+#$(TARGET).man: doc.$(TARGET)
+#		manpages are created by the toplevel Makefile
+
+$(TARGET)doc.txt: $(TARGET).info
+	gawk -f ./mktxt $(TARGET).info > $@
+
+
+
+
+
+
 
