@@ -3,13 +3,17 @@ This is GNU-barcode. The latest release can be downloaded from ftp.gnu.org
 and mirrors:
 	ftp://ftp.gnu.org/pub/gnu/barcode/
 
-It is also available from my own ftp server and mirrors
-	ftp://ar.linux.it/pub/barcode/ (all versions)
-	ftp://ftp.systemy.it/pub/develop (selected packages, last version)
-	ftp://ftp.linux.it/pub/People/Rubini (mirror of ftp.systemy)
-
+It is also available from my own ftp/http server
+	ftp://ar.linux.it/pub/barcode/
+	http://ar.linux.it/pub/barcode/ (same as above).
+	
 The current source tree is available by anonymous CVS. See
 	http://ar.linux.it/software/#cvs
+
+Plesae note that ar.linux.it/pub/barcode also includes CVS snapshots,
+semi-atumatically taken when I commit stuff to CVS. Note that CVS
+snapshots include "CVS/" directories, so you can then "cvs update" for
+further updates.
 
 The documentation is online at:
 	http://ar.linux.it/software/barcode
