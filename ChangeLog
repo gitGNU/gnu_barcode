@@ -1,3 +1,18 @@
+2004-04-04  Alessandro Rubini  <rubini@linux.it>
+
+	* code128.c (all encodings): turn char into unsigned char
+	(suggested by Hugh Sasse Staff Elec Eng)
+
+	* code39.c (Barcode_39_encode): turn char into unsigned char
+
+	* code93.c (Barcode_93_encode): turn char into unsigned char
+
+	* msi.c (Barcode_msi_encode): turn char into unsigned char
+
+	* plessey.c (Barcode_pls_encode): turn char into unsigned char
+
+	* codabar.c (Barcode_cbr_encode): turn char into unsigned char
+
 2003-11-26  Alessandro Rubini  <rubini@linux.it>
 
 	* configure.in (INFOTOHTML): added --no-split if using makeinfo
