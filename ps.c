@@ -157,12 +157,10 @@ int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
 	    "by the following widths (space first):\n"
 	    "%% ");
     for (i=0; i<strlen(bc->partial); i++) {
-	if (isdigit(bc->partial[i]))
-	    putc(bc->partial[i], f);
-	if (islower(bc->partial[i]))
-	    putc(bc->partial[i]-'a'+'1', f);
-	if (isupper(bc->partial[i]))
-	    putc(bc->partial[i]-'A'+'1', f);
+        unsigned char c = bc->partial[i];
+	if (isdigit(c)) putc(c, f);
+	if (islower(c)) putc(c-'a'+'1', f);
+	if (isupper(c)) putc(c-'A'+'1', f);
     }
     putc('\n', f);
 
