@@ -110,8 +110,9 @@ int Barcode_93_encode(struct Barcode_Item *bc)
         return -1;
     }
 
-    /* the partial code is 6 * (head + 2* text + 2* check + tail) + margin + term. */
-    partial = malloc( (strlen(text) *2 + 4) * 6 +2);
+    /* length of partial:
+        6 * (head + 2*text + 2*check + tail) + lastbar + margin + terminator */
+    partial = malloc( (strlen(text) *2 + 4) * 6 + 3);
     if (!partial) {
         bc->error = errno;
         return -1;
