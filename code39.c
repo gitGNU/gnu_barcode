@@ -65,7 +65,7 @@ int Barcode_39_verify(unsigned char *text)
 {
     int i, lower=0, upper=0;
 
-    if (!strlen(text))
+    if (text[0] == '\0')
 	return -1;
     for (i=0; text[i]; i++) {
         if (isupper(text[i])) upper++;
@@ -141,7 +141,7 @@ int Barcode_39_encode(struct Barcode_Item *bc)
     textptr = textinfo;
     textpos = 22;
 
-    for (i=0; i<strlen(text); i++) {
+    for (i=0; text[i]; i++) {
         c = strchr(alphabet, toupper(text[i]));
         if (!c) {
             bc->error = EINVAL; /* impossible if text is verified */
