@@ -26,6 +26,7 @@ MAKEINFO = @MAKEINFO@
 # According to whether this makeinfo can output html, autoconf define these
 REMOVEHTMLTAGS = @REMOVEHTMLTAGS@
 INFOTOHTML = @INFOTOHTML@
+AWK = @AWK@
 
 ##############################################
 
@@ -127,7 +128,7 @@ $(TARGET).html: $(TARGET).texinfo
 #		manpages are created by the toplevel Makefile
 
 $(TARGET)doc.txt: $(TARGET).info
-	awk -f ./mktxt $(TARGET).info > $@
+	$(AWK) -f ./mktxt $(TARGET).info > $@
 
 
 
