@@ -118,7 +118,7 @@ int Barcode_39_encode(struct Barcode_Item *bc)
 
     text = bc->ascii;
     if (!text) {
-        bc->error = ENODATA;
+        bc->error = EINVAL;
         return -1;
     }
     /* the partial code is 10* (head + text + check + tail) + margin + term. */
