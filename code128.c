@@ -85,9 +85,9 @@ int Barcode_128b_verify(unsigned char *text)
 
 int Barcode_128b_encode(struct Barcode_Item *bc)
 {
-    static char *text;
-    static char *partial;  /* dynamic */
-    static char *textinfo; /* dynamic */
+    static unsigned char *text;
+    static unsigned char *partial;  /* dynamic */
+    static unsigned char *textinfo; /* dynamic */
     char *textptr;
     int i, code, textpos, checksum = 0;
 
@@ -174,9 +174,9 @@ int Barcode_128c_verify(unsigned char *text)
 
 int Barcode_128c_encode(struct Barcode_Item *bc)
 {
-    static char *text;
-    static char *partial;  /* dynamic */
-    static char *textinfo; /* dynamic */
+    static unsigned char *text;
+    static unsigned char *partial;  /* dynamic */
+    static unsigned char *textinfo; /* dynamic */
     char *textptr;
     int i, code, textpos, checksum = 0;
 
@@ -413,9 +413,9 @@ static int *Barcode_128_make_array(struct Barcode_Item *bc, int *lptr)
  */
 int Barcode_128_encode(struct Barcode_Item *bc)
 {
-    static char *text;
-    static char *partial;  /* dynamic */
-    static char *textinfo; /* dynamic */
+    static unsigned char *text;
+    static unsigned char *partial;  /* dynamic */
+    static unsigned char *textinfo; /* dynamic */
     char *textptr;
     int *codes; /* dynamic */
     int i, c, len;
@@ -523,9 +523,9 @@ int Barcode_128raw_verify(unsigned char *text)
 
 int Barcode_128raw_encode(struct Barcode_Item *bc)
 {
-    static char *text;
-    static char *partial;  /* dynamic */
-    static char *textinfo; /* dynamic */
+    static unsigned char *text;
+    static unsigned char *partial;  /* dynamic */
+    static unsigned char *textinfo; /* dynamic */
     char *textptr;
     int i, n, count, code, textpos, checksum = 0;
 
