@@ -274,7 +274,7 @@ library:
         ASCII characters), CODE128-C (two digits encoded by each barcode
 	symbol), CODE128 (all ASCII values) CODE39 (alphanumeric)
         and "interleaved 2 of 5" (numeric).
-        @xref{Supported Encodings}
+        @xref{Supported Encodings}.
 
 @item BARCODE_ANY
 
