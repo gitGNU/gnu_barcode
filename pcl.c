@@ -131,7 +131,7 @@ int Barcode_pcl_print(struct Barcode_Item *bc, FILE *f)
 	if (isdigit (*ptr))   j = *ptr-'0';
 	else                  j = *ptr-'a'+1;
 	if (i%2) { /* bar */
-	    x0 = bc->xoff + xpos + (j*scalef)/2;
+	    x0 = bc->xoff + xpos;
             y0 = bc->yoff + bc->margin;
             yr = bc->height;
             if (!(bc->flags & BARCODE_NO_ASCII)) { /* leave space for text */
