@@ -164,7 +164,7 @@ int Barcode_isbn_verify(unsigned char *text)
     if (text[i] == '-')
 	i++;
     /* accept one more char if any (the checksum) */
-    if (isdigit(text[i]) || tolower(text[i])=='X')
+    if (isdigit(text[i]) || toupper(text[i])=='X')
 	i++;
     if (text[i] == '\0')
 	return 0; /* Ok */
