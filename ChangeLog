@@ -1,3 +1,11 @@
+2001-08-11  Boszormenyi Zoltan <zboszor@externet.hu>
+
+	* ps.c (Barcode_ps_print): don't output "showpage" in EPS mode
+
+2001-08-11  Alessandro Rubini  <rubini@linux.it>
+
+	* README: Changed host names, added barcode-commit list.
+
 2000-11-29  Alessandro Rubini  <rubini@morgana.systemy.it>
 
 	* doc/doc.barcode (The Field List): 1pt == 0.352mm, not 0.0352
