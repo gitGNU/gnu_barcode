@@ -60,10 +60,18 @@ int main(int argc, char **argv)
                 BARCODE_NO_CHECKSUM | BARCODE_39 |\
 			     BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS);
 
-    /* and one interleaved 2 of 5 */
-    Barcode_Encode_and_Print("0123456789",stdout, 0, 0, 40, 640, 
+    /* one interleaved 2 of 5 */
+    Barcode_Encode_and_Print("0123456789",stdout, 0, 0, 40, 620, 
                 BARCODE_I25 | BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS);
 
+    /* upc-e and ean-8 (autotected based on code size) */
+    Barcode_Encode_and_Print("012345",stdout, 0, 0, 50, 720, 
+		BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS);
+    Barcode_Encode_and_Print("0123456",stdout, 0, 0, 160, 720, 
+		BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS);
+
+
+    
 
     printf("\nshowpage\n");
     printf("%%%%Trailer\n\n");
