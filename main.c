@@ -71,6 +71,10 @@ struct {
  * Get encoding type from string rapresentation.
  * Returns -1 on error.
  */
+#ifndef HAVE_STRCASECMP /* some libs (windows, for example) have stricmp */
+#  define strcasecmp stricmp
+#endif
+
 int encode_id(char *encode_name)
 {
     int i;
