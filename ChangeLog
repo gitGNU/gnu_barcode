@@ -1,3 +1,7 @@
+2004-04-05  Hugh Sasse Staff Elec Eng  <hgs@dmu.ac.uk>
+
+	* doc/Makefile.in: use @AWK@ instead of awk
+	
 2004-04-05  Alessandro Rubini  <rubini@linux.it>
 
 	* doc/manpager: use "/" as delimiter in gsub, to prevent gawk warnings
