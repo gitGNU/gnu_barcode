@@ -1,3 +1,12 @@
+
+====> Version 0.92 released to ftp.prosa.it and ftp.gnu.org
+
+1999-08-31  Alessandro Rubini  <rubini@plinio.prosa.it>
+
+	* i25.c: the right guard had a thinner bar than the rest of the code
+
+	* doc/doc.barcode: spelling and manpage fixes (thanks Joachim Schaaf)
+
 ====> Version 0.91.4 released to ftp.prosa.it
 
 1999-08-23  Thad Floryan <thad@thadlabs.com>
