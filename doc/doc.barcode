@@ -564,7 +564,13 @@ and encode all of them.
         points or in the chosen unit (see @t{-u} below).  If the
         option is not specified, @t{BARCODE_TABLE} is looked up in the
         environment, otherwise no table is printed and each barcode
-        will get its own page.
+        will get its own page.  The size (but not the position)
+        of a barcode item within a table can also be selected using
+        @t{-g} (see "geometry" above), without struggling with
+        external and internal margins.  I still think management of
+        geometries in a table is suboptimal, but I can't make it
+        better without introducing incompatibilities.
+
 
 @item -m margin(s)
 	Specifies an internal margin for each sticker in the
@@ -684,8 +690,8 @@ the library uses when auto-detecting a suitable encoding for a string.
 	ISBN numbers and deals with any hyphen and, if present, the
 	ISBN checksum character before encoding data. Valid
 	representations for ISBN strings are for example:
-	``@t{1-56592-292-1}'', ``3-89721-122-X'' and ``3-89721-122-X
-	06900''.
+	``@t{1-56592-292-1}'', ``@t{3-89721-122-X}'' and ``@t{3-89721-122-X
+	06900}''.
 
 @item code 128-B
 	This encoding can represent all of the printing ASCII
