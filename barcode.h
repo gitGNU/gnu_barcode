@@ -73,7 +73,8 @@ enum {
     BARCODE_128RAW,     /* Raw code 128 (by Leonid A. Broukhis) */
     BARCODE_CBR,        /* Codabar (by Leonid A. Broukhis) */
     BARCODE_MSI,        /* MSI (by Leonid A. Broukhis) */
-    BARCODE_PLS         /* Plessey (by Leonid A. Broukhis) */
+    BARCODE_PLS,        /* Plessey (by Leonid A. Broukhis) */
+    BARCODE_93          /* code 93 (by Nathan D. Holmes) */
 };
 
 #define BARCODE_DEFAULT_MARGIN 10
