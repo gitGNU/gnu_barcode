@@ -31,8 +31,8 @@
 
 @setchapternewpage off
 
-@set version 0.97
-@set update-month October 2001
+@set version 0.98
+@set update-month March 2002
 
 @finalout
 
