@@ -239,8 +239,8 @@ int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
 		    mode == '-'
                        ? (double)bc->yoff + bc->margin
 		       : (double)bc->yoff + bc->margin+bc->height - 8*scalef);
-	    /* Both the backslash and the close parens are special */
-	    if (c=='\\' || c==')')
+	    /* Both the backslash and the two parens are special */
+	    if (c=='\\' || c==')' || c=='(')
 		fprintf(f, "\\%c) show\n", c);
 	    else
 		fprintf(f, "%c) show\n", c);
