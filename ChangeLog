@@ -1,3 +1,15 @@
+1999-08-05  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* code128.c (Barcode_128c_encode): fixed malloc of textinfo (was short)
+
+	* i25.c (Barcode_i25_encode): new encoding: interleaved 2 of 5
+
+	* ean.c (Barcode_ean_encode): enlarged static "text", to fit add-5
+
+	* code128.c (Barcode_128b_encode): new encoding: 128-B 
+
+====> Version 0.91.2 released to ftp.prosa.it
+
 1999-08-04  Alessandro Rubini  <rubini@morgana.systemy.it>
 
 	* bookland/bookland.py: upgraded to version 0.06 (Judas Milgram)
