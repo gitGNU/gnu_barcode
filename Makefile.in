@@ -100,7 +100,15 @@ configure: configure.in
 depend: .depend
 
 tar:
-	n=`basename \`/bin/pwd\``; cd ..; tar cvf - $$n | gzip > $$n.tar.gz
+	@if [ "x" = "x$(RELEASE)" ]; then \
+	    n=`basename \`pwd\``; cd ..; tar cvf - $$n | gzip > $$n.tar.gz; \
+	    echo 'you can set a numeric $$(RELEASE) to make a named tar'; \
+	else \
+	    mkdir ../$(TARGET)-$(RELEASE) || exit 1; \
+	    cp -a . ../$(TARGET)-$(RELEASE) && cd .. && \
+	        tar --exclude '*/CVS*' \
+		    -cvzf $(TARGET)-$(RELEASE).tar.gz $(TARGET)-$(RELEASE); \
+	fi
 
 # print the version, as I usually forget to update it when distributing
 printv:
