@@ -1,0 +1,546 @@
+\input texinfo    @c -*-texinfo-*-
+%
+% doc.barcode - main file for the documentation
+%
+%%%%
+
+%------------------------------------------------------------------------------
+%
+%                         NOTE FOR THE UNAWARE USER
+%                         =========================
+%
+%    This file is a texinfo source. It isn't the binary file of some strange
+%    editor of mine. If you want ascii, you should "make barcodedoc.txt".
+%
+%------------------------------------------------------------------------------
+
+%
+% This is not a conventional info file...
+% I use two extra features:
+%       - The '%' as a comment marker, if at beg. of line ("\%" -> "%")
+%       - leading blanks are allowed
+%
+
+@comment %**start of header
+@setfilename barcode.info
+@settitle Barcode @value{version}
+@iftex
+@afourpaper
+@end iftex
+@comment %**end of header
+
+@setchapternewpage off
+
+@set version 0.90
+@set update-month June 1999
+
+@finalout
+
+@ifinfo
+
+This file is the User's Manual for the barcode library (version
+@value{version}).
+
+@end ifinfo
+
+@setchapternewpage odd
+@titlepage
+@c use the new format for titles
+@title barcode @value{version}
+@subtitle A library for drawing bar codes
+@subtitle @value{update-month}
+
+@author by Alessandro Rubini, Prosa Srl (@code{prosa@@prosa.it})
+
+@end titlepage
+@setchapternewpage off
+@headings single
+
+@ifinfo
+This file documents the @value{version} release of the barcode
+library and sample programs (@value{update-month}).
+
+@node Top, Overview, (dir), (dir)
+@top Barcode tools
+
+@menu
+* Overview::                    
+* The Barcode Object::          
+* Supported Flags::             
+* The API::                     
+* The barcode Executable::      
+@end menu
+
+@end ifinfo
+
+%##########################################################################
+%##########################################################################
+
+@node Overview, The Barcode Object, Top, Top
+@chapter Overview
+
+The @dfn{barcode} package is mainly a C library for creating bar-code
+output files. It also includes a command line front-end and (in a
+foreseeable future) a graphic frontend.
+
+The package is designed as a library because we think the main use for
+barcode-generation tools is inside more featured applications. The
+library addresses bar code printing as two distinct problems: creation
+of bar information and actual conversion to an output format. To this
+aim we use an intermediate representation for bar codes, which is
+currently documented in the @file{ps.c} source file (not in this
+document).
+
+Note that the library and the accompanying material is released
+according to the GPL license, not the LGPL one. A copy of the GPL is
+included in the distribution tarball.
+
+%##########################################################################
+
+@node  The Barcode Object, Supported Flags, Overview, Top
+@chapter The Underlying Data Structure
+
+Every barcode-related function acts on a data structure defined in the
+@file{barcode.h} header, which must be included by any C source file
+that uses the library. The header is installed by @t{make install}.
+
+The definition of the data structure is included here for reference:
+
+@lisp
+struct Barcode_Item @{
+    int flags;         /* type of encoding and decoding */
+    char *ascii;       /* malloced */
+    char *partial;     /* malloced too */
+    char *textinfo;    /* information about text positioning */
+    char *encoding;    /* code name, filled by encoding engine */
+    int width, height; /* output units */
+    int xoff, yoff;    /* output units */
+    int margin;        /* output units */
+    double scalef;     /* requested scaling for barcode */
+    int error;         /* an errno-like value, in case of failure */
+@};
+@end lisp
+
+The exact meaning of each field and the various flags implemented are
+described in the following sections.
+
+Even though you won't usually need to act on the contents of this
+structure, some of the functions in the library receive arguments that
+are directly related to one or more of these fields.
+
+%==========================================================================
+
+@menu
+* The Field List::              
+@end menu
+
+@node The Field List,  , The Barcode Object, The Barcode Object
+@section The Fields
+
+@table @code
+
+@item int flags;
+
+        The flags are, as you may suspect, meant to specify the exact
+        behaviour of the library. They are often passed as an argument
+        to @i{barcode} functions and are discussed in the next section.
+
+@item char *ascii;
+@itemx char *partial;
+@itemx char *textinfo;
+@itemx char *encoding;
+
+        These fields are internally managed by the library, and you are
+        not expected to touch them if you use the provided API. All
+        of them are allocated with @i{malloc}.
+
+@item int width;
+@itemx int height;
+
+        They specify the width and height of the @i{active} barcode
+	region (i.e., excluding the white margin), in the units used
+	to create output data (for postscript they are points, 1/72th
+	of an inch, 0.0352 mm). The fields can be either assigned to
+	in the structure or via @i{Barcode_Position()}, at your
+	choice.  If either value or both are left to their default
+	value of zero, the output engine will assign default values
+	according to the specified scaling factor. If the specified
+	width is bigger than needed (according to the scaling factor),
+	the output barcode will be centered in its requested
+	region. If either the width of the height are too small for
+	the specified scale factor, the output bar code will expand
+	symmetrically around the requested region.
+        
+@item int xoff;
+@itemx int yoff;
+
+	The fields specify offset from the coordinate origin of the
+	output engine (for postscript, position 0,0 is the lower left
+	corner of the page).  The fields can be either assigned to in
+	the structure or via @i{Barcode_Position()}, at your choice.
+	The offset specifies where the white margin begins, not where
+	the first bar will be printed. To print real ink to the
+	specified position you should set @i{margin} to 0.
+
+@item int margin;
+
+	The white margin that will be left around the printed area of
+	the bar code. The same margin is applied to all sides of the
+	printed area. The default value for the margin is defined in
+	@file{barcode.h} as @t{BARCODE_DEFAULT_MARGIN} (10).
+
+@item double scalef;
+
+	The enlarge or shrink value for the bar code over its default
+	dimension. The @i{width} and @i{scalef} fields interact deeply
+	in the creation of the output, and a complete description of
+	the issues appears later in this section.
+
+@item int error;
+
+	The field is used when a @i{barcode} function fails to host
+        an @t{errno}-like integer value.
+
+@end table
+
+
+@unnumberedsubsec Use of the @i{width} and @i{scalef} fields.
+
+A width unit is the width of the thinnest bar and/or space in the
+chosen code; it defaults to 1 point if the output is postscript or
+encapsulated postscript.
+
+Either or both the code width and the scale factor can be left
+unspecified (i.e., zero). The library deals with defaults in the
+following way:
+
+@table @i
+
+@item Both unspecified
+
+	If both the width and the scale factor are unspecified, the
+	scale factor will default to 1.0 and the width is calculated
+	according to the actual width of the bar code being printed.
+
+@item Width unspecified
+
+	If the width is not specified, it is calculated according to
+	the values of @i{scalef}. 
+
+@item Scale factor unspecified
+
+	If the scale factor is not specified, it will be chosen so
+	that the generated bar code exactly fits the specified width.
+
+@item Both specified
+
+	The code will be printed inside the specified region according
+	to the specified scale factor. It will be aligned to the left.
+	If, however, the chosen width is too small for the specific
+	bar code and scaling factor, then the code will extend
+	symmetrically to the left and to the right of the chosen
+	region.
+
+@end table
+
+%==========================================================================
+
+@node Supported Flags, The API, The Barcode Object, Top
+@chapter The Flags
+
+The following flags are supported by version @value{version} of the
+library:
+
+@table @code
+
+@item BARCODE_ENCODING_MASK
+
+	The mask is used to extract the encoding-type identifier from
+	the @i{flags} field.
+
+@item BARCODE_EAN
+@itemx BARCODE_UPC
+@itemx BARCODE_ISBN
+@itemx BARCODE_39
+
+	The currently supported encoding types: EAN13, UPC-A, ISBN
+	(which gets converted to its EAN representation) and CODE39.
+
+@item BARCODE_ANY
+
+	This special encoding type (represented by a value of zero, so
+	it will be the default) tells the encoding procedure to look
+	for the first enconding type that can deal with a textual
+	string.  Therefore, a 12-digit code will be printed as UPC, a
+	13-digit as EAN13, an ISBN code (with ot without hiphens) will
+	be encoded in its EAN13 representation and a text-and-digits
+	string will be encoded using code-39.
+
+@item BARCODE_NO_ASCII
+
+	Instructs the engine not to print the ascii string on
+	output. By default the bar code is accompanied with an ascii
+	version of the text it encodes.
+
+@item BARCODE_NO_CHECKSUM
+
+	Instructs the engine not to add the checksum character to the
+	output. Not all the encoding types can drop the checksum;
+	those where the checksum is mandatory (like EAN13 and UPC)
+	just ignore the flag.
+
+@item BARCODE_OUTPUT_MASK
+
+	The mask is used to extract the output-type identifier from
+	the @i{flags} field.
+
+@item BARCODE_OUT_PS
+@itemx BARCODE_OUT_EPS
+
+	The currently supported encoding types: full-page postscript
+	and encapsulated postscript.
+
+@item BARCODE_OUT_NOHEADERS
+
+	The flag instructs the printing engine not to print the header
+	and footer part of the file. This makes sense for the
+	postscript engine but might not make sense for other engines;
+	such other engines will silently ignore the flag.
+
+@item BARCODE_OUT_PG_A4
+@itemx BARCODE_OUT_PG_LETTER
+
+	Currently unused.
+
+@end table
+
+%##########################################################################
+
+@node  The API, The barcode Executable, Supported Flags, Top
+@chapter Funcntions Exported by the Library
+
+%MANPAGE barcode.3 "Prosa Srl"
+%M .TH BARCODE 3 "June 1999"
+%M .UC 4
+%M .SH NAME
+%M barcode \- a library to create and print bar codes
+%M .SH SYNOPSIS
+%M .B #include <barcode.h>
+%M .sp
+%M .BI "struct Barcode_Item *Barcode_Create(char *" text ");"
+%M .br
+%M .BI "int Barcode_Delete(struct Barcode_Item *" bc ");"
+%M .br
+%M .BI "int Barcode_Encode(struct Barcode_Item *" bc ", int " flags ");"
+%M .br
+%M .BI "int Barcode_Print(struct Barcode_Item *" bc ", FILE *" f ", int " flags ");"
+%M .br
+%M .BI "int Barcode_Position(struct Barcode_Item *" bc ", int " wid ", int " hei ", int " xoff ", int " yoff " , double " scalef ");"
+%M .br
+%M .BI "int Barcode_Encode_and_Print(char *" text ", FILE *" f ", int " wid ", int " hei ", int " xoff ", int " yoff ", double " scalef ", int " flags ");"
+%M .br
+%M .BI "int Barcode_Version(char *" versionname ");"
+%M
+%M .SH DESCRIPTION
+%M
+%M The barcode family of library functions is meant to ease
+%M creation of bar-code printouts.
+%M
+%M The information below is extracted from the texinfo file, which is the
+%M preferred source of information.
+
+The functions included in the barcode library are declared in the
+header file @t{barcode.h}.  They perform the following tasks:
+
+@table @code
+
+@item struct Barcode_Item *Barcode_Create(char *text);
+	The function creates a new barcode object to deal with a
+	specified text string.  It returns NULL in case of failure and
+	a pointer to a barcode data structure in case of success.
+
+@item int Barcode_Delete(struct Barcode_Item *bc);
+	Destroy a barcode object. Always returns 0 (success)
+
+@item int Barcode_Encode(struct Barcode_Item *bc, int flags);
+	Encode the text included in the @i{bc} object. Valid flags are
+	the encoding type (other flags are ignored) and
+	BARCODE_NO_CHECKSUM (other flags are silently ignored); if the
+	flag argument is zero, @t{bc->flags} will apply. The function
+	returns 0 on success and -1 in case of error. After
+	successfull termination the data structure will host the
+	description of the bar code and its textual representation,
+	after a failure the @t{error} field will include the reason of
+	the failure.
+
+@item int Barcode_Print(struct Barcode_Item *bc, FILE *f, int flags);
+	Print the bar code described by @t{bc} to the specified file.
+	Valid flags are the output type, @t{BARCODE_NO_ASCII} and
+	@t{BARCODE_OUT_NOHEADERS}, other flags are ignored. If any of
+	these flags is zero, it will be inherited from @t{bc->flags}
+	which therefore takes precedence. The function returns 0 on
+	success and -1 in case of error (with @t{bc->error} set
+	accordingly). In case of success, the bar code is printed to
+	the specified file, which won't be closed after use.
+
+@item int Barcode_Position(struct Barcode_Item *bc, int wid, int hei, int xoff, int yoff, double scalef);
+	The function is a shortcut to assign values to the data
+	structure.
+
+@item int Barcode_Encode_and_Print(char *text, FILE *f, int wid, int hei, int xoff, int yoff, double scalef, int flags);
+	The function deals with the whole life of the barcode
+	object by calling the other functions; it uses all the spefified
+	flags.
+
+@item int Barcode_Version(char *versionname);
+	Returns the current version as an integer number of the form
+	major * 10000 + minor * 100 + release. Therefore, version
+	1.03.5 will be returned as 10305 and version 0.53 as 5300.  If
+        the argument is non-null, it will be used to return the version
+        number as a string. Note that the same information is available from
+        two preprocessor macros: @t{BARCODE_VERSION} (the string) and
+        @t{BARCODE_VERSION_INT} (the integer number).
+
+@end table
+
+%MANPAGE END
+
+%##########################################################################
+
+@node  The barcode Executable,  , The API, Top
+@chapter The @i{barcode} frontend program
+
+%MANPAGE barcode.1 "Prosa Srl"
+%M .TH BARCODE 1 "June 1999"
+%M .UC 4
+%M .SH NAME
+%M barcode \- a standalone program to run the barcode library
+%M .SH SYNOPSIS
+%M .B barcode
+%M [\-b - | string] [\-e encoding] [\-o - | outfile] [\-w N]
+%M [\-h N] [\-x N] [\-y N] [\-l N] [\-c N]
+%M .SH DESCRIPTION
+%M
+%M The information below is extracted from the texinfo file, which is the
+%M preferred source of information.
+%M .PP
+The @b{barcode} program is a front-end to access some features of the
+library from the command line.  It is able to read user supplied
+strings from the commandline or a data file (standard input by default)
+and encode all of them.
+
+%M .SS OPTIONS
+%M .PP
+@b{barcode} accepts the following options:
+
+@table @code
+
+@item -h
+@itemx --help
+	Print a usage summary and exit.
+
+@item -i filename
+	Specifies a file where strings to be encoded are read from. If
+	missing (and if @t{-b} is not used) it defaults to standard
+	input. Each data line of the input file will be used to create
+	one barcode output.
+
+@item -o filename
+	Output file. It defaults to standard output.
+
+@item -b string
+	Specifies a single ``barcode'' string to be encoded.
+        The option can be used multiple times in order to encode
+        multiple strings (this will result in multi-page postscript
+        output or a table of barcodes if @t{-t} is specified).  The
+        strings must match the encoding chosen with @t{-e} and no
+	error is printed if they don't match (this may be construed as
+	a bug).
+
+@item -e encoding
+        @b{enconding} is the name of the chosen encoding format being
+	used. It defaults to the value of the environment variable
+	@t{BARCODE_ENCODING} or to autodetection if the environment is
+	also unset.
+
+@item -g geometry
+	The geometry argument is of the form
+	``width@t{x}height@t{+}xmargin@t{+}ymargin'' (the
+	margin values are optional). The specified values must be
+	integer numbers and they reperesent print points (I plan to
+	add support for different units, like inches and millimeters,
+	but this is currently not supported). The argument is used to
+	place the printoutcode on the page. Note that an additional
+	white margin of 10 points is added to the printout. If the
+        option is unspecified, @t{BARCODE_GEOMETRY} is looked up in the
+        environment, if missing a default size and no margin (but the
+        default  10 points) are used.
+
+@item -t table-geometry
+	Used to print several barcodes to a single page, this option
+        is meant to be used to print stickers. The argument is of the
+        form ``columns@t{x}lines@t{+}xmargin@t{+}ymargin''. The two
+        margin values are applied symmetrically to the page and the
+        page is currently assumed to be A4 format (this @i{is} a bug,
+        and I plan to fix it). If the option is not specified,
+        @t{BARCODE_TABLE} is looked up in the environment, otherwise
+        no table is printed.
+
+@item -m margin(s)
+	Specify an internal margin for each sticker in the table. The
+	argument is of the form ``xmargin@t{,}ymargin'' and the margin
+	is applied symmetrically to the sticker. If unspecified, the
+        environment variable @t{BARCODE_MARGIN} is used or a default
+        internal margin of 10 points is used.
+
+@item -n
+	``Numeric'' output: don't print the ASCII form of the code,
+	only the bars.
+
+@item -c
+	No checksum character (for encodings that allow it, like code 39,
+	other codes, like UPC or EAN, ignore this option).
+
+@item -E
+	Encapsulated postscript (default is normal postscript. When
+	the output is generated a EPS only one text string is encoded.
+
+@end table
+
+%M .SH BUGS
+
+@unnumberedsec Bugs and pending issues.
+
+The current management of borders/margins is far from optimal. The
+``default'' margin applied by the library interferes with the external
+rapresentation, but I feel it is mandatory to avoid creating barcode
+output with no surrounding white space (the problem is especially
+relevant for EPS output).
+
+There is no support for page sizes different from A4, and no page size
+support at all in the library.
+
+There are no diagnostic messages for unencodable text strings.
+
+Code-128 should be supported
+
+%M .SH "SEE ALSO"
+%M \fBbarcode(3)\f
+%M
+%M .SH AUTHORS
+%M Michele Comitini, Glisco s.a.s.
+%M .br
+%M mcm@glisco.it
+%M .PP
+%M Alessandro Rubini, Prosa s.r.l.
+%M .br
+%M rubini@prosa.it
+%M .PP
+%MANPAGE END
+
+@iftex
+@unnumbered Table of Contents
+@contents
+@end iftex
+
+@bye
