@@ -378,7 +378,7 @@ int Barcode_ean_encode(struct Barcode_Item *bc)
 		checksum = atoi(text)%4;
 		mirror = upc_mirrortab2[checksum];
 	    }
-	    /* FIXME: in the add-on the text should on top */
+	    strcat(textinfo, " +"); strcat(partial, "+");
 	    tptr = textinfo + strlen(textinfo);
 	    for (i=0; i<strlen(text); i++) {
 		if (!i) {
