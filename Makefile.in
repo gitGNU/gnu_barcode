@@ -80,20 +80,19 @@ uninstall:
 	$(RM) -f $(MAN3DIR)/$(MAN3)
 	$(RM) -f $(INDODIR)/$(INFO)
 
-mostlyclean:
+#Make clean keeps the compiled documents
+clean:
 	$(RM) -f *.o */*.o *~ */*~ $(TARGET) $(LIBRARY)
 	$(RM) -f  $(MAN1) $(MAN3) core sample
 	cd doc && $(MAKE) terse
 	$(RM) -f .depend
 
-clean: mostlyclean
-	# remove the documents, too
-	cd doc && $(MAKE) clean
-
-distclean: mostlyclean
+distclean: clean
 	if [ -f build ]; then debian/rules clean; fi
+	cd doc && $(MAKE) clean
 	# remove the configure stuff as well
-	$(RM) -f Makefile config.h config.log config.status config.cache
+	$(RM) -f Makefile config.h config.log config.status config.cache \
+		doc/Makefile
 
 
 Makefile: Makefile.in configure
