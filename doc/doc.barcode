@@ -269,14 +269,14 @@ equivalent to '1', 'b' is '2' and so on up to 'i' which is equivalent to
 '9'. Other letters will be used for encoding-specific meanings, as soon
 as I implement them.
 
-The @t{extinfo} string is made up of fields @t{%lf:%lf:%c} separated by
+The @t{textinfo} string is made up of fields @t{%lf:%lf:%c} separated by
 blank space. The first integer is the x position of the character,
 the second is the font size (before rescaling) and the char item is
 the character to be printed.
 
 Both the @t{partial} and @t{textinfo} strings may include ``@t{-}'' or
 ``@t{+}'' as special characters (in @t{textinfo} the char should be a
-standalone word).  They state where the text should be printed: below
+stand-alone word).  They state where the text should be printed: below
 the bars (``@t{-}'', default) or above the bars. This is used, for
 example, to print the add-5 and add-2 codes to the right of UPC or EAN
 codes (the add-5 extension is mostly used in ISBN codes).
@@ -314,9 +314,9 @@ library:
 @itemx BARCODE_93
 
 	The currently supported encoding types: EAN (13 digits, 8
-	digits, 13 + 2 addon and 13 + 5 addon), UPC (UPC-A, UPC-E,
-	UPC-A with 2 or 5 digit addon), ISBN (with or without the
-	5-digit addon), CODE128-B (the whole set of printable
+	digits, 13 + 2 add-on and 13 + 5 add-on), UPC (UPC-A, UPC-E,
+	UPC-A with 2 or 5 digit add-on), ISBN (with or without the
+	5-digit add-on), CODE128-B (the whole set of printable
         ASCII characters), CODE128-C (two digits encoded by each barcode
 	symbol), CODE128 (all ASCII values), a ``raw-input'' pseudo-code
 	that generates CODE128 output, CODE39 (alphanumeric),
@@ -373,7 +373,7 @@ library:
 	and footer part of the file. This makes sense for the
 	postscript engine but might not make sense for other engines;
 	such other engines will silently ignore the flag just like
-        the PCL backend does.
+        the PCL back-end does.
 
 @end table
 
@@ -644,7 +644,7 @@ the library uses when auto-detecting a suitable encoding for a string.
 	The EAN frontend is similar to UPC; it accepts strings of
 	digits, 12 or 7 characters long. Strings of 13 or 8 characters
         are accepted if the provided checksum digit is correct.
-        I expect most users to feed input without a precalculated
+        I expect most users to feed input without a 
         checksum, though. The add-2 and add-5 extension are accepted for both
         the EAN-13 and the EAN-8 encodings.
         The following are example of valid input strings:
@@ -677,7 +677,7 @@ the library uses when auto-detecting a suitable encoding for a string.
 	(UPC-E), ``@t{01234567890 12}'' (UPC-A, add-2) and
 	``@t{01234567890 12345}'' (UPC-A, add-5), ``@t{0123456 12}''
         (UPC-E, add-2).
-        Please note that when setting @t{BARCODE_ANY} to autodetect
+        Please note that when setting @t{BARCODE_ANY} to auto-detect
         the encoding to be used, 12-digit strings and 7-digit strings
         will always be identified as EAN. This because I expect most
         user to provide input without a checksum. If you need to
@@ -759,7 +759,7 @@ the library uses when auto-detecting a suitable encoding for a string.
         Since the shell doesn't seem to interpret escape sequences on the
         command line, the "-b" option cannot be easily used to designate
         the strings to be encoded. As a workaround you can resort
-        to the command @t{echo}, either within backticks or used
+        to the command @t{echo}, either within back-ticks or used
         separately to create a file that is then fed to the standard-input
         of @i{barcode} -- assuming your @t{echo} command processes escape
         sequences.  The newline character is especially though to encode
@@ -824,7 +824,7 @@ the library uses when auto-detecting a suitable encoding for a string.
 @chapter PCL Output
 
 While the default output is Postscript (possibly EPS), and Postscript
-can be postprocessed to almost anything, it is sometimes desirable to
+can be post-processed to almost anything, it is sometimes desirable to
 create output directly usable by the specific printer at hand. 
 PCL is currently supported as an output format for this reason.
 Please note that the Y coordinate for PCL goes from top to bottom, while
@@ -832,7 +832,7 @@ for Postscript it goes from bottom to top. Consistently, while in
 Postscript you specify the bottom-left corner as origin, for PCL
 you specify the top-left corner.
 
-Barcode output for PCL Printers (HP LaseJet and compatibles),
+Barcode output for PCL Printers (HP LaserJet and compatibles),
 was developed using PCL5 Reference manuals from HP.
 that really refers to these printers:
 @itemize @bullet
@@ -853,7 +853,7 @@ LaserJet 6 family
 Color LaserJet
 
 @item
-Deskjet 1200 and 1600.
+DeskJet 1200 and 1600.
 
 @end itemize
 
@@ -865,7 +865,7 @@ The only real difference from one printer to another really depends on
 which font are available in the printer, used in printing the label
 associated to the bars (if requested).
 
-Earlier Laserjet supports only bitmaps fonts, so these are not
+Earlier LaserJet supports only bitmaps fonts, so these are not
 "scalable". (Ljet II ?), Also these fonts, when available, have a
 specified direction, and not all of them are available in
 both Portrait and Landscape mode.
@@ -896,7 +896,7 @@ Epson N-1200 emul PCL
 @item
 Toshiba DP2570 (copier) + PCL option
 @item
-Epson EPL-7100 emul. HP Laserjet II: bars print fine but text is bad.
+Epson EPL-7100 emul. HP LaserJet II: bars print fine but text is bad.
 @end itemize
 
 
@@ -931,3 +931,9 @@ then bless the package as version 1.0.
 @end iftex
 
 @bye
+@c  LocalWords:  barcode ifinfo titlepage iftex texinfo ascii frontend LGPL
+@c  LocalWords:  tarball malloced textinfo scalef isbn Plessey codabar GPL Ljet
+@c  LocalWords:  LocalWords LaserJet Univers Arial Debian libpaper pagesize
+@c  LocalWords:  Epson MANPAGE stderr barcodes emul DeskJet xmargin ymargin
+@c  LocalWords:  leftmargin rightmargin topmargin bottommargin unset struct
+@c  LocalWords:  NOHEADERS yoff xoff versionname errno malloc behaviour charset
