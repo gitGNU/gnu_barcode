@@ -19,11 +19,11 @@ int main(int argc, char **argv)
                       BARCODE_EAN | BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS);
 
     /* smaller */
-    Barcode_Encode_and_Print("800894002700",stdout, 70, 70, 160, 55, 
+    Barcode_Encode_and_Print("800894002700",stdout, 70, 50, 160, 55, 
                       BARCODE_EAN | BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS);
 
-    /* smallest, bottom right */
-    Barcode_Encode_and_Print("800894002700",stdout, 40, 40, 270, 70, 
+    /* smallest */
+    Barcode_Encode_and_Print("800894002700",stdout, 40, 30, 270, 70, 
                       BARCODE_EAN | BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS);
 
     /* A bigger all-0 */
@@ -37,7 +37,7 @@ int main(int argc, char **argv)
     /* A few code-39 ones */
     Barcode_Encode_and_Print("prosa srl",stdout, 0, 0, 40, 350, 
                       BARCODE_39 | BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS);
-    Barcode_Encode_and_Print("SAMPLE CODES",stdout, 60, 30, 400, 100, 
+    Barcode_Encode_and_Print("SAMPLE CODES",stdout, 100, 30, 400, 80, 
                       BARCODE_39 | BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS);
 
     /* ISBN with add-5 */
@@ -45,8 +45,18 @@ int main(int argc, char **argv)
                       BARCODE_ISBN | BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS);
 
     /* UPC with add-2 */
-    Barcode_Encode_and_Print("07447084452 07",stdout, 0, 0, 300, 450, 
+    Barcode_Encode_and_Print("07447084452 07",stdout, 0, 0, 300, 430, 
                       BARCODE_UPC | BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS);
+
+    /* code 128-C */
+    Barcode_Encode_and_Print("12345678900123456789",stdout, 0, 0, 40, 620, 
+                      BARCODE_128C | BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS);
+
+    /* and my data as code-39 autodetected */
+    Barcode_Encode_and_Print("RBNLSN68T11E897W",stdout, 250, 60, 240, 550, 
+                BARCODE_NO_CHECKSUM | BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS);
+    Barcode_Encode_and_Print("RBNGRG98T09G388X",stdout, 250, 60, 240, 630, 
+                BARCODE_NO_CHECKSUM | BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS);
 
 
     printf("\nshowpage\n");
