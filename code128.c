@@ -135,6 +135,7 @@ int Barcode_128c_encode(struct Barcode_Item *bc)
 
     strcpy(partial, "0"); /* the first space */
     strcat(partial, codeset[START_C]);
+    checksum += START_C; /* the start char is counted in the checksum */
     textptr = textinfo;
     textpos = SYMBOL_WID;
 
