@@ -23,7 +23,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <unistd.h>
+#ifdef HAVE_UNISTD_H /* sometimes (windows, for instance) it's missing */
+#  include <unistd.h>
+#endif
 #include <errno.h>
 
 #include "barcode.h"
