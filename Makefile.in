@@ -39,6 +39,9 @@ $(TARGET): $(LIBRARY) $(EXEOBJECTS)
 sample: sample.o $(LIBRARY)
 	$(CC) $(CFLAGS) sample.o $(LDFLAGS) -o $@ 
 
+# Avoid the standard CFLAGS, to avoid -Wall and -DNO_GETOPT
+compat/getopt.o: compat/getopt.c
+	$(CC) -O -c $^ -o $@
 
 $(LIBRARY): $(LIBOBJECTS)
 	$(AR) r $(LIBRARY) $(LIBOBJECTS)
@@ -48,7 +51,7 @@ $(MAN1) $(MAN3): doc/doc.$(TARGET)
 	gawk -f doc/manpager $^
 
 
-$(INFO):
+$(INFO): doc/doc.$(TARGET)
 	$(MAKE) -C doc
 
 install:
