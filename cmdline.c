@@ -1,7 +1,7 @@
 /*
  * cmdline.c -- parse a command line using getopt, environment and defaults
  *
- * Copyright (c) 1999 Alessandro Rubini (rubini@prosa.it)
+ * Copyright (c) 1999 Alessandro Rubini (rubini@gnu.org)
  * Copyright (c) 1999 Prosa Srl. (prosa@prosa.it)
  * 
  *   This program is free software; you can redistribute it and/or modify
