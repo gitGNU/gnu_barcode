@@ -31,7 +31,7 @@
 
 @setchapternewpage off
 
-@set version 0.91
+@set version 0.91.1
 @set update-month July 1999
 
 @finalout
@@ -261,12 +261,14 @@ library:
 @item BARCODE_EAN
 @itemx BARCODE_UPC
 @itemx BARCODE_ISBN
+@itemx BARCODE_128C
 @itemx BARCODE_39
 
 	The currently supported encoding types: EAN (13 digits, 8
-        digits, 13 + 2 addon and 13 + 5 addon), UPC (UPC-A, UPC-E,
-        UPC-A with 2 or 5 digit addon), ISBN (with or without the
-        5-digit addon) and CODE39. @xref{Supported Encodings}
+	digits, 13 + 2 addon and 13 + 5 addon), UPC (UPC-A, UPC-E,
+	UPC-A with 2 or 5 digit addon), ISBN (with or without the
+	5-digit addon), CODE128-C (two digits encoded by each barcode
+	symbol) and CODE39 (alphanumeric). @xref{Supported Encodings}
 
 @item BARCODE_ANY
 
@@ -277,7 +279,8 @@ library:
 	well as 6-digit, 11+2 and 11+5), a 12-digit (or 7-digit, or
 	12+2 or 12+5) as EAN13, an ISBN code (with ot without hiphens,
 	with or without add-5) will be encoded in its EAN13
-	representation and a text-and-digits string will be encoded
+	representation, an even number of digits is encoded using
+	CODE128 and a text-and-digits string will be encoded
 	using code-39.
 
 @item BARCODE_NO_ASCII
@@ -575,6 +578,20 @@ the encoding types are scanned to find one that can digest the text string.
 	``@t{1-56592-292-1}'', ``3-89721-122-X'' and ``3-89721-122-X
 	06900''.
 
+@item code 128-C
+
+	The ``C'' variation of Code-128 uses Code-128 symbols to
+	represent two digits at a time (Code-128 is made up of 104
+	symbols whose interpretation is controlled by the start symbol
+	being used). Code 128-C is thus the most compact way to
+	represent any even number of digits. The encoder refuses to
+	deal with an odd number of digits because the caller is
+	expected to provide proper padding to an even number of
+	digits. (Since Code-128 includes control symbols to swich
+	charset, it is theoretically possible to represent the odd
+	digit as a Code 128-A or 128-B symbol, but this tool doesn't
+	currntly implement this option).
+
 @item code 39
 
 	The code-39 standard can encode uppercase letters, digits, the
@@ -598,20 +615,15 @@ rapresentation, but I feel it is mandatory to avoid creating barcode
 output with no surrounding white space (the problem is especially
 relevant for EPS output).
 
-Code-128 should be supported
+Code128-A and Code128-B should be supported
 
 %M .SH "SEE ALSO"
 %M \fBbarcode(3)\f
 %M
 %M .SH AUTHORS
-%M Michele Comitini, Glisco s.a.s.
-%M .br
-%M mcm@glisco.it
+%M Alessandro Rubini, Prosa s.r.l <rubini@prosa.it> (maintainer)
 %M .PP
-%M Alessandro Rubini, Prosa s.r.l.
-%M .br
-%M rubini@prosa.it
-%M .PP
+%M Michele Comitini, Glisco s.a.s. <mcm@glisco.it> (several contributions)
 %MANPAGE END
 
 @iftex
