@@ -1,6 +1,12 @@
-2000-11-08  Alessandro Rubini  <rubini@morgana.systemy.it>
+2000-11-09  Alessandro Rubini  <rubini@morgana.systemy.it>
 
-	====> Version 0.96 released to ftp.prosa.it and ftp.gnu.org
+	====> Version 0.96 released to ftp.systemy.it and ftp.gnu.org
+
+	* doc/Makefile.in ($(TARGET).html): fixed bug introduced on Sep 08
+
+	* doc/doc.barcode (top): correctly deal with "makeinfo --html"
+
+2000-11-08  Alessandro Rubini  <rubini@morgana.systemy.it>
 
 	* README: new network pointers added
 
