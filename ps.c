@@ -111,17 +111,29 @@ int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
     /* The height defaults to 80 points (rescaled) */
     if (!bc->height) bc->height = 80 * scalef;
 
+#if 0 
     /* If too small (20 + text), enlarge and center */
-    i = 20 + 20 * ((bc->flags & BARCODE_NO_ASCII)==0);
+    i = 20 + 10 * ((bc->flags & BARCODE_NO_ASCII)==0);
     if (bc->height < i * scalef ) {
-	int hei = i * scalef;
-        bc->yoff -= hei/2;
+        int hei = i * scalef;
+        bc->yoff -= (hei-bc->height)/2;
         bc->height = hei;
         if (bc->yoff < 0) {
             bc->height += -bc->yoff;
             bc->yoff = 0;
         }
     }
+#else 
+    /* If too small (20 + text), reduce the scale factor and center */
+    i = 20 + 10 * ((bc->flags & BARCODE_NO_ASCII)==0);
+    if (bc->height < i * scalef ) {
+        double scaleg = ((double)bc->height) / i;
+        int wid = bc->width * scaleg / scalef;
+        bc->xoff += (bc->width - wid)/2;
+        bc->width = wid;
+        scalef = scaleg;
+    }
+#endif
 
     /*
      * Ok, then deal with actual ps (eps) output
