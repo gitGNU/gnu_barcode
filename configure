@@ -1084,7 +1084,7 @@ echo "configure:1084: checking "for gmake"" >&5
 GMAKE=no
 ${MAKE=make} --version 2> /dev/null | grep GNU > /dev/null && GMAKE=yes
 echo "$ac_t""$GMAKE" 1>&6
-if test $GMAKE = yes; then
+if test "$GMAKE" = "yes"; then
 	GMAKEDEPEND0='ifeq (.depend,$(wildcard .depend))'
 	GMAKEDEPEND1='include .depend'
 	GMAKEDEPEND2='endif'
@@ -1095,15 +1095,13 @@ echo "configure:1095: checking "if makeinfo can output html"" >&5
 MAKEINFOHTML=no
 ${MAKEINFO=makeinfo} --help | grep .--html > /dev/null && MAKEINFOHTML=yes
 echo "$ac_t""$MAKEINFOHTML" 1>&6
-if test $MAKEINFOHTML = yes; then
+if test "$MAKEINFOHTML" = "yes"; then
    REMOVEHTMLTAGS="cat"
    INFOTOHTML="$MAKEINFO --html"
 else
    REMOVEHTMLTAGS="sed 's/ifnottex/ifinfo/; s/ifnotinfo/iftex/'"
    INFOTOHTML="perl texi2html -monolithic"
 fi
-
-
 
 
 
@@ -1271,8 +1269,6 @@ s%@NO_STRERROR@%$NO_STRERROR%g
 s%@GMAKEDEPEND0@%$GMAKEDEPEND0%g
 s%@GMAKEDEPEND1@%$GMAKEDEPEND1%g
 s%@GMAKEDEPEND2@%$GMAKEDEPEND2%g
-s%@REMOVEHTMLTAGS@%$REMOVEHTMLTAGS%g
-s%@INFOTOHTML@%$INFOTOHTML%g
 
 CEOF
 EOF
@@ -1384,6 +1380,11 @@ EOF
 chmod +x $CONFIG_STATUS
 rm -fr confdefs* $ac_clean_files
 test "$no_create" = yes || ${CONFIG_SHELL-/bin/sh} $CONFIG_STATUS || exit 1
+
+
+
+
+
 
 trap '' 1 2 15
 cat > confcache <<\EOF
@@ -1507,6 +1508,9 @@ sed 's/%@/@@/; s/@%/@@/; s/%g\$/@g/; /@g\$/s/[\\\\&%]/\\\\&/g;
  s/@@/%@/; s/@@/@%/; s/@g\$/%g/' > conftest.subs <<\\CEOF
 $ac_vpsub
 $extrasub
+s%@MAKEINFO@%$MAKEINFO%g
+s%@REMOVEHTMLTAGS@%$REMOVEHTMLTAGS%g
+s%@INFOTOHTML@%$INFOTOHTML%g
 
 CEOF
 EOF
