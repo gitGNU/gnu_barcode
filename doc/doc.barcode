@@ -31,7 +31,7 @@
 
 @setchapternewpage off
 
-@set version 0.91.2
+@set version 0.91.3
 @set update-month August 1999
 
 @finalout
@@ -261,14 +261,18 @@ library:
 @item BARCODE_EAN
 @itemx BARCODE_UPC
 @itemx BARCODE_ISBN
+@itemx BARCODE_128B
 @itemx BARCODE_128C
 @itemx BARCODE_39
+@itemx BARCODE_I25
 
 	The currently supported encoding types: EAN (13 digits, 8
 	digits, 13 + 2 addon and 13 + 5 addon), UPC (UPC-A, UPC-E,
 	UPC-A with 2 or 5 digit addon), ISBN (with or without the
-	5-digit addon), CODE128-C (two digits encoded by each barcode
-	symbol) and CODE39 (alphanumeric). @xref{Supported Encodings}
+	5-digit addon), CODE128-B (the whole set of printable
+        ASCII characters), CODE128-C (two digits encoded by each barcode
+	symbol), CODE39 (alphanumeric) and "interleaved 2 of 5" (numeric).
+        @xref{Supported Encodings}
 
 @item BARCODE_ANY
 
@@ -280,8 +284,10 @@ library:
 	12+2 or 12+5) as EAN13, an ISBN code (with ot without hiphens,
 	with or without add-5) will be encoded in its EAN13
 	representation, an even number of digits is encoded using
-	CODE128 and a text-and-digits string will be encoded
-	using code-39.
+	CODE128C and a generic string is encoded using CODE128B. Since
+        code-39 offers a much larger representation for the same
+        text string, code128-b is preferred over code39 for
+        alphanumeric strings.
 
 @item BARCODE_NO_ASCII
 
@@ -313,7 +319,6 @@ library:
 	and footer part of the file. This makes sense for the
 	postscript engine but might not make sense for other engines;
 	such other engines will silently ignore the flag.
-
 
 @end table
 
@@ -578,6 +583,12 @@ the encoding types are scanned to find one that can digest the text string.
 	``@t{1-56592-292-1}'', ``3-89721-122-X'' and ``3-89721-122-X
 	06900''.
 
+@item code 128-B
+
+	This encoding can represent all of the printing ASCII
+        characters, from the space (32) to DEL (127). The checksum
+        digit is mandatory in this encoding.
+
 @item code 128-C
 
 	The ``C'' variation of Code-128 uses Code-128 symbols to
@@ -590,7 +601,7 @@ the encoding types are scanned to find one that can digest the text string.
 	digits. (Since Code-128 includes control symbols to swich
 	charset, it is theoretically possible to represent the odd
 	digit as a Code 128-A or 128-B symbol, but this tool doesn't
-	currntly implement this option).
+	currently implement this option).
 
 @item code 39
 
@@ -601,6 +612,18 @@ the encoding types are scanned to find one that can digest the text string.
 	the encoder refuses to encode mixed-case strings (a lowercase
 	string is nonetheless accepted as a shortcut, but is encoded
 	as uppercase).
+
+@item interleaved 2 of 5
+
+	This encoding can only represent an even number of digits
+        (odd digits are represented by bars, and even digits by the
+        interleaving spaces). The name stresses the fact that two
+        of the five items (bars or spaces) allocated to each symbol
+        are wide, while the rest are narrow. The checksum digit is
+        optional (can be disabled via @t{BARCODE_NO_CHECKSUM}).
+        Since the number of digits, including the checksum, must be even,
+        a leading zero is inserted in the string being encoded if needed
+        (this is specifically stated in the specs I have access to).
 
 @end table
 
@@ -615,7 +638,7 @@ rapresentation, but I feel it is mandatory to avoid creating barcode
 output with no surrounding white space (the problem is especially
 relevant for EPS output).
 
-Code128-A and Code128-B should be supported
+Code128-A should be supported.
 
 %M .SH "SEE ALSO"
 %M \fBbarcode(3)\f
