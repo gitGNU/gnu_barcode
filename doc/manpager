@@ -1,0 +1,105 @@
+#! /usr/bin/gawk -f
+
+# Warning: this uses gnu-awk features
+
+BEGIN {IN=0}
+
+/^%MANPAGE END/ {IN=0; next}
+/^%MANPAGE/     {IN=1; USELP=NEEDLP=INTABLE=0; NAME=$2; next}
+IN==0           {next}
+
+/^%MSKIP/	{SKIP=1;next}
+/^%M/		{SKIP=0}
+
+/^@menu/        {SKIP=1;next}
+/^@end menu/    {SKIP=0;next}
+
+SKIP==1         {next}
+/^%M$/		{next}
+/^@ignore/	{next}
+/^@end ign/     {next}
+
+#now perform all the substitutions needed
+
+	        { gsub("^%M ?",""); }
+
+# itz Wed Sep 30 10:28:58 PDT 1998
+/@b\{/ {
+  $0 = gensub(/@b\{([^}]+)\}/, "\\\\fB\\1\\\\fP","g");
+} 
+
+/@(samp|code|file)\{/ {
+  $0 = gensub(/@(samp|code|file)\{([^}]+)\}/, "`\\2'","g");
+}
+
+/@var\{/ {
+  $0 = gensub(/@var\{([^}]+)\}/, "\\\\fI\\1\\\\fP","g");
+} 
+
+/@xref\{.*\}\./ {
+  gsub(/@xref\{.*\}\./,"");
+}
+
+/@ref\{.*\}/ {
+  gsub("@ref\{","");
+  gsub("\}","");
+}
+
+/@\*/ {
+  gsub(/@\* */,"\n.br\n");
+}
+
+/@[a-z]+\{/      {
+                gsub("@[a-z]+\\{","");
+		gsub("}","");
+		}
+
+/^@table/       { TABLE=1; }
+
+/^@item/        {
+	        gsub("^@item *","");
+		printf ".TP\n%s\n",$0 > NAME;
+		NEEDLP=0; next;
+		}
+
+/^@end table/   {TABLE=0}
+
+# discard other texinfo commands
+
+/^@/		{next}
+
+# manage comments and '%'
+
+/^%/		{next}
+
+
+		{
+		gsub("[^\\\\]%.*$","");
+		gsub("\\%","%");
+		}
+
+# remove leading blanks
+
+/^[ \t]/	{gsub("^[ \t]*","");}
+
+# put a .LP at blank lines
+
+/^.nf/          {USELP=0}
+/^.fi/          {USELP=1}
+
+/^$/	        {if (USELP) {NEEDLP++; next;} }
+
+
+/./	        { if (NEEDLP) { printf "\n.LP\n" > NAME; NEEDLP=0; } }
+
+/^.TH/	        {USELP=1}
+
+# Escape single slashes (e.g. in documentation for `-l' command line option)
+
+		{gsub("\\\\ ", "\\\\ ");}
+
+                {gsub("~", "~~");}
+
+	        {print > NAME}
+
+
