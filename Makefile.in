@@ -1,5 +1,5 @@
 #
-# This Makefile uses gmake features, by now
+# This Makefile should run fine with both pmake and gmake
 #
 
 CC = @CC@
