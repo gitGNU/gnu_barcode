@@ -24,8 +24,8 @@
 
 #include <stdio.h>
 
-#define BARCODE_VERSION     "0.91.2" 
-#define BARCODE_VERSION_INT   9102
+#define BARCODE_VERSION     "0.91.3" 
+#define BARCODE_VERSION_INT   9103
 
 /*
  * The object
@@ -64,7 +64,9 @@ enum {
     BARCODE_ISBN,       /* isbn numbers (still EAN13) */
     BARCODE_39,         /* code 39 */
     BARCODE_128,        /* code 128 (a,b) */
-    BARCODE_128C        /* code 128 (compact form for digits) */
+    BARCODE_128C,       /* code 128 (compact form for digits) */
+    BARCODE_128B,       /* code 128, full printable ascii */
+    BARCODE_I25         /* interleaved 2 of 5 (only digits) */
 };
 
 #define BARCODE_DEFAULT_MARGIN 10
