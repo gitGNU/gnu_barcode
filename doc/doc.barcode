@@ -31,8 +31,8 @@
 
 @setchapternewpage off
 
-@set version 0.95.1
-@set update-month May 2000
+@set version 0.96
+@set update-month November 2000
 
 @finalout
 
@@ -69,6 +69,8 @@ library and sample programs (@value{update-month}).
 * Supported Flags::             
 * The API::                     
 * The barcode Executable::      
+* Supported Encodings::         
+* Bugs and Pending Issues::     
 @end menu
 
 @end ifinfo
@@ -132,10 +134,11 @@ are directly related to one or more of these fields.
 
 @menu
 * The Field List::              
-* The Intermediate Representaion::  
+* The Intermediate Representation::  
 @end menu
 
-@node The Field List, The Intermediate Representaion, The Barcode Object, The Barcode Object
+%--------------------------------------------------------------------------
+@node The Field List, The Intermediate Representation, The Barcode Object, The Barcode Object
 @section The Fields
 
 @table @code
@@ -302,16 +305,22 @@ library:
 @itemx BARCODE_128B
 @itemx BARCODE_128C
 @itemx BARCODE_128
+@itemx BARCODE_128RAW
 @itemx BARCODE_39
 @itemx BARCODE_I25
+@itemx BARCODE_CBR
+@itemx BARCODE_MSI
+@itemx BARCODE_PLS
 
 	The currently supported encoding types: EAN (13 digits, 8
 	digits, 13 + 2 addon and 13 + 5 addon), UPC (UPC-A, UPC-E,
 	UPC-A with 2 or 5 digit addon), ISBN (with or without the
 	5-digit addon), CODE128-B (the whole set of printable
         ASCII characters), CODE128-C (two digits encoded by each barcode
-	symbol), CODE128 (all ASCII values) CODE39 (alphanumeric)
-        and "interleaved 2 of 5" (numeric).
+	symbol), CODE128 (all ASCII values), a ``raw-input'' pseudo-code
+	that generates CODE128 output, CODE39 (alphanumeric),
+        "interleaved 2 of 5" (numeric), Codabar (numeric plus a few
+	symbols), MSI (numeric) and Plessey (hex digits).
         @xref{Supported Encodings}.
 
 @item BARCODE_ANY
@@ -455,7 +464,7 @@ header file @t{barcode.h}.  They perform the following tasks:
 
 %##########################################################################
 
-@node  The barcode Executable,  , The API, Top
+@node  The barcode Executable, Supported Encodings, The API, Top
 @chapter The @i{barcode} frontend program
 
 %MANPAGE barcode.1
@@ -482,11 +491,10 @@ and encode all of them.
 
 @menu
 * The Command Line::            
-* Supported Encodings::         
-* Bugs and Pending Issues::     
 @end menu
 
-@node  The Command Line, Supported Encodings, The barcode Executable, The barcode Executable
+%--------------------------------------------------------------------------
+@node  The Command Line,  , The barcode Executable, The barcode Executable
 @section The Command Line
 
 
@@ -602,14 +610,17 @@ and encode all of them.
 %M .SH ENCODING TYPES
 %M .PP
 
-@node  Supported Encodings, Bugs and Pending Issues, The Command Line, The barcode Executable
-@section Supported Encodings
+%##########################################################################
+@node  Supported Encodings, Bugs and Pending Issues, The barcode Executable, Top
+@chapter Supported Encodings
 
 The program encodes text strings passed either on the command line
 (with -b) or retrieved from standard input. The text representation is
 interpreted according to the following rules. When auto-detection
 of the encoding is enabled (i.e, no explicit encoding type is specified),
 the encoding types are scanned to find one that can digest the text string.
+The following list of supported types is sorted in the same order
+the library uses when auto-detecting a suitable encoding for a string.
 
 @table @var
 
@@ -667,31 +678,18 @@ the encoding types are scanned to find one that can digest the text string.
 	digit as a Code 128-A or 128-B symbol, but this tool doesn't
 	currently implement this option).
 
-@item code 128
+@item code 128 raw
 
-	Automatic selection between alphabet A, B and C of the Code-128
-        standard. This encoding can represent all ASCII symbols, from
-        0 (NUL) to 127 (DEL), as well as four special symbols, named
-        F1, F2, F3, F4. The set of symbols available in this encoding
-        is not easily represented as input to the @i{barcode} library,
-        so the following convention is used.  In the input string,
-        which is a C-language null-terminated string, the NUL char
-        is represented by the value 128 (0x80, 0200) and the F1-F4 characters
-        are represented by the values 193-196 (0xc1-0xc4, 0301-0304).
-        The values have been chosen to ease their representation as
-        escape sequences.
-
-        Since the shell doesn't seem to interpret escape sequences on the
-        command line, the "-b" option cannot be easily used to designate
-        the strings to be encoded. As a workaround you can resort
-        to the command @t{echo}, either within backticks or used
-        separately to create a file that is then fed to the standard-input
-        of @i{barcode} -- assuming your @t{echo} command processes escape
-        sequences.  The newline character is especially though to encode
-        (but not impossible unless you use a @t{csh} variant.
-
-        These problems only apply to the command-line tool; the use
-        of library functions doesn't give any problem.
+	Code-128 output represented symbol-by-symbol in the input
+	string.  To override part of the problems outlined below in
+	specifying code128 symbols, this pseudo-encoding allows the
+	used to specify a list of code128 symbols separated by
+	spaces. Each symbol is represented by a number in the range
+	0-105.  The list should include the leading character.The
+	checksum and the stop character are automatically added by the
+	library. Most likely this pseudo-encoding will be used with
+	@t{BARCODE_NO_ASCII} and some external program to supply the
+	printed text.
 
 @item code 39
 
@@ -715,12 +713,68 @@ the encoding types are scanned to find one that can digest the text string.
         a leading zero is inserted in the string being encoded if needed
         (this is specifically stated in the specs I have access to).
 
+@item code 128
+
+	Automatic selection between alphabet A, B and C of the Code-128
+        standard. This encoding can represent all ASCII symbols, from
+        0 (NUL) to 127 (DEL), as well as four special symbols, named
+        F1, F2, F3, F4. The set of symbols available in this encoding
+        is not easily represented as input to the @i{barcode} library,
+        so the following convention is used.  In the input string,
+        which is a C-language null-terminated string, the NUL char
+        is represented by the value 128 (0x80, 0200) and the F1-F4 characters
+        are represented by the values 193-196 (0xc1-0xc4, 0301-0304).
+        The values have been chosen to ease their representation as
+        escape sequences.
+
+        Since the shell doesn't seem to interpret escape sequences on the
+        command line, the "-b" option cannot be easily used to designate
+        the strings to be encoded. As a workaround you can resort
+        to the command @t{echo}, either within backticks or used
+        separately to create a file that is then fed to the standard-input
+        of @i{barcode} -- assuming your @t{echo} command processes escape
+        sequences.  The newline character is especially though to encode
+        (but not impossible unless you use a @t{csh} variant.
+
+        These problems only apply to the command-line tool; the use of
+        library functions doesn't give any problem. In needed, you can
+        use the ``@i{code 128 raw}'' pseudo-encoding to represent
+        code128 symbols by their numerical value. This encoding is
+        used late in the auto-selection mechanism because (almost) any
+        input string can be represented using code128.
+
+@item Codabar
+
+	Codabar can encode the ten digits and a few special symbols
+	(minus, plus, dollar, colon, bar, dot). The characters
+	``@t{A}'', ``@t{B}'', ``@t{C}'' and ``@t{D}'' are used to
+	represent four different start/stop characters. The input
+	string to the barcode library can include the start and stop
+	characters or not include them (in which case ``@t{A}'' is
+	used as start and ``@t{B}'' as stop). Start and stop
+	characters in the input string can be either all lowercase or
+	all uppercase and are always printed as uppercase.
+
+@item Plessey
+
+	Plessey barcodes can encode all the hexadecimal
+	digits. Alphabetic digits in the input string must either be
+	all lowercase or all uppercase. The output text is always
+	uppercase.
+
+@item MSI
+
+	MSI can only encode the decimal digits. While the standard
+	specifies either one or two check digits, the current
+	implementation in this library only generates one check digit.
+
 @end table
 
 %M .SH BUGS
 
-@node  Bugs and Pending Issues,  , Supported Encodings, The barcode Executable
-@section Bugs and Pending Issues.
+%##########################################################################
+@node  Bugs and Pending Issues,  , Supported Encodings, Top
+@chapter Bugs and Pending Issues.
 
 The current management of borders/margins is far from optimal. The
 ``default'' margin applied by the library interferes with the external
@@ -737,7 +791,7 @@ then bless the package as version 1.0.
 %M .SH AUTHORS
 %M Alessandro Rubini <rubini@gnu.org> (maintainer)
 %M .PP
-%M Michele Comitini, Glisco s.a.s. <mcm@glisco.it> (several contributions)
+%M Leonid A. Broukhis <leob@mailcom.com> (several encodings)
 %MANPAGE END
 
 @iftex
