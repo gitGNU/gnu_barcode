@@ -16,7 +16,7 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
- *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
 #include <stdio.h>
@@ -61,7 +61,7 @@ static char *fillers[]= {
  * Check that the text can be encoded. Returns 0 or -1.
  * If it's all lowecase convert to uppercase and accept it
  */
-int Barcode_39_verify(char *text)
+int Barcode_39_verify(unsigned char *text)
 {
     int i, lower=0, upper=0;
 
