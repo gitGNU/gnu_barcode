@@ -61,7 +61,7 @@
 
 int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
 {
-    int i, j, k, barlen;
+    int i, j, k, barlen, printable=1;
     double f1, f2, fsav=0;
     int mode = '-'; /* text below bars */
     double scalef=1, xpos, x0, y0, yr;
@@ -148,8 +148,12 @@ int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
     }
 
     /* Print some informative comments */
+    for (i=0; bc->ascii[i]; i++)
+	if (bc->ascii[i] < ' ')
+	    printable = 0;
+
     fprintf(f,"%% Printing barcode for \"%s\", scaled %5.2f",
-	    bc->ascii, scalef);
+	    printable ? bc->ascii : "<unprintable string>", scalef);
     if (bc->encoding)
 	fprintf(f,", encoded using \"%s\"",bc->encoding);
     fprintf(f, "\n");
@@ -218,17 +222,21 @@ int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
 	    }
 	    fsav = f2; /* for next time */
 
-            /* FIXME: a ')' can't be printed this way */
-            fprintf(f, "%5.2f %5.2f moveto (%c) show\n",
+            fprintf(f, "%5.2f %5.2f moveto (",
                     bc->xoff + f1 * scalef + bc->margin,
 		    mode == '-'
                        ? (double)bc->yoff + bc->margin
-		       : (double)bc->yoff + bc->margin+bc->height - 8*scalef,
-		    c);
+		       : (double)bc->yoff + bc->margin+bc->height - 8*scalef);
+	    /* Both the backslash and the close parens are special */
+	    if (c=='\\' || c==')')
+		fprintf(f, "\\%c) show\n", c);
+	    else
+		fprintf(f, "%c) show\n", c);
         }
     }
 
-    fprintf(f,"\n%% End barcode for \"%s\"\n\n", bc->ascii);
+    fprintf(f,"\n%% End barcode for \"%s\"\n\n",
+	    printable ? bc->ascii : "<unprintable string>");
 
     if (!(bc->flags & BARCODE_OUT_NOHEADERS)) {
 	fprintf(f,"showpage\n");
