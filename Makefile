@@ -30,7 +30,7 @@ MAN3 = $(TARGET).3
 INFO = doc/$(TARGET).info
 HEADER = $(TARGET).h
 
-OBJECTS = library.o ean.o code128.o code39.o ps.o
+OBJECTS = library.o ean.o code128.o code39.o i25.o ps.o
 
 all: .depend $(TARGET) $(LIBRARY) $(MAN1) $(MAN3) $(INFO) sample
 
