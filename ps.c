@@ -16,7 +16,7 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
- *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
 #include <stdio.h>
@@ -134,11 +134,24 @@ int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
 	}
     }
 
+    /* Print some informative comments */
     fprintf(f,"%% Printing barcode for \"%s\", scaled %5.2f",
 	    bc->ascii, scalef);
     if (bc->encoding)
 	fprintf(f,", encoded using \"%s\"",bc->encoding);
     fprintf(f, "\n");
+    fprintf(f,"%% The space/bar succession is represented "
+	    "by the following widths (space first):\n"
+	    "%% ");
+    for (i=0; i<strlen(bc->partial); i++) {
+	if (isdigit(bc->partial[i]))
+	    putc(bc->partial[i], f);
+	if (islower(bc->partial[i]))
+	    putc(bc->partial[i]-'a'+'1', f);
+	if (isupper(bc->partial[i]))
+	    putc(bc->partial[i]-'A'+'1', f);
+    }
+    putc('\n', f);
 
     xpos = bc->margin + (bc->partial[0]-'0') * scalef;
     for (ptr = bc->partial+1, i=1; *ptr; ptr++, i++) {
