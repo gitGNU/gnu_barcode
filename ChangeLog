@@ -1,3 +1,13 @@
+2000-02-03  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+====> Version 0.95 released to ftp.prosa.it and ftp.gnu.org
+
+2000-01-26  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* code128.c (Barcode_128_encode): new encoding: full-featured code128
+
+	* README: added reference to original ftp site
+
 2000-01-05  Alessandro Rubini  <rubini@morgana.systemy.it>
 
 	* main.c (get_page_geometry): avoid using snprintf(), missing in HP/UX
