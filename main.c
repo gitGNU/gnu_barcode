@@ -425,6 +425,7 @@ int main(int argc, char **argv)
     char *line;
     int flags=0; /* for the library */
     int page, retval;
+    int errors = 0;
 
     prgname = argv[0];
 
@@ -532,6 +533,7 @@ int main(int argc, char **argv)
 	    if (Barcode_Encode_and_Print(line, ofile, code_width, code_height,
 					 xmargin0, ymargin0, flags) < 0) {
 		fprintf(stderr, "%s: can't encode \"%s\"\n", argv[0], line);
+		errors++;
 	    }
 	    if (eps) break; /* if output is eps, do it once only */
 	    if (ps) fprintf(ofile, "showpage\n");
@@ -597,7 +599,7 @@ int main(int argc, char **argv)
 	if (ps) fprintf(ofile, "showpage\n\n%%%%Trailer\n\n");
 	if (pcl) fprintf(ofile, "\f");
     }
-    return 0;
+    return errors ? 1 : 0;
 }
 
 
