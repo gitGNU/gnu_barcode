@@ -1,3 +1,8 @@
+2000-11-29  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* doc/doc.barcode (The Field List): 1pt == 0.352mm, not 0.0352
+		(thanks to Stephen Irven for reporting)
+
 2000-11-09  Alessandro Rubini  <rubini@morgana.systemy.it>
 
 	====> Version 0.96 released to ftp.systemy.it and ftp.gnu.org
