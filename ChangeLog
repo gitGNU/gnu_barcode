@@ -1,2 +1,18 @@
+1999-07-03  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* barcode.h: removed BARCODE_OUT_PG_* as only the library doesn't
+	need to hack with the page size.
+
+	* ean.c (Barcode_ean_encode): supplemental 2 and 5 encodings (no text)
+
+	* library.c: use unsigned char all over the place, to prevent warnings
+
+1999-07-01  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* ean.c: added EAN-8 and UPC-E support
+
+	* Updated the address of the FSF in any source file 
+
+	* README: new file. 
 
 ====> Version 0.90 is the first public release. No Changelog up to now.
