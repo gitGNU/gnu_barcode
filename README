@@ -3,6 +3,20 @@ This is GNU-barcode. The latest release can be downloaded from ftp.gnu.org
 and mirrors:
 	ftp://ftp.gnu.org/pub/gnu/barcode/
 
+It is also available from my own ftp server and mirrors
+	ftp://gnu.systemy.it/pub/barcode/ (all versions)
+	ftp://ftp.systemy.it/pub/develop (selected packages, last version)
+	ftp://ftp.linux.it/pub/People/Rubini (mirror of ftp.systemy)
+	ftp://ftp.prosa.it/pub/people/rubini (mirror of ftp.systemy)
+
+The current source tree is available by anonymous CVS. See
+	http://gnu.systemy.it/software/#cvs
+
+The documentation is online at:
+	http://gnu.systemy.it/software/barcode
+
+
+
 The package is meant to solve most needs in barcode creation with a
 conventional printer. It can create printouts for the conventional
 product tagging standards: UPC-A, UPC-E, EAN-13, EAN-8, ISBN, as well
@@ -24,6 +38,9 @@ library and will probabily have its role in the GNU project.
 Bookland.py is a self-documenting program, you'll enjoy browsing its
 source code.
 
+Other contributed patches and/or software are available in the
+contrib/ directory.
+
 Please take the "no-warranty" disclaimer seriously: even though I
 spent reasonable efforts to make sure the output is useable in
 production you should verify it suits your needs as a faulty bar can
@@ -33,7 +50,8 @@ problem you encounter). [This paragraph copied verbatim from bookland.py]
 
 I would like to thank both Judah Milgram and Michele Comitini
 (mcm@glisco.it) for their help with this tool, as well as Jim Westveer
-for introducing me to Debian packaging.
+for introducing me to Debian packaging. This release includes several
+new encodings implemented by Leonid A. Broukhis (leob@mailcom.com).
 
 There is a mailing list where development is coordinated, called
 barcode@prosa.it . To get subscribed you should
