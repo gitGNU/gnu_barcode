@@ -1,3 +1,41 @@
+
+2001-10-16  Nathan D. Holmes <nh412124@ursa.cosd.fedex.com>
+
+	* code93.c: new file (I modified something as well - Alessandro)
+
+	* doc/doc.barcode (Supported Encodings): added docs for code93
+
+	* main.c: added code93 names
+
+	* Makefile.in (LIBOBJECTS): added code93.o
+
+	* library.c: added code93 entry points
+
+2001-10-16  Alessandro Rubini  <rubini@linux.it>
+
+	* doc/manpager: added (trivial) support for @itemize, added copyright
+
+	* sample.c (main): accept -P to create PCL output
+
+	* doc/doc.barcode (PCL Output): added the section, using text
+	provided by Andrea Scopece and turning it into texinfo.
+	Removed also a few extra newlines that made bad man pages
+
+2001-10-16  Andrea Scopece  <a.scopece@vizzavi.it>
+
+	* barcode.h: added BARCODE_OUT_PCL and BARCODE_OUT_PCL_III
+
+	* library.c (Barcode_Print): use BARCODE_OUT_PCL to select pcl_print()
+
+	* Makefile.in (LIBOBJECTS): added pcl.o
+
+	* pcl.c: new file, with PCL output support
+
+2001-10-16  Alessandro Rubini  <rubini@linux.it>
+
+	* doc/doc.barcode (Supported Encodings): added documentation for
+		EAN and UPC with checksum, as coded by mr. Zoltan (below)
+
 2001-10-16  Boszormenyi Zoltan <zboszor@externet.hu>
 
 	* ean.c: 
