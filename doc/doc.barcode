@@ -486,18 +486,19 @@ and encode all of them.
 	also unset.
 
 @item -g geometry
+
 	The geometry argument is of the form ``@i{<width>} @t{x}
 	@i{<height>} [@t{+} @i{<xmargin>} @t{+} @i{<ymargin>}]'' (with
 	no intervening spaces). The margin values, if missing, default
-	to 0).  The specified values must be integer numbers and they
-	represent print points (I plan to add support for different
-	units, like inches and millimeters, but this is currently not
-	supported).  The argument is used to place the printout code
-	on the page. Note that an additional white margin of 10 points
-	is added to the printout. If the option is unspecified,
-	@t{BARCODE_GEOMETRY} is looked up in the environment, if
-	missing a default size and no margin (but the default 10
-	points) are used.
+	to 0).  The specified values represent print points by
+	default, and can be incher, millimeters or other units
+	according to the @t{-u} option or the @t{BARCODE_UNIT}
+	environment variable.  The argument is used to place the
+	printout code on the page. Note that an additional white
+	margin of 10 points is added to the printout. If the option is
+	unspecified, @t{BARCODE_GEOMETRY} is looked up in the
+	environment, if missing a default size and no margin (but the
+	default 10 points) are used.
 
 @item -t table-geometry
 	Used to print several barcodes to a single page, this option
