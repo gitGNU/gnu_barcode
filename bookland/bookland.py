@@ -1,7 +1,13 @@
 #!/usr/local/bin/python
+
+MYNAME="bookland.py"
+MYVERSION="0.06"
+DATE = "Jul. 1999"
+MAINTAINER = "bookland-bugs@cgpp.com"
+
+#   Copyright (C) 1999 Judah Milgram     
 #
 #   bookland.py - generate Bookland EAN symbol for ISBN encoding
-#   Copyright (C) 1999 Judah Milgram     
 #
 #   This program is free software; you can redistribute it and/or
 #   modify it under the terms of the GNU General Public License
@@ -139,11 +145,6 @@
 #  2/7/99 - initial release
 # ================================================================================
 
-MYNAME="barcode.py"
-MYVERSION="0.04"
-DATE = "Mar. 1999"
-MAINTAINER = "bookland-bugs@cgpp.com"
-
 #
 #  barCodeSymbol - the whole printed symbol, including bar code(s) and product code(s).
 #  UPC, UPCA, UPC5, EAN13 - the number itself, with check digit, string representation,
@@ -156,6 +157,9 @@ from regex_syntax import *
 import regex
 regex.set_syntax(RE_SYNTAX_AWK)
 from types import *
+
+BooklandError = "Something wrong"
+
 
 A="A";B="B";C="C";O="O";E="E"
 UPCABITS = [{O:"0001101",E:"1110010"},
@@ -293,8 +297,8 @@ class UPC:
         elif len(self.n) == self.ndigits-1:
             self.tackonCheckDigit()                # tack on check digit
         else:
-            sys.stderr.write("UPC: wrong number of digits in \"" + self.s + "\"\n")
-            sys.exit(1)
+            raise BooklandError, "UPC: wrong number of digits in \"" + self.s + "\""
+            sys.exit(0)
 
     def setbits(self,arg):                       # UPC (all)
         self.bits=""
@@ -312,17 +316,18 @@ class UPC:
         nevergood = "--|^-|[^0-9-]"
         ierr=regex.search(nevergood,s)
         if ierr != -1:
-            sys.stderr.write("UPCA: in %s: illegal characters beginning with: %s\n" % s,s[ierr])
-            sys.exit(1)
+            raise BooklandError, \
+                  "UPCA: in %s: illegal characters beginning with: %s" % (s,s[ierr])
+            sys.exit(0)
 
     def verifyCheckDigit(self):               # UPC (all)
         # first verify correct number of digits.
         soll=self.checkDigit(self.n)
         ist=self.s[-1:]
         if ist != soll:
-            sys.stderr.write("For %s checksum %s is wrong, should be %s\n" % \
-                             (self.s,ist,soll))
-            sys.exit(1)    
+            raise BooklandError, "For %s checksum %s is wrong, should be %s" % \
+                             (self.s,ist,soll)
+            sys.exit(0)    
 
     def xstring(self,p):                      # UPC (all)
         return "%d" % p
@@ -348,8 +353,7 @@ class UPCA(UPC):
               sum = sum + eval(arg[i]) * weight[i]
           z = ( magic - (sum % magic) ) % magic
           if z < 0 or z >= magic:
-              print sys.stderr.write("UPC checkDigit: something wrong.")
-              sys.exit(1)
+              raise BooklandError, "UPC checkDigit: something wrong."
           return self.xstring(z)
 
 class ISBN:
@@ -364,27 +368,23 @@ class ISBN:
         elif len(self.n) == self.ndigits-1:
             self.tackonCheckDigit()                # tack on check digit
         else:
-            print sys.stderr.write("ISBN: wrong number of digits\n")
-            sys.exit(1)
+            raise BooklandError, "ISBN has wrong number of digits"
 
     def checkDigit(self,arg):     # ISBN; UPCA/EAN13 similar but for weights etc.
           weight=[10,9,8,7,6,5,4,3,2]; magic=11; sum = 0
           if len(arg) < 9 or len(arg) > 10:
-              sys.stderr.write("ISBN checkDigit: ISBN \"" +
-                                     self.s + "\" has wrong number of digits.\n")
-              sys.exit(1)
+              raise BooklandError, \
+                    "ISBN checkDigit: ISBN \"" + self.s + "\" has wrong number of digits."
           ierr = regex.search("[^0-9]",arg[0:9])
           if ierr != -1:
-              sys.stderr.write(
-                  "ISBN checkDigit: in \"%s\", \"%s\" no good in first nine chars\n" %
-                  (self.s,arg[ierr]))
-              sys.exit(1)
+              raise BooklandError, \
+                    "ISBN checkDigit: in \"%s\", \"%s\" no good in first nine chars" % \
+                    (self.s,arg[ierr])
           for i in range(9):      # checksum based on first nine digits.
               sum = sum + eval(arg[i]) * weight[i]
           z = ( magic - (sum % magic) ) % magic
           if z < 0 or z >= magic:
-              print sys.stderr.write("ISBN checkDigit: something wrong.")
-              sys.exit(1)
+              raise BooklandError, "ISBN checkDigit: something wrong."
           return self.xstring(z)
 
     def xstring(self,p):
@@ -405,17 +405,16 @@ class ISBN:
         nevergood = "--|^-|[^0-9X-]"
         ierr=regex.search(nevergood,s)
         if ierr != -1:
-            sys.stderr.write("ISBN: in \"%s\": illegal characters beginning with \"%s\"\n" % \
-                             (s,s[ierr]))
-            sys.exit(1)
+            raise BooklandError, \
+                  "ISBN: in \"%s\": illegal characters beginning with \"%s\"\n" % (s,s[ierr])
 
     def verifyCheckDigit(self):               # UPC A; EAN13
         # first verify correct number of digits.
         soll=self.checkDigit(self.n)
         ist=self.s[-1:]
         if ist != soll:
-            sys.stderr.write("For %s checksum %s is wrong, should be %s\n" % \
-                             (self.s,ist,soll))
+            raise BooklandError, \
+                  "For %s checksum %s is wrong, should be %s\n" % (self.s,ist,soll)
             sys.exit(1)    
 
 class barCodeSymbol:
@@ -668,10 +667,16 @@ if __name__ == '__main__':
 
     if action == "isbn":
         printVersion()
-        b = bookland(isbn,price)
-        b.ps.out()
+        try:
+            b = bookland(isbn,price)
+            b.ps.out()
+        except BooklandError, message:
+            sys.stderr.write(BooklandError + ": " + message)
+            sys.exit(1)
+            
     elif action == "version":
         printVersion()
     else:
         printUsage()
         
+
