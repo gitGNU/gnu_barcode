@@ -1,3 +1,9 @@
+2000-01-04  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* doc/doc.barcode (The API): removed spurious "flags" argument
+		from description of Barcode_Encode_and_Print().
+		Thanks to Willy Wittesaele for noting the error.
+
 1999-12-24  Alessandro Rubini  <rubini@morgana.systemy.it>
 
 	* main.c (get_geometry): fixed the y margin (thanks to Steve Kunath)
