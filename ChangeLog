@@ -1,3 +1,8 @@
+2000-09-14  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* barcode.h: added the standard  ``extern "C"'' stuff for C++
+	(bug reported by Dany Pardo <dani@minerva.enpl.es>)
+
 2000-08-28  Alessandro Rubini  <rubini@morgana.systemy.it>
 
 	* i25.c (Barcode_i25_encode): fixed checksum calculation
