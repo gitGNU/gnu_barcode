@@ -29,7 +29,7 @@ NODELINE==4  { printf "\t\t\t\t"; }
 NODELINE==5  { printf "\t\t\t\t"; NODELINE=0}
 
 
-/^* Menu:$/  { KEEP=0 }
+/^\* Menu:$/  { KEEP=0 }
 
 
 
