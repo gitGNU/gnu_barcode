@@ -31,8 +31,8 @@
 
 @setchapternewpage off
 
-@set version 0.94
-@set update-month October 1999
+@set version 0.95
+@set update-month January 2000
 
 @finalout
 
@@ -50,7 +50,7 @@ This file is the User's Manual for the barcode library (version
 @subtitle A library for drawing bar codes
 @subtitle @value{update-month}
 
-@author by Alessandro Rubini (@code{rubini@@@{gnu.org,prosa.it@}})
+@author by Alessandro Rubini (@code{rubini@@gnu.org})
 
 @end titlepage
 @setchapternewpage off
@@ -111,7 +111,7 @@ struct Barcode_Item @{
     int flags;         /* type of encoding and other flags */
     char *ascii;       /* malloced */
     char *partial;     /* malloced too */
-    char *textinfo;    /* information about text positioning */
+    char *textinfo;    /* information about text placement */
     char *encoding;    /* code name, filled by encoding engine */
     int width, height; /* output units */
     int xoff, yoff;    /* output units */
@@ -666,7 +666,7 @@ Code128-A should be supported.
 %M \fBbarcode(3)\fP
 %M
 %M .SH AUTHORS
-%M Alessandro Rubini, Prosa s.r.l <rubini@prosa.it> (maintainer)
+%M Alessandro Rubini <rubini@gnu.org> (maintainer)
 %M .PP
 %M Michele Comitini, Glisco s.a.s. <mcm@glisco.it> (several contributions)
 %MANPAGE END
