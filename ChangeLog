@@ -1,3 +1,9 @@
+2000-09-16  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* ps.c (Barcode_ps_print): use "half text height" instead of 
+		"two text heights" as minimum bar height. Suggested by
+		Oliver Vecernik <vecernik@aon.at>.
+
 2000-09-14  Alessandro Rubini  <rubini@morgana.systemy.it>
 
 	* barcode.h: added the standard  ``extern "C"'' stuff for C++
