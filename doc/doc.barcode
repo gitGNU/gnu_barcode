@@ -56,12 +56,12 @@ This file is the User's Manual for the barcode library (version
 @setchapternewpage off
 @headings single
 
-@ifinfo
-This file documents the @value{version} release of the barcode
-library and sample programs (@value{update-month}).
 
 @node Top, Overview, (dir), (dir)
 @top Barcode tools
+
+This file documents version @value{version} of the barcode
+library and sample programs (@value{update-month}).
 
 @menu
 * Overview::                    
@@ -73,7 +73,6 @@ library and sample programs (@value{update-month}).
 * Bugs and Pending Issues::     
 @end menu
 
-@end ifinfo
 
 %##########################################################################
 %##########################################################################
