@@ -89,11 +89,12 @@ clean:
 
 distclean: clean
 	if [ -f build ]; then debian/rules clean; fi
-	cd doc && $(MAKE) clean
 	# remove the configure stuff as well
 	$(RM) -f Makefile config.h config.log config.status config.cache \
 		doc/Makefile
 
+cleanest: clean
+	cd doc && $(MAKE) clean
 
 Makefile: Makefile.in configure
 	./configure
