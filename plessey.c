@@ -112,6 +112,7 @@ int Barcode_pls_encode(struct Barcode_Item *bc)
     if (!textinfo) {
         bc->error = errno;
         free(partial);
+        free(checkptr);
         return -1;
     }
 
@@ -126,6 +127,7 @@ int Barcode_pls_encode(struct Barcode_Item *bc)
             bc->error = EINVAL; /* impossible if text is verified */
             free(partial);
             free(textinfo);
+            free(checkptr);
             return -1;
         }
         code = c - alphabet;
@@ -159,6 +161,7 @@ int Barcode_pls_encode(struct Barcode_Item *bc)
     strcpy(ptr, fillers[1]);
     bc->partial = partial;
     bc->textinfo = textinfo;
+    free(checkptr);
 
     return 0;
 }
