@@ -58,11 +58,11 @@ install:
 	$(INSTALL) -d $(BINDIR) $(INCDIR) $(LIBDIR) $(MAN1DIR) \
 		$(MAN3DIR) $(INFODIR)
 	$(INSTALL) -c $(TARGET) $(BINDIR)
-	$(INSTALL) -c $(HEADER) $(INCDIR)
-	$(INSTALL) -c $(LIBRARY) $(LIBDIR)
-	$(INSTALL) -c $(MAN1) $(MAN1DIR)
-	$(INSTALL) -c $(MAN3) $(MAN3DIR)
-	$(INSTALL) -c $(INFO) $(INFODIR)
+	$(INSTALL) -c -m 0644 $(HEADER) $(INCDIR)
+	$(INSTALL) -c -m 0644  $(LIBRARY) $(LIBDIR)
+	$(INSTALL) -c -m 0644  $(MAN1) $(MAN1DIR)
+	$(INSTALL) -c -m 0644  $(MAN3) $(MAN3DIR)
+	$(INSTALL) -c -m 0644  $(INFO) $(INFODIR)
 
 uninstall:
 	$(RM) -f $(BINDIR)/$(TARGET)
@@ -83,6 +83,7 @@ clean: mostlyclean
 	$(MAKE) -C doc clean
 
 distclean: mostlyclean
+	if [ -f build ]; then debian/rules clean; fi
 	# remove the configure stuff as well
 	$(RM) -f Makefile config.h config.log config.status config.cache
 
@@ -105,6 +106,7 @@ tar:
 printv:
 	@grep -n VERSION $(HEADER) /dev/null
 	@grep -n set.version doc/doc.$(TARGET) /dev/null
+	@grep -n dpkg.-i INSTALL
 
 # and this is how I make the distribution
 distrib: $(INFO) distclean tar printv
