@@ -1,3 +1,17 @@
+1999-10-24  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* INSTALL: added instructions to install on a Debian GNU/Linux system
+
+	* debian/*: edited information for proper Debian support
+	
+	* debian/rules (binary-arch): new file, from "deb-make"
+
+	* Makefile.in (install): added "-m 0644" to install non-executables
+
+	* code128.c (Barcode_128b_encode): fixed checksum calculation.
+
+====> Version 0.93 released to ftp.prosa.it and ftp.gnu.org
+
 1999-09-26  Alessandro Rubini  <rubini@morgana.systemy.it>
 
 	* doc/doc.barcode: fixed the rendering of complex options (-g and -t)
