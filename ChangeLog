@@ -1,7 +1,20 @@
 2000-11-08  Alessandro Rubini  <rubini@morgana.systemy.it>
 
-	* doc/doc.barcode (The Intermediate Representaion): new section
+	====> Version 0.96 released to ftp.prosa.it and ftp.gnu.org
 
+	* README: new network pointers added
+
+	* codabar.c (Barcode_cbr_encode): don't print ascii text for the
+		checksum.
+
+	* doc/doc.barcode (The Intermediate Representaion): new section
+	Documented the new encodings by Leonid.
+	Promoted two sections to chapters
+	Added Leonid in the AUTHORS section of the manpage.
+
+	* Makefile.in: don't remove docs in distclean, as the distribution
+		now includes the docs
+	
 2000-11-07  Alessandro Rubini  <rubini@morgana.systemy.it>
 
 	* Makefile.in (clean): don't remove docs, do that only in distclean
