@@ -72,7 +72,7 @@ static char *codeset[] = {
  * code 128-b includes all printable ascii chars
  */
 
-int Barcode_128b_verify(char *text)
+int Barcode_128b_verify(unsigned char *text)
 {
     if (!strlen(text))
 	return -1;
