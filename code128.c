@@ -432,9 +432,6 @@ int Barcode_128_encode(struct Barcode_Item *bc)
     codes = Barcode_128_make_array(bc, &len);
     if (!codes) return -1;
 
-    for (i=0; i<len; i++)
-	fprintf(stderr, "%i\n", codes[i]);
-
     /* the partial code is 6*codelen + ini + term (+margin) */
     partial = malloc( 6 * len + 4);
     if (!partial) {
@@ -479,7 +476,6 @@ int Barcode_128_encode(struct Barcode_Item *bc)
     /* align the text to the left, using its natural size */
     step = (int)(10 * (size/18.0 * SYMBOL_WID) + .5) / 10.0;
     textpos = SYMBOL_WID;
-    fprintf(stderr, "size %g, step %g\n", size, step);
 
     for (i=0; i<strlen(text); i++) {
 	c = text[i];
@@ -489,7 +485,6 @@ int Barcode_128_encode(struct Barcode_Item *bc)
         textptr += strlen(textptr);
         textpos += step;
     }
-    fprintf(stderr, "text %s\n", textinfo);
 
     bc->partial = partial;
     bc->textinfo = textinfo;
