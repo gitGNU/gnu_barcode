@@ -263,6 +263,7 @@ library:
 @itemx BARCODE_ISBN
 @itemx BARCODE_128B
 @itemx BARCODE_128C
+@itemx BARCODE_128
 @itemx BARCODE_39
 @itemx BARCODE_I25
 
@@ -271,7 +272,8 @@ library:
 	UPC-A with 2 or 5 digit addon), ISBN (with or without the
 	5-digit addon), CODE128-B (the whole set of printable
         ASCII characters), CODE128-C (two digits encoded by each barcode
-	symbol), CODE39 (alphanumeric) and "interleaved 2 of 5" (numeric).
+	symbol), CODE128 (all ASCII values) CODE39 (alphanumeric)
+        and "interleaved 2 of 5" (numeric).
         @xref{Supported Encodings}
 
 @item BARCODE_ANY
@@ -625,6 +627,32 @@ the encoding types are scanned to find one that can digest the text string.
 	digit as a Code 128-A or 128-B symbol, but this tool doesn't
 	currently implement this option).
 
+@item code 128
+
+	Automatic selection between alphabet A, B and C of the Code-128
+        standard. This encoding can represent all ASCII symbols, from
+        0 (NUL) to 127 (DEL), as well as four special symbols, named
+        F1, F2, F3, F4. The set of symbols available in this encoding
+        is not easily represented as input to the @i{barcode} library,
+        so the following convention is used.  In the input string,
+        which is a C-language null-terminated string, the NUL char
+        is represented by the value 128 (0x80, 0200) and the F1-F4 characters
+        are represented by the values 193-196 (0xc1-0xc4, 0301-0304).
+        The values have been chosen to ease their representation as
+        escape sequences.
+
+        Since the shell doesn't seem to interpret escape sequences on the
+        command line, the "-b" option cannot be easily used to designate
+        the strings to be encoded. As a workaround you can resort
+        to the command @t{echo}, either within backticks or used
+        separately to create a file that is then fed to the standard-input
+        of @i{barcode} -- assuming your @t{echo} command processes escape
+        sequences.  The newline character is especially though to encode
+        (but not impossible unless you use a @t{csh} variant.
+
+        These problems only apply to the command-line tool; the use
+        of library functions doesn't give any problem.
+
 @item code 39
 
 	The code-39 standard can encode uppercase letters, digits, the
@@ -660,7 +688,8 @@ representation, but I feel it is mandatory to avoid creating barcode
 output with no surrounding white space (the problem is especially
 relevant for EPS output).
 
-Code128-A should be supported.
+EAN-128 is not (yet) supported. I plan to implement it pretty soon and
+then bless the package as version 1.0.
 
 %M .SH "SEE ALSO"
 %M \fBbarcode(3)\fP
