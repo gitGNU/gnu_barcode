@@ -87,8 +87,8 @@ int Barcode_93_verify(unsigned char *text)
 int Barcode_93_encode(struct Barcode_Item *bc)
 {
     static unsigned char *text;
-    static char *partial;  /* dynamic */
-    static char *textinfo; /* dynamic */
+    static unsigned char *partial;  /* dynamic */
+    static unsigned char *textinfo; /* dynamic */
     char *c, *textptr;
     int *checksum_str;
     int i, code, textpos, checksum_len=0;
