@@ -100,15 +100,20 @@ int list_encodes(FILE *f) /* used in the help message */
 /*
  * Variables to hold cmdline arguments (or defaults)
  */
+
 char *ifilename, *ofilename;
 int encoding_type;                    /* filled by get_encoding() */
 int code_width, code_height;          /* "-g" for standalone codes */
 int lines, columns;                   /* "-t" for tables */
-int xmargin, ymargin;                 /* both for "-g" and "-t" */
+int xmargin0, ymargin0;               /* both for "-g" and "-t" */
+int xmargin1, ymargin1;               /* same, but right and top */
 int ximargin, yimargin;               /* "-m": internal margins */
 int eps, ps, noascii, nochecksum;     /* boolean flags */
 int page_wid, page_hei;               /* page size in points */
 char *page_name;                      /* name of the media */
+double unit = 1.0;                    /* unit specification */
+
+char *prgname;  /* used to print error msgs, initialized to argv[0] by main */
 
 /*
  * Functions to handle command line arguments
@@ -123,8 +128,10 @@ struct encode_item {
 int get_input_string(void *arg)
 {
     struct encode_item *item = malloc(sizeof(*item));
-    if (!item)
-	return -1;
+    if (!item) {
+	fprintf(stderr, "%s: malloc: %s\n", prgname, strerror(errno));
+	return -2;
+    }
     item->string = strdup(arg);
     if (!list_head) {
 	list_head = list_tail = item;
@@ -160,50 +167,108 @@ unsigned char *retrieve_input_string(FILE *ifile)
     return strdup(fileline);
 }
 
+/* accept a unit specification */
+int get_unit(void *arg)
+{
+    static struct {
+	char *str;
+	double unit;
+    } *ptr, unittab[] = {
+	{"pt",  1.0},
+	{"in",  72.0},
+	{"cm",  72.0/2.54},
+	{"mm",  72.0/25.4},
+	{NULL, 0.0}
+    };
+
+    for (ptr = unittab; ptr->str && strcmp((char *)arg, ptr->str); ptr++)
+	;
+    unit = ptr->unit;
+    if (ptr->str) return 0;
+
+    fprintf(stderr, "%s: incorrect unit \"%s\" (use one of",
+	    prgname, (char *)arg);
+    for (ptr = unittab; ptr->str; ptr++)
+	fprintf(stderr, " \"%s\"", ptr->str);
+    fprintf(stderr, ")\n");
+    return -2;
+}
+
 /* convert an encoding name to an encoding integer code */
 int get_encoding(void *arg)
 {
     encoding_type = encode_id((char *)arg);
-    if (encoding_type<0) return -1; /* error */
-    return 0;
+    if (encoding_type >=0) return 0;
+    fprintf(stderr, "%s: wrong encoding \"%s\"\n", prgname,
+	    (char *)arg);
+    return -2; /* error, no help */
 }
 
 /* convert a geometry specification */
 int get_geometry(void *arg)
 {
+    double w, h, x = 0.0, y = 0.0;
     int n;
 
-    n = sscanf((char *)arg, "%dx%d+%d+%d", &code_width, &code_height,
-	       &xmargin, &ymargin);
-
-    if (n==4 || n==2) return 0;
-    return -1;
+    n = sscanf((char *)arg, "%lfx%lf+%lf+%lf", &w, &h, &x, &y);
+    if (n!=4 && n!=2) {
+	fprintf(stderr, "%s: wrong geometry \"%s\"\n", prgname, (char *)arg);
+	return -2;
+    }
+    /* convert to points */
+    code_width  = w * unit;
+    code_height = h * unit;
+    xmargin0 = x * unit;
+    ymargin1 = y * unit;
+    return 0;
 }
 
 /* convert a geometry specification */
 int get_table(void *arg)
 {
+    double x0 = 0.0, y0 = 0.0, x1 = 0.0, y1 = 0.0;
     int n;
 
-    n = sscanf((char *)arg, "%dx%d+%d+%d", &columns, &lines,
-	       &xmargin, &ymargin);
-    if (n==4 || n==2) return 0;
-    return -1;
+    n = sscanf((char *)arg, "%dx%d+%lf+%lf-%lf-%lf",
+	       &columns, &lines, &x0, &y0, &x1, &y1);
+
+    if (n==1 || n==3) { /* error: 2, 4, 5, 6 are fine */
+	fprintf(stderr, "%s: wrong table specification \"%s\"\n", prgname,
+		(char *)arg);
+	return -2;
+    }
+    if (n < 6) y1 = y0; /* symmetric by default */
+    if (n < 5) x1 = x0;
+
+    /* convert and return */
+    xmargin0 = x0 * unit;
+    ymargin0 = y0 * unit;
+    xmargin1 = x1 * unit;
+    ymargin1 = y1 * unit;
+    return 0;
 }
 
 /* convert an internal margin specification */
 int get_margin(void *arg)
 {
     char separator;
+    double x,y;
     int n;
 
     /* accept one number or two, separated by any char */
-    n = sscanf((char *)arg, "%d%c%d", &ximargin, &separator, &yimargin);
+    n = sscanf((char *)arg, "%lf%c%lf", &x, &separator, &y);
+
     if (n==1) {
-	n=3; yimargin = ximargin;
+	n=3; y = x;
     }
-    if (n!=3)
-	return -1;
+    if (n==3) {
+	ximargin = x * unit;
+	yimargin = y * unit;
+	return 0;
+    }
+    fprintf(stderr, "%s: wrong margin specification \"%s\"\n", prgname,
+	    (char *)arg);
+	return -2;
     return 0;
 }
 
@@ -212,37 +277,49 @@ int get_page_geometry(void *arg)
 {
     int n;
     double dpw, dph; /* page width, height in mm or inches */
-
+    static char tmpstr[20];
     page_name = arg; /* if undecipherable, we won't run the program :) */
     /*
      * try to decode a "mm" string (eg. "210mmx297mm" or "210x297mm")
      */
-    n = sscanf((char *)arg, "%lfmmx%lfmm", &dpw, &dph);
-    if (n != 2) n =  sscanf((char *)arg, "%lfx%lfmm", &dpw, &dph);
-    if (n == 2) {
-	/* Ok, convert to points: 1in is 25.4mm, 1in is also 72p */
-	page_wid = (int)(dpw / 25.4 * 72.0 + 0.5);
-	page_hei = (int)(dph / 25.4 * 72.0 + 0.5);
-	return 0;
+    n = sscanf((char *)arg, "%lfmmx%lf", &dpw, &dph);
+    if (n != 2 && strlen(arg)<20) {
+	n =  sscanf((char *)arg, "%lfx%lf%s", &dpw, &dph, tmpstr);
+	if (n == 3 && !strcmp(tmpstr, "mm")) {
+	    /* Ok, convert to points: 1in is 25.4mm, 1in is also 72p */
+	    page_wid = (int)(dpw / 25.4 * 72.0 + 0.5);
+	    page_hei = (int)(dph / 25.4 * 72.0 + 0.5);
+	    return 0;
+	}
     }
 
     /*
      * try to decode an "in" string (eg. "8.5inx11in" or "8.5x11in")
      */
-    n = sscanf((char *)arg, "%lfinx%lfin", &dpw, &dph);
-    if (n != 2) n =  sscanf((char *)arg, "%lfx%lfin", &dpw, &dph);
-    if (n == 2) {
-	page_wid = (int)(dpw * 72.0 + 0.5); /* round to points */
-	page_hei = (int)(dph * 72.0 + 0.5);
-	return 0;
+    n = sscanf((char *)arg, "%lfinx%lf", &dpw, &dph);
+    if (n != 2 && strlen(arg)<20) {
+	n =  sscanf((char *)arg, "%lfx%lf%s", &dpw, &dph, tmpstr);
+	if (n == 3 && !strcmp(tmpstr, "in")) {
+	    page_wid = (int)(dpw * 72.0 + 0.5); /* round to points */
+	    page_hei = (int)(dph * 72.0 + 0.5);
+	    return 0;
+	}
     }
 
     /*
-     * try to decode a point specification
+     * try to decode a numeric specification
      */
-    n = sscanf((char *)arg, "%dx%d", &page_wid, &page_hei);
-    if (n == 2)
+    n = sscanf((char *)arg, "%lfx%lf", &dpw, &dph);
+    if (n == 2) {
+	page_wid = dpw * unit;
+	page_hei = dph * unit;
+	if (unit != 1.0) { /* rebuild the page name */
+	    page_name = malloc(16);
+	    if (page_name) snprintf(page_name, 16, "%dx%d\n",
+				    page_wid, page_hei);
+	}
 	return 0;
+    }
 
 #ifndef NO_LIBPAPER
     /*
@@ -264,7 +341,9 @@ int get_page_geometry(void *arg)
     }
 #endif
     /* If we got here, the argument is undecipherable: fail */
-    return -1;
+    fprintf(stderr, "%s: wrong page size specification \"%s\"\n", prgname,
+	    (char *)arg);
+    return -2;
 }
 
 /*
@@ -279,6 +358,8 @@ struct commandline option_table[] = {
                    "string to encode (use input file if missing)"},
     {'e', CMDLINE_S, NULL, get_encoding, "BARCODE_ENCODING", NULL,
                    "encoding type (default is best fit for first string)"},
+    {'u', CMDLINE_S, NULL, get_unit, "BARCODE_UNIT", NULL,
+                    "unit (\"mm\", \"in\", ...) used to decode -g, -t, -p"},
     {'g', CMDLINE_S, NULL, get_geometry, "BARCODE_GEOMETRY", NULL,
                     "geometry on the page: <wid>x<hei>[+<margin>+<margin>]"},
     {'t', CMDLINE_S, NULL, get_table, "BARCODE_TABLE", NULL,
@@ -290,7 +371,7 @@ struct commandline option_table[] = {
     {'c', CMDLINE_NONE, &nochecksum, NULL, NULL, NULL,
                     "no Checksum character, if the chosen encoding allows it"},
     {'E', CMDLINE_NONE, &eps, NULL, NULL, NULL,
-                    "print a single code as eps file, else do multi-page ps"},
+                    "print one code as eps file (default: multi-page ps)"},
     {'p', CMDLINE_S, NULL, get_page_geometry, NULL, NULL,
                     "page size (refer to the man page)"},
     {0,}
@@ -319,7 +400,9 @@ int main(int argc, char **argv)
     FILE *ofile = stdout;
     char *line;
     int flags=0; /* for the library */
-    int page;
+    int page, retval;
+
+    prgname = argv[0];
 
     /* First of all, accept "--help" and "-h" as a special case */
     if (argc == 2 && (!strcmp(argv[1],"--help") || !strcmp(argv[1],"-h"))) {
@@ -335,9 +418,12 @@ int main(int argc, char **argv)
     }
 
     /* Otherwise, parse the commandline */
-    if (commandline(option_table, argc, argv, "Use: %s [options]\n")<0) {
-	/* error: add information about the encoding types and exit */
-	list_encodes(stderr);
+    retval = commandline(option_table, argc, argv, "Use: %s [options]\n");
+    if (retval) {
+	if (retval == -1) /* help printed, complete it */
+	    list_encodes(stderr);
+	else /* no help printed, suggest it */
+	    fprintf(stderr, "%s: try \"%s --help\"\n", prgname, prgname);
 	exit(1);
     }
 
@@ -416,7 +502,7 @@ int main(int argc, char **argv)
 		fprintf(ofile, "%%%%Page: %i %i\n\n",page,page);
 	    }
 	    if (Barcode_Encode_and_Print(line, ofile, code_width, code_height,
-					 xmargin, ymargin, flags) < 0) {
+					 xmargin0, ymargin0, flags) < 0) {
 		fprintf(stderr, "%s: can't encode \"%s\"\n", argv[0], line);
 	    }
 	    if (eps) break; /* if output is eps, do it once only */
@@ -430,8 +516,8 @@ int main(int argc, char **argv)
 
 	/* table mode, the header has been already printed */
 	
-	int xstep = (page_wid - 2 * xmargin)/columns;
-	int ystep = (page_hei - 2 * xmargin)/lines;
+	int xstep = (page_wid - xmargin0 - xmargin1)/columns;
+	int ystep = (page_hei - ymargin0 - ymargin1)/lines;
 	int x = columns, y = -1; /* position in the table, start off-page */
 
 	page=0;
@@ -455,8 +541,8 @@ int main(int argc, char **argv)
 	     */
 	    if (Barcode_Encode_and_Print(line, ofile,
 		    xstep - 2*ximargin, ystep - 2*yimargin,
-		    xmargin + ximargin + x * xstep - BARCODE_DEFAULT_MARGIN,
-		    ymargin + yimargin + y * ystep - BARCODE_DEFAULT_MARGIN,
+		    xmargin0 + ximargin + x * xstep - BARCODE_DEFAULT_MARGIN,
+		    ymargin0 + yimargin + y * ystep - BARCODE_DEFAULT_MARGIN,
 		    flags)<0) {
 		fprintf(stderr, "%s: can't encode \"%s\"\n", argv[0], line);
 	    }
