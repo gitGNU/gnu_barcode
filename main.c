@@ -47,8 +47,12 @@ struct {
 } encode_tab[] = {
     {"ean",      BARCODE_EAN},
     {"ean13",    BARCODE_EAN},
+    {"ean-13",   BARCODE_EAN},
+    {"ean8",     BARCODE_EAN},
+    {"ean-8",    BARCODE_EAN},
     {"upc",      BARCODE_UPC},
     {"upc-a",    BARCODE_UPC},
+    {"upc-e",    BARCODE_UPC},
     {"isbn",     BARCODE_ISBN},
     {"39",       BARCODE_39},
     {"code39",   BARCODE_39},
