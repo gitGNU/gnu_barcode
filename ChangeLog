@@ -1,3 +1,7 @@
+2000-11-07  Hans Schou <chlor@schou.dk>
+
+	* contrib/barcodeps-0.1.tgz: new file, sent to Alessandro on Oct 7
+
 2000-10-10  Alessandro Rubini  <rubini@morgana.systemy.it>
 
 	* doc/manpager: use gsub instead of gensub, even though it may
