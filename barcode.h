@@ -24,8 +24,8 @@
 
 #include <stdio.h>
 
-#define BARCODE_VERSION     "0.96" 
-#define BARCODE_VERSION_INT   9600
+#define BARCODE_VERSION     "0.97" 
+#define BARCODE_VERSION_INT   9700
 
 /*
  * The object
@@ -55,6 +55,9 @@ struct Barcode_Item {
 #define BARCODE_OUTPUT_MASK   0x000ff000   /* 256 output types */
 #define BARCODE_OUT_EPS       0x00001000
 #define BARCODE_OUT_PS        0x00002000
+#define BARCODE_OUT_PCL       0x00004000   /* by Andrea Scopece */
+/*                  PCL_III   0x00008000   */
+#define BARCODE_OUT_PCL_III   0x0000C000
 #define BARCODE_OUT_NOHEADERS 0x00100000   /* no header nor footer */
 
 enum {
