@@ -35,7 +35,8 @@ fi
 dnl Check if we use makeinfo or the local texi2html tool
 AC_MSG_CHECKING("if makeinfo can output html")
 MAKEINFOHTML=no
-${MAKEINFO=makeinfo} --help | grep .--html > /dev/null && MAKEINFOHTML=yes
+MAKEINFO=${MAKEINFO=makeinfo}
+$MAKEINFO --help | grep .--html > /dev/null && MAKEINFOHTML=yes
 AC_MSG_RESULT($MAKEINFOHTML)
 if test "$MAKEINFOHTML" = "yes"; then
    REMOVEHTMLTAGS="cat"
