@@ -1,3 +1,10 @@
+2000-05-08  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* cmdline.c (commandline_errormsg): removed "?:" gcc extension
+
+	* configure.in: added checks for unistd.h and strcasecmp, as
+		windows doesn't have them (thanks Marten Karl)
+
 2000-04-21  Alessandro Rubini  <rubini@morgana.systemy.it>
 
 	* doc/Makefile: modified to build with both gmake and pmake
