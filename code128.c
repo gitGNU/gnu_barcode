@@ -1,9 +1,33 @@
+/*
+ * code128.c -- encoding for code128 (A, B, C)
+ *
+ * Copyright (c) 1999 Alessandro Rubini (rubini@prosa.it)
+ * Copyright (c) 1999 Prosa Srl. (prosa@prosa.it)
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 2 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 #include <errno.h>
+
 #include "barcode.h"
 
-#if 0 /* until I use it, let's comment it out */
-
-static char *code[] = {
+static char *codeset[] = {
     "212222", "222122", "222221", "121223", "121322",  /*  0 -  4 */
     "131222", "122213", "122312", "132212", "221213",
     "221312", "231212", "112232", "122132", "122231",  /* 10 - 14 */
@@ -41,26 +65,118 @@ static char *code[] = {
 #define FUNC_3   96 /* only A and B */
 /* FUNC_4 is CODE_A when in A and CODE_B when in B */
 
-#endif
+#define SYMBOL_WID 11 /* all of them are 11-bar wide */
 
+#if 0
 int Barcode_128_verify(char *text)
 {
+    /* not implemented */
     return -1;
 }
 
 int Barcode_128_encode(struct Barcode_Item *bc)
 {
+    /* not implemented */
     bc->error = ENOSYS;
     return -1;
 }
+#endif
 
-int Barcode_128c_verify(char *text)
+int Barcode_128c_verify(unsigned char *text)
 {
-    return -1;
+    if (!strlen(text))
+	return -1;
+    /* must be an even number of digits */
+    if (strlen(text)%2)
+	return -1;
+    /* and must be all digits */
+    for (; *text; text++)
+	if (!isdigit(*text))
+	    return -1;
+    return 0;
 }
 
 int Barcode_128c_encode(struct Barcode_Item *bc)
 {
+    static char *text;
+    static char *partial;  /* dynamic */
+    static char *textinfo; /* dynamic */
+    char *textptr;
+    int i, code, textpos, checksum = 0;
+
+    if (bc->partial)
+	free(bc->partial);
+    if (bc->textinfo)
+	free(bc->textinfo);
+    bc->partial = bc->textinfo = NULL; /* safe */
+
+    if (!bc->encoding)
+	bc->encoding = strdup("code 128-C");
+
+    text = bc->ascii;
+    if (!text) {
+        bc->error = ENODATA;
+        return -1;
+    }
+    /* the partial code is 6* (head + text + check + tail) + final + term. */
+    partial = malloc( (strlen(text) + 3) * 6 +2);
+    if (!partial) {
+        bc->error = errno;
+        return -1;
+    }
+
+    /* the text information is at most "nnn:fff:c " * strlen +term */
+    textinfo = malloc(10*strlen(text) + 2);
+    if (!textinfo) {
+        bc->error = errno;
+        free(partial);
+        return -1;
+    }
+
+    strcpy(partial, "0"); /* the first space */
+    strcat(partial, codeset[START_C]);
+    textptr = textinfo;
+    textpos = SYMBOL_WID;
+
+    for (i=0; i<strlen(text); i+=2) {
+        if (!isdigit(text[i]) || !isdigit(text[i+1])) {
+            bc->error = EINVAL; /* impossible if text is verified */
+            free(partial);
+            free(textinfo);
+            return -1;
+        }
+        code = (text[i]-'0') * 10 + text[i+1]-'0';
+	strcat(partial, codeset[code]);
+	checksum += code * (i/2+1); /* first * 1 + second * 2 + third * 3... */
+
+        sprintf(textptr, "%g:9:%c %g:9:%c ", (double)textpos, text[i],
+		textpos + (double)SYMBOL_WID/2,	text[i+1]);
+        textpos += SYMBOL_WID; /* width of each code */
+        textptr += strlen(textptr);
+    }
+    /* Add the checksum, independent of BARCODE_NO_CHECKSUM */
+    checksum %= 103;
+    strcat(partial, codeset[checksum]);
+    /* and the end marker */
+    strcat(partial, codeset[STOP]);
+
+    bc->partial = partial;
+    bc->textinfo = textinfo;
+
+    return 0;
+}
+
+#if 0
+int Barcode_128_verify(char *text)
+{
+    /* not implemented */
+    return -1;
+}
+
+int Barcode_128_encode(struct Barcode_Item *bc)
+{
+    /* not implemented */
     bc->error = ENOSYS;
     return -1;
 }
+#endif
