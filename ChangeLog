@@ -1,5 +1,8 @@
 2000-10-02  Alessandro Rubini  <rubini@morgana.systemy.it>
 
+	* ps.c (Barcode_ps_print): add a backslash in front of '(' too.
+		Suggested by H Y <hlyi@yahoo.com>
+
 	* main.c (get_geometry): accept "+offset+offset" to keep default size.
 		Suggested by Godmar Back <gback@cs.utah.edu>.
 
