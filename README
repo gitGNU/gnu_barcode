@@ -4,16 +4,15 @@ and mirrors:
 	ftp://ftp.gnu.org/pub/gnu/barcode/
 
 It is also available from my own ftp server and mirrors
-	ftp://gnu.systemy.it/pub/barcode/ (all versions)
+	ftp://ar.linux.it/pub/barcode/ (all versions)
 	ftp://ftp.systemy.it/pub/develop (selected packages, last version)
 	ftp://ftp.linux.it/pub/People/Rubini (mirror of ftp.systemy)
-	ftp://ftp.prosa.it/pub/people/rubini (mirror of ftp.systemy)
 
 The current source tree is available by anonymous CVS. See
-	http://gnu.systemy.it/software/#cvs
+	http://ar.linux.it/software/#cvs
 
 The documentation is online at:
-	http://gnu.systemy.it/software/barcode
+	http://ar.linux.it/software/barcode
 
 
 
@@ -54,9 +53,16 @@ for introducing me to Debian packaging. This release includes several
 new encodings implemented by Leonid A. Broukhis (leob@mailcom.com).
 
 There is a mailing list where development is coordinated, called
-barcode@prosa.it . To get subscribed you should
-	echo subscribe | mail barcode-request@prosa.it
+barcode@lists.linux.it . To get subscribed you should
+	echo subscribe | mail barcode-request@lists.linux.it
 or anything equivalent.
+
+To receive notification of CVS commit messages, please subscribe to
+barcode-commit@ar.linux.it, by issuing:
+	echo subscribe | mail barcode-commit-request@ar.linux.it
+
+(if you guess, "ar" or "arcana" is my own server, while lists.linux.it
+is the mail server of the italian association of gnu/linux users).
 
 /alessandro (rubini@gnu.org)
 
