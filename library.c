@@ -16,7 +16,7 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
- *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
 #include <stdio.h>
@@ -68,24 +68,24 @@ int Barcode_Delete(struct Barcode_Item *bc)
  * The various supported encodings.  This might be extended to support
  * dynamic addition of extra encodings
  */
-extern int Barcode_ean_verify(char *text);
+extern int Barcode_ean_verify(unsigned char *text);
 extern int Barcode_ean_encode(struct Barcode_Item *bc);
-extern int Barcode_upc_verify(char *text);
+extern int Barcode_upc_verify(unsigned char *text);
 extern int Barcode_upc_encode(struct Barcode_Item *bc);
-extern int Barcode_isbn_verify(char *text);
+extern int Barcode_isbn_verify(unsigned char *text);
 extern int Barcode_isbn_encode(struct Barcode_Item *bc);
-extern int Barcode_39_verify(char *text);
+extern int Barcode_39_verify(unsigned char *text);
 extern int Barcode_39_encode(struct Barcode_Item *bc);
 #if 0 /* not yet implemented */
-extern int Barcode_128_verify(char *text);
+extern int Barcode_128_verify(unsigned char *text);
 extern int Barcode_128_encode(struct Barcode_Item *bc);
-extern int Barcode_128c_verify(char *text);
+extern int Barcode_128c_verify(unsigned char *text);
 extern int Barcode_128c_encode(struct Barcode_Item *bc);
 #endif
 
 struct encoding {
     int type;
-    int (*verify)(char *text);
+    int (*verify)(unsigned char *text);
     int (*encode)(struct Barcode_Item *bc);
 };
 
@@ -120,7 +120,7 @@ int Barcode_Encode(struct Barcode_Item *bc, int flags)
     if (!(flags & BARCODE_ENCODING_MASK)) {
 	/* get the first code able to handle the text */
 	for (cptr = encodings; cptr->verify; cptr++)
-	    if (cptr->verify(bc->ascii)==0)
+	    if (cptr->verify((unsigned char *)bc->ascii)==0)
 		break;
 	if (!cptr->verify) {
 	    bc->error = EINVAL; /* no code can handle this text */
