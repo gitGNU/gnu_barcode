@@ -28,7 +28,9 @@ MAN3 = $(TARGET).3
 INFO = doc/$(TARGET).info
 HEADER = $(TARGET).h
 
-LIBOBJECTS = library.o ean.o code128.o code39.o i25.o ps.o
+LIBOBJECTS = library.o ean.o code128.o code39.o i25.o \
+		msi.o plessey.o codabar.o \
+		ps.o
 EXEOBJECTS = main.o cmdline.o $(GETOPT_O)
 ALLSOURCES = $(LIBOBJECTS:.o=.c) $(EXEOBJECT:.o=.c)
 
