@@ -1,3 +1,13 @@
+1999-07-06  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* Makefile: dirty autodetect of libpaper
+
+	* main.c (get_page_geometry): parse a cmdline argument (mcm@glisco.it)
+	(main): added "--version"
+	(main): added diagnostic message for unencodable strings
+
+====> Version 0.90.1 released to ftp.prosa.it/pub/software
+
 1999-07-03  Alessandro Rubini  <rubini@morgana.systemy.it>
 
 	* barcode.h: removed BARCODE_OUT_PG_* as only the library doesn't
