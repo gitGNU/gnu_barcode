@@ -31,7 +31,7 @@
 
 @setchapternewpage off
 
-@set version 0.90.1
+@set version 0.90.23
 @set update-month July 1999
 
 @finalout
@@ -429,7 +429,7 @@ library from the command line.  It is able to read user supplied
 strings from the commandline or a data file (standard input by default)
 and encode all of them.
 
-%M .SS OPTIONS
+%M .SH OPTIONS
 %M .PP
 
 @menu
@@ -516,7 +516,19 @@ and encode all of them.
 	Encapsulated postscript (default is normal postscript. When
 	the output is generated a EPS only one text string is encoded.
 
+@item -p pagesize
+	Spacify a non-default page size. The page size can be specified
+        in millimeters, inches or points (for example: "@t{210x297mm}",
+        "@t{8.5x11in}", "@t{595x842}").  If libpaper is available,
+        you can also specify the page size with its name, like "@t{A3}"
+        or "@t{letter}" (libpaper is a standard component of Debian
+        GNU/Linux, but may be missing elsewhere). The default page
+        size is your system-wide default if libpaper is there, A4 otherwise.
+
 @end table
+
+%M .SH ENCODING TYPES
+%M .PP
 
 @node  Supported Encodings, Bugs and Pending Issues, The Command Line, The barcode Executable
 @section Supported Encodings
@@ -565,11 +577,13 @@ the encoding types are scanned to find one that can digest the text string.
 
 @item code 39
 
-	The code-39 standard can encodeaccepts letters, digits, the
-	space and the following characters: ``@t{.*$/+%}''.  Any
-	string that is only composed of such characters is accepted by
-	the code-39 encoder. Alphabetic letters, however, are
-	case-insensitive.
+	The code-39 standard can encode uppercase letters, digits, the
+	blank space, plus, minus, dot, star, dollar, slash, percent.
+	Any string that is only composed of such characters is
+	accepted by the code-39 encoder. To avoid loosing information,
+	the encoder refuses to encode mixed-case strings (a lowercase
+	string is nonetheless accepted as a shortcut, but is encoded
+	as uppercase).
 
 @end table
 
