@@ -55,7 +55,7 @@ $(LIBRARY): $(LIBOBJECTS)
 	$(RANLIB) $(LIBRARY)
 
 $(MAN1) $(MAN3): doc/doc.$(TARGET)
-	gawk -f doc/manpager doc/doc.$(TARGET)
+	awk -f doc/manpager doc/doc.$(TARGET)
 
 
 # Unfortunately, pmake has no "-C". Also, "pmake -n" doesn't follow the cd.
