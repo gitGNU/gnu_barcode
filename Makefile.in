@@ -112,7 +112,7 @@ tar:
 	else \
 	    if [ -d ../$(TARGET)-$(RELEASE) ]; then \
 		rm -rf ../$(TARGET)-$(RELEASE); \
-	    fi
+	    fi; \
 	    mkdir ../$(TARGET)-$(RELEASE) || exit 1; \
 	    cp -a . ../$(TARGET)-$(RELEASE) && cd .. && \
 	        tar --exclude '*/CVS*' \
