@@ -147,7 +147,6 @@ int Barcode_cbr_encode(struct Barcode_Item *bc)
         code = c - alphabet;
         add_one(ptr, code);
         sprintf(textptr, "%i:12:%c ", textpos, toupper(text[i]));
-        
         textpos += code < 12 ? NARROW : WIDE;
         textptr += strlen(textptr);
         ptr += strlen(ptr); 
@@ -164,9 +163,6 @@ int Barcode_cbr_encode(struct Barcode_Item *bc)
 	    checksum = (checksum + 15) / 16 * 16 - checksum;
 	    add_one(ptr, checksum);
 	    ptr += strlen(ptr);
-	    sprintf(textptr, "%i:12:%c ", textpos, alphabet[checksum]);
-	    textpos += checksum < 12 ? NARROW : WIDE;
-	    textptr += strlen(textptr);
 	}
     }
     if (!startpresent) {
