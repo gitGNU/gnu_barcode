@@ -22,9 +22,7 @@ Possible enhancements that I'd like to add
 
 	Using "points" as a measure is definitely inpractical
 
-* use page size information (it assumes a4 rigth now)
-
-* should use libpaper where present (and, thus, autoconf)
+* use autoconf instead of the dirty Makefile tricks
 
 * document the intermediate representation in the real docs (instead of ps.c)
 
