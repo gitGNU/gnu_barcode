@@ -124,7 +124,7 @@ struct encoding encodings[] = {
 /*
  * A function to encode a string into bc->partial, ready for
  * postprocessing to the output file. Meaningful bits for "flags" are
- * the encoding mask, the noascii bit and stretch bit. These bits
+ * the encoding mask and the no-checksum flag. These bits
  * get saved in the data structure.
  */
 int Barcode_Encode(struct Barcode_Item *bc, int flags)
@@ -135,6 +135,8 @@ int Barcode_Encode(struct Barcode_Item *bc, int flags)
     /* If any flag is cleared in "flags", inherit it from "bc->flags" */
     if (!(flags & BARCODE_ENCODING_MASK))
 	flags |= bc->flags & BARCODE_ENCODING_MASK;
+    if (!(flags & BARCODE_NO_CHECKSUM))
+	flags |= bc->flags & BARCODE_NO_CHECKUM;
     flags = bc->flags = (flags & validbits) | (bc->flags & ~validbits);
 
     if (!(flags & BARCODE_ENCODING_MASK)) {
@@ -173,7 +175,7 @@ extern int Barcode_pcl_print(struct Barcode_Item *bc, FILE *f);
 
 /*
  * A function to print a partially decoded string. Meaningful bits for
- * "flags" are the output mask. These bits get saved in the data
+ * "flags" are the output mask etc. These bits get saved in the data
  * structure. 
  */
 int Barcode_Print(struct Barcode_Item *bc, FILE *f, int flags)
