@@ -125,7 +125,7 @@ $(TARGET).html: $(TARGET).texinfo
 #		manpages are created by the toplevel Makefile
 
 $(TARGET)doc.txt: $(TARGET).info
-	gawk -f ./mktxt $(TARGET).info > $@
+	awk -f ./mktxt $(TARGET).info > $@
 
 
 
