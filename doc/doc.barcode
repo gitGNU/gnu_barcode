@@ -31,8 +31,8 @@
 
 @setchapternewpage off
 
-@set version 0.91.1
-@set update-month July 1999
+@set version 0.91.2
+@set update-month August 1999
 
 @finalout
 
@@ -108,7 +108,7 @@ The definition of the data structure is included here for reference:
 
 @lisp
 struct Barcode_Item @{
-    int flags;         /* type of encoding and decoding */
+    int flags;         /* type of encoding and other flags */
     char *ascii;       /* malloced */
     char *partial;     /* malloced too */
     char *textinfo;    /* information about text positioning */
