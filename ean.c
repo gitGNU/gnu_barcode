@@ -233,7 +233,7 @@ static char *upc_e_to_a(char *text)
     return result;
 }
 
-static int width_of_partial(char *partial)
+static int width_of_partial(unsigned char *partial)
 {
     int i=0;
     while (*partial) {
@@ -515,8 +515,8 @@ int Barcode_upc_encode(struct Barcode_Item *bc)
 int Barcode_isbn_encode(struct Barcode_Item *bc)
 {
     /* For ISBN we must normalize the string and prefix "978" */
-    char *text = malloc(24); /* 13 + ' ' + 5 plus some slack */
-    char *otext;
+    unsigned char *text = malloc(24); /* 13 + ' ' + 5 plus some slack */
+    unsigned char *otext;
     int i, j, retval;
 
     if (!text) {
