@@ -984,6 +984,21 @@ NO_STRERROR=-DNO_STRERROR
 fi
 
 
+echo $ac_n "checking "for gmake"""... $ac_c" 1>&6
+echo "configure:989: checking "for gmake"" >&5
+make --version 2> /dev/null | grep GNU > /dev/null || GMAKE=no
+make --version 2> /dev/null | grep GNU > /dev/null && GMAKE=yes
+echo "$ac_t""$GMAKE" 1>&6
+if test $GMAKE = yes; then
+	GMAKEDEPEND0='ifeq (.depend,$(wildcard .depend))'
+	GMAKEDEPEND1='include .depend'
+	GMAKEDEPEND2='endif'
+fi
+
+
+
+
+
 
 
 
@@ -1142,6 +1157,9 @@ s%@NO_GETOPT@%$NO_GETOPT%g
 s%@NO_LIBPAPER@%$NO_LIBPAPER%g
 s%@LIBPAPER@%$LIBPAPER%g
 s%@NO_STRERROR@%$NO_STRERROR%g
+s%@GMAKEDEPEND0@%$GMAKEDEPEND0%g
+s%@GMAKEDEPEND1@%$GMAKEDEPEND1%g
+s%@GMAKEDEPEND2@%$GMAKEDEPEND2%g
 
 CEOF
 EOF
