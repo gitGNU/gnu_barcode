@@ -68,6 +68,15 @@ static char *upc_mirrortab[] = {
      "---111","--1-11","--11-1","--111-","-1--11",
      "-11--1","-111--","-1-1-1","-1-11-","-11-1-"
 };
+
+/*
+ * UPC-E mirroring for encoding "1"
+ */
+static char *upc_mirrortab1[] = {
+     "111---","11-1--","11--1-","11---1","1-11--",
+     "1--11-","1---11","1-1-1-","1-1--1","1--1-1"
+};
+
 /* UPC-2 has just two digits to mirror */
 static char *upc_mirrortab2[] = {
     "11","1-","-1","--"
@@ -86,54 +95,278 @@ static char *guardE[] = {"0a1a","1a1a1a"};
 static char *guardS[] = {"9112","11"};
 
 /*
- * Check that the text can be encoded. Returns 0 or -1.
- * The checksum is added later on, accept 12 digits (EAN-13) or 8 (EAN-8).
- * For the 12-digit case, accept an addon of 2 or 5 digits, separated by ' '
+ * These functions are shortcuts I use in the encoding engine
  */
-int Barcode_ean_verify(unsigned char *text)
+static int ean_make_checksum(char *text, int mode)
 {
-    int i, len = strlen(text);
-    if (len != 12 && len != 7 && len != 15 && len != 18) {
-        return -1;
-    }
-    if (len >12) {/* add-2 or add-5 */
-	if (text[12] != ' ' || !isdigit(text[13]) || !isdigit(text[14]))
-	    return -1;
-	if (len == 18) /* add-5 */
-	    if (!isdigit(text[15]) || !isdigit(text[16]) || !isdigit(text[17]))
-		return -1;
-	/* ok, now check the initial digits */
-	len = 12;
-    }
+    int esum = 0, osum = 0, i;
+    int even=1; /* last char is even */
 
-    for (i=0; i<len; i++)
-        if (!isdigit(text[i]))
-            return -1;
-    return 0;
+    if (strchr(text, ' '))
+	i = strchr(text, ' ') - text; /* end of first part */
+    else 
+	i = strlen(text); /* end of all */
+
+    while (i-- > 0) {
+	if (even) esum += text[i]-'0';
+	else      osum += text[i]-'0';
+	even = !even;
+    }
+    if (!mode) { /* standard upc/ean checksum */
+	i = (3*esum + osum) % 10;
+	return (10-i) % 10; /* complement to 10 */
+    } else { /* add-5 checksum */
+	i = (3*esum + 9*osum);
+	return i%10;
+    }
 }
 
 /*
- * Upc is the same, but accept 11 digits (UPC-A) or 6 (UPC-E) or the add-on
+ * Check that the text can be encoded. Returns 0 or -1.
+ * Accept:
+ *   13 or 12 digits: EAN-13 w/ or w/o checksum
+ * or
+ *   8 or 7 digits: EAN-8 w/ or w/o checksum.
+ * For both EAN-13 and EAN-8, accept an addon of 2 or 5 digits,
+ * separated by ' '
+ */
+int Barcode_ean_verify(unsigned char *text)
+{
+    int i, len0, len, addon;
+    unsigned char tmp[24], *spc;
+
+    len = strlen(text);
+    spc = strchr(text, ' ');
+    if (spc) {
+	len0 = spc - text;
+	addon = len - len0 - 1;
+	if (addon != 2 && addon != 5)
+		return -1;
+	for (i=len0+1; i<len; i++)
+	    if (!isdigit(text[i]))
+		return -1;
+    } else
+	len0 = len;
+
+    for (i=0; i<len0; i++)
+        if (!isdigit(text[i]))
+            return -1;
+
+    switch (len0) {
+    case 8:
+	strncpy(tmp, text, 7);
+	tmp[7] = '\0';
+	if (text[7] != (ean_make_checksum(tmp, 0) + '0'))
+		return -1;
+    case 7:
+    	break;
+    case 13:
+	strncpy(tmp, text, 12);
+	tmp[12] = '\0';
+	if (text[12] != (ean_make_checksum(tmp, 0) + '0'))
+		return -1;
+    case 12:
+    	break;
+    default:
+	return -1;
+    }
+    return 0;
+}
+
+/* Expand the middle part of UPC-E to UPC-A */
+static char *upc_e_to_a0(unsigned char *text)
+{
+    static char result[16];
+    strcpy(result, "00000000000"); /* 11 0's */
+
+    switch(text[5]) { /* last char */
+        case '0': case '1': case '2':
+	    strncpy(result+1, text,  2); result[3]=text[5]; /* Manuf. */
+	    memcpy(result+8, text+2, 3); /* Product */
+	    break;
+        case '3':
+	    memcpy(result+1, text,   3); /* Manufacturer */
+	    memcpy(result+9, text+3, 2); /* Product */
+	    break;
+        case '4':
+	    memcpy(result+1,  text,   4); /* Manufacturer */
+	    memcpy(result+10, text+4, 1); /* Product */
+	    break;
+        default:
+	    memcpy(result+1,  text,   5); /* Manufacturer */
+	    memcpy(result+10, text+5, 1); /* Product */
+	    break;
+    }
+    return result;
+}
+
+/* Try to expand an UPC-E barcode to its UPC-A equivalent.
+ * Accept 6, 7 or 8-digit sequence (not counting the addon):
+ *  6:  only the middle part, encoding "0", w/o checksum.
+ *  7:  the middle part, encoding "0" with a correct checksum
+ *    or
+ *      the middle part, encoding "0" or "1" prepended
+ *  8:  fully qualified UPC-E with checksum.
+ *
+ * Returns a 11 digit UPC-A (w/o checksum) for valid EPC-E barcode
+ * or an empty string for an invalid one.
+ *
+ * The checksum for UPC-E is calculated using its UPC-A equivalent.
+ */
+static char *upc_e_to_a(unsigned char *text)
+{
+    static unsigned char	result[16], *spc;
+    int				len, chk;
+
+    spc = strchr(text, ' ');
+    if (spc)
+	len = spc - text;
+    else
+	len = strlen(text);
+
+    switch (len) {
+    case 6:
+	strcpy(result, upc_e_to_a0(text));
+	return result;
+    case 7:
+	/* the first char is '0' or '1':
+	 * valid number system for UPC-E and no checksum
+	 */
+	if (text[0] == '0' || text[0] == '1') {
+		strcpy(result, upc_e_to_a0(text+1));
+		result[0] = text[0];
+		return result;
+	}
+
+	/* Find out whether the 7th char is correct checksum */
+	strcpy(result, upc_e_to_a0(text));
+	chk = ean_make_checksum(result, 0);
+
+	if (chk == (text[len-1] - '0'))
+		return result;
+	/* Invalid 7 digit representation for UPC-E. */
+	return NULL;
+    case 8:
+	if (text[0] == '0' || text[0] == '1') {
+		strcpy(result, upc_e_to_a0(text+1));
+		result[0] = text[0];
+		chk = ean_make_checksum(result, 0);
+		if (chk == (text[len-1] - '0'))
+			return result;
+	}
+    default:
+	/* Invalid representation for UPC-E. */
+	return NULL;
+    }
+}
+
+/*
+ * Accept a 11 or 12 digit UPC-A barcode and
+ * shrink it into an 8-digit UPC-E equivalent if possible.
+ * Return NULL if impossible, the UPC-E barcode if possible.
+ */
+static unsigned char *upc_a_to_e(unsigned char *text)
+{
+    static unsigned char	result[16];
+    int				len, chksum;
+
+    len = strlen(text);
+    switch (len) {
+    case 12:
+	strcpy(result, text);
+	result[11] = '\0';
+	chksum = ean_make_checksum(result, 0);
+	if (text[11] != (chksum - '0'))
+		return NULL;
+	break;
+    case 11:
+	chksum = ean_make_checksum(text, 0);
+	break;
+    default:
+	return NULL;
+    }
+
+    strcpy(result, "00000000"); /* 8 0's*/
+
+    /* UPC-E can only be used with number system 0 or 1 */
+    if (text[0] != '0' && text[0] != '1')
+    	return NULL;
+
+    result[0] = text[0];
+
+    if ((text[3] == '0' || text[3] == '1' || text[3] == '2')
+	    && !strncmp(text+4, "0000", 4)) {
+ 	memcpy(&result[1], text+1, 2);
+ 	memcpy(&result[3], text+8, 3);
+	result[6] = text[3];
+    } else if (!strncmp(text+4, "00000", 5)) {
+ 	memcpy(&result[1], text+1, 3);
+ 	memcpy(&result[4], text+9, 2);
+	result[6] = '3';
+    } else if (!strncmp(text+5, "00000", 5)) {
+	memcpy(&result[1], text+1, 4);
+	result[5] = text[10];
+	result[6] = '4';
+    } else if ((text[5] != '0') && !strncmp(text+6, "0000", 4)
+	    && text[10] >= '5' && text[10] <= '9') {
+ 	memcpy(&result[1], text+1, 5);
+	result[6] = text[10];
+    } else {
+	return NULL;
+    }
+    result[7] = chksum + '0';
+
+    return result;
+}
+
+/*
+ * UPC-A is the same as EAN, but accept
+ *    12 or 11 digits (UPC-A w/ or w/o checksum)
+ * or accept UPC-E as:
+ *    6 digits (w/o number system and checksum): number system '0' assumed,
+ *    7 digits (either w/o number system or checksum),
+ *    8 digits (w/ number system and checksum)
+ * plus the 2 or 5-digit add-on
  */
 int Barcode_upc_verify(unsigned char *text)
 {
-    int i, len = strlen(text);
-    if (len != 11 && len != 6 && len != 14 && len != 17) {
-        return -1;
-    }
-    if (len >11) {/* add-2 or add-5 */
-	if (text[11] != ' ' || !isdigit(text[12]) || !isdigit(text[13]))
-	    return -1;
-	if (len == 17) /* add-5 */
-	    if (!isdigit(text[14]) || !isdigit(text[15]) || !isdigit(text[16]))
-		return -1;
-	/* ok, now check the initial digits */
-	len = 11;
-    }
+    int i, len0, len, addon;
+    unsigned char tmp[24], *spc;
 
-    for (i=0; i<len; i++)
+    len = strlen(text);
+    spc = strchr(text, ' ');
+    if (spc) {
+	len0 = spc - text;
+	addon = len - len0 - 1;
+	if (addon != 2 && addon != 5)
+		return -1;
+	for (i=len0+1; i<len; i++)
+	    if (!isdigit(text[i]))
+		return -1;
+    } else
+	len0 = len;
+
+    for (i=0; i<len0; i++)
         if (!isdigit(text[i]))
             return -1;
+
+    switch (len0) {
+    case 6: case 7: case 8:
+	strncpy(tmp, text, len0);
+	tmp[len0] = '\0';
+	if (!upc_e_to_a(tmp))
+		return -1;
+	break;
+    case 12:
+	strncpy(tmp, text, 11);
+	tmp[11] = '\0';
+	if (text[11] != (ean_make_checksum(tmp, 0) + '0'))
+		return -1;
+    case 11:
+    	break;
+    default:
+	return -1;
+    }
     return 0;
 }
 
@@ -183,56 +416,6 @@ int Barcode_isbn_verify(unsigned char *text)
     return 0; /* Ok: isbn + 5-digit addon */
 }
 
-/*
- * These functions are shortcuts I use in the encoding engine
- */
-static int ean_make_checksum(char *text, int mode)
-{
-    int esum = 0, osum = 0, i;
-    int even=1; /* last char is even */
-
-    if (strchr(text, ' '))
-	i = strchr(text, ' ') - text; /* end of first part */
-    else 
-	i = strlen(text); /* end of all */
-
-    while (i-- > 0) {
-	if (even) esum += text[i]-'0';
-	else      osum += text[i]-'0';
-	even = !even;
-    }
-    if (!mode) { /* standard upc/ean checksum */
-	i = (3*esum + osum) % 10;
-	return (10-i) % 10; /* complement to 10 */
-    } else { /* add-5 checksum */
-	i = (3*esum + 9*osum);
-	return i%10;
-    }
-}
-
-/* The checksum for UPC-E is calculated using its UPC-A equivalent */
-static char *upc_e_to_a(char *text)
-{
-    static char result[16];
-    strcpy(result, "00000000000"); /* 11 0's */
-
-    switch(text[5]) { /* last char */
-        case '0': case '1': case '2':
-	    memcpy(result+1, text,   2); result[3]=text[5]; /* Manuf. */
-	    memcpy(result+8, text+2, 3); /* Product */
-        case '3':
-	    memcpy(result+1, text,   3); /* Manufacturer */
-	    memcpy(result+9, text+3, 2); /* Product */
-        case '4':
-	    memcpy(result+1,  text,   4); /* Manufacturer */
-	    memcpy(result+10, text+4, 1); /* Product */
-        default:
-	    memcpy(result+1,  text,   5); /* Manufacturer */
-	    memcpy(result+10, text+5, 1); /* Product */
-    }
-    return result;
-}
-
 static int width_of_partial(unsigned char *partial)
 {
     int i=0;
@@ -256,45 +439,74 @@ int Barcode_ean_encode(struct Barcode_Item *bc)
     static char partial[256];
     static char textinfo[256];
     char *mirror, *ptr1, *ptr2, *tptr = textinfo; /* where text is written */
+    char *spc;
 
     enum {UPCA, UPCE, EAN13, EAN8, ISBN} encoding = ISBN;
-    int i, xpos, checksum;
+    int i, xpos, checksum, len, len0, addon;
 
     if (!bc->ascii) {
 	bc->error = EINVAL;
 	return -1;
     }
+
+    /* Find out whether the barcode has addon and
+     * the length of the barcode w/o the addon.
+     */
+    len = strlen(bc->ascii);
+    spc = strchr(bc->ascii, ' ');
+    if (spc) {
+	len0 = spc - bc->ascii;
+	addon = strlen(spc + 1);
+	if (addon != 2 && addon != 5) {
+	    bc->error = EINVAL; /* impossible, actually */
+	    return -1;
+	}
+    } else {
+	len0 = len;
+	addon = 0;
+    }
+
     if (!bc->encoding) {
 	/* ISBN already wrote what it is; if unknown, find it out */
-	switch(strlen(bc->ascii)) {
-	    case 12:
-		bc->encoding = strdup("EAN-13");
-		encoding = EAN13;
-		break;
-	    case 11:
-		bc->encoding = strdup("UPC-A");
-		encoding = UPCA;
-		break;
-	    case 7:
-		bc->encoding = strdup("EAN-8");
-		encoding = EAN8;
-		break;
-	    case 6:
-		bc->encoding = strdup("UPC-E");
-		encoding = UPCE;
-		break;
-	    default:
-		/* it may be UPC or EAN13 with an addon */
-		if (strlen(bc->ascii) > 13) {
-		    if (bc->ascii[12]==' ') {
+
+	/*
+	 * Do not decide only by barcode length, it may be ambiguous.
+	 * Anyway, either the user specified the barcode type or
+	 * we already found a fitting one.
+	 */
+	switch(bc->flags & BARCODE_ENCODING_MASK) {
+	case BARCODE_EAN:
+		switch (len0) {
+		case 7: case 8:
+			bc->encoding = strdup("EAN-8");
+			encoding = EAN8;
+			break;
+		case 12: case 13:
 			bc->encoding = strdup("EAN-13");
-			encoding = EAN13; break;
-		    }
-		    if (bc->ascii[11]==' ') {
-			bc->encoding = strdup("UPC-A");
-			encoding = UPCA; break;
-		    }
+			encoding = EAN13;
+			break;
+		default:
+			bc->error = -EINVAL;
+			return -1;
 		}
+		break;
+
+	case BARCODE_UPC:
+		switch (len0) {
+		case 6: case 7: case 8:
+			bc->encoding = strdup("UPC-E");
+			encoding = UPCE;
+			break;
+		case 11: case 12:
+			bc->encoding = strdup("UPC-A");
+			encoding = UPCA;
+			break;
+		default:
+			bc->error = -EINVAL;
+			return -1;
+		}
+		break;
+	default:
 		/* else, it's wrong (impossible, as the text is checked) */
 		bc->error = -EINVAL;
 		return -1;
@@ -308,6 +520,8 @@ int Barcode_ean_encode(struct Barcode_Item *bc)
     if (encoding == UPCA) { /* add the leading 0 (not printed) */
 	text[0] = '0';
 	strcpy(text+1, bc->ascii);
+    } else if (encoding == UPCE) {
+	strcpy(text, upc_a_to_e(upc_e_to_a(bc->ascii)));
     } else {
 	strcpy(text, bc->ascii);
     }
@@ -316,10 +530,12 @@ int Barcode_ean_encode(struct Barcode_Item *bc)
      * build the checksum and the bars: any encoding is slightly different
      */
     if (encoding == UPCA || encoding == EAN13 || encoding == ISBN) {
-
-	checksum = ean_make_checksum(text, 0);
-	text[12] = '0' + checksum; /* add it to the text */
-	text[13] = '\0';
+	if (!(encoding == UPCA && len0 == 12) &&
+		!(encoding == EAN13 && len0 == 13)) {
+		checksum = ean_make_checksum(text, 0);
+		text[12] = '0' + checksum; /* add it to the text */
+		text[13] = '\0';
+	}
 
 	strcpy(partial, guard[0]);
 	if (encoding == EAN13 || encoding == ISBN) { /* The first digit */
@@ -387,62 +603,25 @@ int Barcode_ean_encode(struct Barcode_Item *bc)
 	strcat(partial, guard[2]); /* end */
 	xpos += width_of_partial(guard[2]);
 
-	/*
-	 * And that's it. Now, in case some add-on is specified it
-	 * must be encoded too. Look for it.
-	 */
-	if ( (ptr1 = strchr(bc->ascii, ' ')) ) {
-	    ptr1++;
-	    if (strlen(ptr1) != 2 && strlen(ptr1) != 5) {
-		bc->error = EINVAL; /* impossible, actually */
-		return -1;
-	    }
-	    strcpy(text, ptr1);
-	    if (strlen(ptr1)==5) {
-		checksum = ean_make_checksum(text, 1 /* special way */);
-		mirror = upc_mirrortab[checksum]+1; /* only last 5 digits */
-	    } else {
-		checksum = atoi(text)%4;
-		mirror = upc_mirrortab2[checksum];
-	    }
-	    strcat(textinfo, " +"); strcat(partial, "+");
-	    tptr = textinfo + strlen(textinfo);
-	    for (i=0; i<strlen(text); i++) {
-		if (!i) {
-		    strcat(partial, guardS[0]); /* separation and head */
-		    xpos += width_of_partial(guardS[0]);
-		} else {
-		    strcat(partial, guardS[1]);
-		    xpos += width_of_partial(guardS[1]);
-		}
-		ptr1 = partial + strlen(partial); /* target */
-		ptr2 =  digits[text[i]-'0'];      /* source */
-		strcpy(ptr1, ptr2);
-		if (mirror[i] != '1') { /* negated wrt EAN13 */
-		    /* mirror this */
-		    ptr1[0] = ptr2[3];
-		    ptr1[1] = ptr2[2];
-		    ptr1[2] = ptr2[1];
-		    ptr1[3] = ptr2[0];
-		}
-		/* and the text */
-		sprintf(tptr, " %i:12:%c", xpos, text[i]);
-		tptr += strlen(tptr);
-		xpos += 7; /* width_of_partial(ptr2) */
-	    }
-	}
-
     } else if (encoding == UPCE) {
-
-	checksum = ean_make_checksum(upc_e_to_a(text), 0);
+	checksum = text[7] - '0';
 
 	strcpy(partial, guardE[0]);
+	partial[0] = '9'; /* UPC-A has one digit before the symbol, too */
 	xpos = width_of_partial(partial);
-	mirror = upc_mirrortab[checksum];
+
+	/* UPC-E has the number system written before the bars. */
+	sprintf(tptr, "0:10:%c ", text[0]);
+	tptr += strlen(tptr);
+
+	if (text[0] == '0')
+		mirror = upc_mirrortab[checksum];
+	else
+		mirror = upc_mirrortab1[checksum];
 
 	for (i=0;i<6;i++) {      
 	    ptr1 = partial + strlen(partial); /* target */
-	    ptr2 =  digits[text[i]-'0'];      /* source */
+	    ptr2 =  digits[text[i+1]-'0'];      /* source */
 	    strcpy(ptr1, ptr2);
 	    if (mirror[i] != '1') { /* negated wrt EAN13 */
 		/* mirror this */
@@ -451,18 +630,26 @@ int Barcode_ean_encode(struct Barcode_Item *bc)
 		ptr1[2] = ptr2[1];
 		ptr1[3] = ptr2[0];
 	    }
-	    sprintf(tptr, "%i:12:%c ", xpos, text[i]);
+	    sprintf(tptr, "%i:12:%c ", xpos, text[i+1]);
 	    tptr += strlen(tptr);
 	    xpos += 7; /* width_of_partial(ptr2) */
 	}
+
+	sprintf(tptr, "%i:10:%c ", xpos+10, text[7]);
+	tptr += strlen(tptr);
+	ptr1[0] += 'a'-'1'; /* bars are long */
+	ptr1[2] += 'a'-'1';
+
 	tptr[-1] = '\0'; /* overwrite last space */
 	strcat(partial, guardE[1]); /* end */
 
     } else { /* EAN-8  almost identical to EAN-13 but no mirroring */
 
-	checksum = ean_make_checksum(text, 0);
-	text[7] = '0' + checksum; /* add it to the text */
-	text[8] = '\0';
+	if (len0 != 8) {
+	    checksum = ean_make_checksum(text, 0);
+	    text[7] = '0' + checksum; /* add it to the text */
+	    text[8] = '\0';
+	}
 
 	strcpy(partial, guard[0]);
 	xpos = width_of_partial(partial);
@@ -486,6 +673,47 @@ int Barcode_ean_encode(struct Barcode_Item *bc)
 	}
 	tptr[-1] = '\0'; /* overwrite last space */
 	strcat(partial, guard[2]); /* end */
+    }
+
+    /*
+     * And that's it. Now, in case some add-on is specified it
+     * must be encoded too. Look for it.
+     */
+    if ( (ptr1 = spc) ) {
+	ptr1++;
+	strcpy(text, ptr1);
+	if (strlen(ptr1)==5) {
+	    checksum = ean_make_checksum(text, 1 /* special way */);
+	    mirror = upc_mirrortab[checksum]+1; /* only last 5 digits */
+	} else {
+	    checksum = atoi(text)%4;
+	    mirror = upc_mirrortab2[checksum];
+	}
+	strcat(textinfo, " +"); strcat(partial, "+");
+	tptr = textinfo + strlen(textinfo);
+	for (i=0; i<strlen(text); i++) {
+	    if (!i) {
+		strcat(partial, guardS[0]); /* separation and head */
+		xpos += width_of_partial(guardS[0]);
+	    } else {
+		strcat(partial, guardS[1]);
+		xpos += width_of_partial(guardS[1]);
+	    }
+	    ptr1 = partial + strlen(partial); /* target */
+	    ptr2 =  digits[text[i]-'0'];      /* source */
+	    strcpy(ptr1, ptr2);
+	    if (mirror[i] != '1') { /* negated wrt EAN13 */
+		/* mirror this */
+		ptr1[0] = ptr2[3];
+		ptr1[1] = ptr2[2];
+		ptr1[2] = ptr2[1];
+		ptr1[3] = ptr2[0];
+	    }
+	    /* and the text */
+	    sprintf(tptr, " %i:12:%c", xpos, text[i]);
+	    tptr += strlen(tptr);
+	    xpos += 7; /* width_of_partial(ptr2) */
+	}
     }
 
     /* all done, copy results to the data structure */
