@@ -34,8 +34,8 @@
  * How do the "partial" and "textinfo" strings work?
  *
  * The first char in "partial" tells how much extra space to add to the
- * left of the bars (for EAN-13, it is used to leave space to print the
- * first digit), other codes may have '0' for no-extra-space-needed.
+ * left of the bars. For EAN-13, it is used to leave space to print the
+ * first digit, other codes may have '0' for no-extra-space-needed.
  *
  * The next characters are alternating bars and spaces, as multiples
  * of the base dimension which is 1 unless the code is
@@ -45,7 +45,7 @@
  * extend lower than the others: 'a' is equivalent to '1', 'b' is '2' and
  * so on.
  *
- * The "textinfo" string is made up of fields "%i:%i:%c" separated by
+ * The "textinfo" string is made up of fields "%lf:%lf:%c" separated by
  * blank space. The first integer is the x position of the character,
  * the second is the font size (before rescaling) and the char item is
  * the charcter to be printed.
