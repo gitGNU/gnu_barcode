@@ -1,3 +1,8 @@
+2004-04-05  Alessandro Rubini  <rubini@linux.it>
+
+	* doc/manpager: use "/" as delimiter in gsub, to prevent gawk warnings
+	Use sub (not gsub) to remove leasing blanks; fixes a problem with mawk
+
 2004-04-04  Hugh Sasse Staff Elec Eng  <hgs@dmu.ac.uk>
 
 	* configure.in: added "AC_PROG_AWK",
