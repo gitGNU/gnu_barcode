@@ -178,7 +178,9 @@ int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
 	if (islower(c)) putc(c-'a'+'1', f);
 	if (isupper(c)) putc(c-'A'+'1', f);
     }
-    putc('\n', f);
+    /* open array for "forall" */
+    fprintf(f, "\n[\n%%  height  xpos   ypos  width"
+	         "       height  xpos   ypos  width\n");
 
     xpos = bc->margin + (bc->partial[0]-'0') * scalef;
     for (ptr = bc->partial+1, i=1; *ptr; ptr++, i++) {
@@ -204,14 +206,16 @@ int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
 		    yr -= (isdigit(*ptr) ? 20 : 10) * scalef; 
 		}
 	    }
-            fprintf(f,"%5.2f setlinewidth "
-		    "%6.2f %6.2f moveto "
-		    "0 %5.2f rlineto stroke\n",
-		    (j * scalef) - SHRINK_AMOUNT, x0, y0, yr);
+	    /* Define an array and then use "forall" (Hans Schou) */
+            fprintf(f,"   [%5.2f %6.2f %6.2f %5.2f]%s",
+                    yr, x0, y0, (j * scalef) - SHRINK_AMOUNT,
+		    i%4 == 1 ? "   " : "\n");
 	}
 	xpos += j * scalef;
     }
-    fprintf(f,"\n");
+    fprintf(f,"\n]\t{ {} forall setlinewidth moveto 0 exch rlineto stroke} "
+	    "bind forall\n"
+	    "[\n%%   char    xpos   ypos fontsize\n");
 
     /* Then, the text */
 
@@ -225,29 +229,33 @@ int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
 		mode = *ptr; continue;
 	    }
             if (sscanf(ptr, "%lf:%lf:%c", &f1, &f2, &c) != 3) {
-                fprintf(stderr, "barcode: impossible data: %s\n", ptr);
+		fprintf(stderr, "barcode: impossible data: %s\n", ptr);
                 continue;
             }
-	    if (fsav!=f2) { /* Don't repeat "findfont" if unneeded */
-		fprintf(f, "/Helvetica findfont %5.2f scalefont setfont\n",
-			f2 * scalef);
-	    }
-	    fsav = f2; /* for next time */
 
-            fprintf(f, "%5.2f %5.2f moveto (",
+            fprintf(f, "    [(");
+	    /* Both the backslash and the two parens are special */
+	    if (c=='\\' || c==')' || c=='(')
+		fprintf(f, "\\%c) ", c);
+	    else
+		fprintf(f, "%c)  ", c);
+            fprintf(f, "%6.2f %6.2f %5.2f]\n", 
                     bc->xoff + f1 * scalef + bc->margin,
 		    mode == '-'
                        ? (double)bc->yoff + bc->margin
-		       : (double)bc->yoff + bc->margin+bc->height - 8*scalef);
-	    /* Both the backslash and the two parens are special */
-	    if (c=='\\' || c==')' || c=='(')
-		fprintf(f, "\\%c) show\n", c);
-	    else
-		fprintf(f, "%c) show\n", c);
-        }
+		       : (double)bc->yoff + bc->margin+bc->height - 8*scalef,
+		    fsav == f2 ? 0.0 : f2 * scalef);
+	    fsav = f2;
+	}
+	fprintf(f,"]   { {} forall dup 0.00 ne {\n\t"
+		"/Helvetica findfont exch scalefont setfont\n"
+		"    } {pop} ifelse\n"
+		"    moveto show} bind forall\n");
+	
+
     }
 
-    fprintf(f,"\n%% End barcode for \"%s\"\n\n",
+    fprintf(f,"%% End barcode for \"%s\"\n\n",
 	    printable ? bc->ascii : "<unprintable string>");
 
     if (!(bc->flags & BARCODE_OUT_NOHEADERS)) {
