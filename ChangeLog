@@ -1,3 +1,14 @@
+====> Version 0.91.1 released to ftp.prosa.it and ftp.gnu.org
+
+1999-07-09  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* sample.c (main): due changes to show code128-C
+
+	* code128.c (Barcode_128c_encode): implemented code 128-C
+
+	* ps.c (Barcode_ps_print): Accept float position and font size
+
+	* code39.c (Barcode_39_encode): reduced font (looked too big)
 
 ====> Version 0.91 released to both ftp.prosa.it and ftp.gnu.org
 
