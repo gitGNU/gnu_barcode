@@ -1,5 +1,21 @@
+2001-11-13  Alessandro Rubini  <rubini@linux.it>
 
+	* README: Added a pointer to the cygwin port.
+
+2001-11-09  Cloyce D. Spradling  <cloyce@headgear.org>
+	
+	* code128.c (Barcode_128b_verify): prototype fix (unsigned char).
+	
+	* ps.c (Barcode_ps_print): the comment for ascii codes must only
+		be printed if ascii is being printed (benign bug).
+
+2001-11-06  Christoph Pross  <c.pross@beck-ipc.com>
+
+	* pcl.c (Barcode_pcl_print): bugfix: bars were misplaced
+	
 2001-10-16  Nathan D. Holmes <nh412124@ursa.cosd.fedex.com>
+
+	====> Version 0.97 released to ftp.systemy.it and ftp.gnu.org
 
 	* code93.c: new file (I modified something as well - Alessandro)
 
