@@ -35,7 +35,7 @@ int main(int argc, char **argv)
                       BARCODE_UPC | BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS);
 
     /* A few code-39 ones */
-    Barcode_Encode_and_Print("prosa srl",stdout, 0, 0, 40, 320, 
+    Barcode_Encode_and_Print("silly code",stdout, 0, 0, 40, 320, 
                       BARCODE_39 | BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS);
     Barcode_Encode_and_Print("SAMPLE CODES",stdout, 100, 30, 400, 80, 
                       BARCODE_39 | BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS);
