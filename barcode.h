@@ -16,7 +16,7 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
- *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
 #ifndef _BARCODE_H_
@@ -24,8 +24,8 @@
 
 #include <stdio.h>
 
-#define BARCODE_VERSION     "0.90" 
-#define BARCODE_VERSION_INT   9000
+#define BARCODE_VERSION     "0.90.1" 
+#define BARCODE_VERSION_INT   9001
 
 /*
  * The object
@@ -56,8 +56,6 @@ struct Barcode_Item {
 #define BARCODE_OUT_EPS       0x00001000
 #define BARCODE_OUT_PS        0x00002000
 #define BARCODE_OUT_NOHEADERS 0x00100000   /* no header nor footer */
-#define BARCODE_OUT_PG_A4     0x01000000   /* page-size info (curr. unused) */
-#define BARCODE_OUT_PG_LETTER 0x02000000
 
 enum {
     BARCODE_ANY = 0,     /* choose best-fit */
