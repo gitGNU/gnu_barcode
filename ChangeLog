@@ -1,3 +1,11 @@
+2000-04-09  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* code128.c (Barcode_128_encode): removed extra messages to stderr,
+		forgot in the code when I finished code128 support
+
+	* doc/doc.barcode: bugfix: in the description of geometry, the unit
+		of measure is configurable 
+
 2000-02-03  Alessandro Rubini  <rubini@morgana.systemy.it>
 
 ====> Version 0.95 released to ftp.prosa.it and ftp.gnu.org
