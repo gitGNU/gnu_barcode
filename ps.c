@@ -27,6 +27,9 @@
 
 #include "barcode.h"
 
+#define SHRINK_AMOUNT 0.15 /* shrink the bars to account for ink spreading */
+
+
 /*
  * How do the "partial" and "textinfo" strings work?
  *
@@ -58,7 +61,7 @@
 
 int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
 {
-    int i, j, barlen;
+    int i, j, k, barlen;
     int mode = '-'; /* text below bars */
     double scalef=1, xpos, x0, y0, yr;
     unsigned char *ptr;
@@ -189,7 +192,7 @@ int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
             fprintf(f,"%5.2f setlinewidth "
 		    "%6.2f %6.2f moveto "
 		    "0 %5.2f rlineto stroke\n",
-		    j * scalef, x0, y0, yr);
+		    (j * scalef) - SHRINK_AMOUNT, x0, y0, yr);
 	}
 	xpos += j * scalef;
     }
@@ -199,6 +202,7 @@ int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
 
     mode = '-'; /* reinstantiate default */
     if (!(bc->flags & BARCODE_NO_ASCII)) {
+        k=0; /* k is the "previous font size" */
         for (ptr = bc->textinfo; ptr; ptr = strchr(ptr, ' ')) {
             while (*ptr == ' ') ptr++;
             if (!*ptr) break;
@@ -209,9 +213,12 @@ int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
                 fprintf(stderr, "barcode: impossible data: %s\n", ptr);
                 continue;
             }
-	    /* FIXME: what about Helvetica instead? */
-            fprintf(f, "/Courier-Bold findfont %5.2f scalefont setfont\n",
-                    j * scalef);
+	    if (k!=j) { /* Don't repeat "findfont" if unneeded */
+		fprintf(f, "/Helvetica findfont %5.2f scalefont setfont\n",
+			j * scalef);
+	    }
+	    k = j; /* for next time */
+
             /* FIXME: a ')' can't be printed this way */
             fprintf(f, "%5.2f %5.2f moveto (%c) show\n",
                     bc->xoff + i * scalef + bc->margin,
