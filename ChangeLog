@@ -1,3 +1,11 @@
+1999-08-04  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* bookland/bookland.py: upgraded to version 0.06 (Judas Milgram)
+
+	* ean.c (Barcode_ean_encode): fixed layout of 1st/last digit in UPC-A
+
+	* code128.c (Barcode_128c_encode): fixed checksum calculation
+
 ====> Version 0.91.1 released to ftp.prosa.it and ftp.gnu.org
 
 1999-07-09  Alessandro Rubini  <rubini@morgana.systemy.it>
