@@ -24,8 +24,8 @@
 
 #include <stdio.h>
 
-#define BARCODE_VERSION     "0.95.1" 
-#define BARCODE_VERSION_INT   9501
+#define BARCODE_VERSION     "0.96" 
+#define BARCODE_VERSION_INT   9600
 
 /*
  * The object
