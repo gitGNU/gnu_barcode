@@ -71,6 +71,9 @@ enum {
 
 #define BARCODE_DEFAULT_MARGIN 10
 
+#ifdef  __cplusplus
+extern "C" {
+#endif
 /*
  * Create and destroy barcode structures
  */
@@ -100,5 +103,9 @@ extern int Barcode_Encode_and_Print(char *text, FILE *f, int wid, int hei,
  * Return current version (integer and string)
  */
 extern int Barcode_Version(char *versionname);
+
+#ifdef  __cplusplus
+}
+#endif
 
 #endif /* _BARCODE_H_ */
