@@ -1,3 +1,9 @@
+2002-03-01  Alessandro Rubini  <rubini@linux.it>
+
+	* contrib/barcode-SVG.tar.gz: new stuff, by David J. Humphreys
+
+	* contrib/barcode-SVG.tar.gz.README: short description of file above
+
 2002-02-27  Alessandro Rubini  <rubini@linux.it>
 
 	* bookland/bookland.py: updated to version 0.92 by Judah Milgram
