@@ -31,7 +31,7 @@
 
 @setchapternewpage off
 
-@set version 0.90.23
+@set version 0.90.3
 @set update-month July 1999
 
 @finalout
@@ -597,14 +597,6 @@ The current management of borders/margins is far from optimal. The
 rapresentation, but I feel it is mandatory to avoid creating barcode
 output with no surrounding white space (the problem is especially
 relevant for EPS output).
-
-The ADD-2 and ADD-5 extensions to UPC-A and EAN-13 should print
-the text above the bars, not below.
-
-There is no support for page sizes different from A4, and no page size
-support at all in the library.
-
-There are no diagnostic messages for unencodable text strings.
 
 Code-128 should be supported
 
