@@ -101,9 +101,9 @@ static int add_one(char *ptr, int code)
  */
 int Barcode_39_encode(struct Barcode_Item *bc)
 {
-    static char *text;
-    static char *partial;  /* dynamic */
-    static char *textinfo; /* dynamic */
+    static unsigned char *text;
+    static unsigned char *partial;  /* dynamic */
+    static unsigned char *textinfo; /* dynamic */
     char *c, *ptr, *textptr;
     int i, code, textpos, checksum = 0;
 
