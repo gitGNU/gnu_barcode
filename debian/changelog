@@ -1,0 +1,9 @@
+barcode (0.94) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Alessandro Rubini <rubini@gnu.org>  Sun, 24 Oct 1999 01:10:23 +0200
+
+Local variables:
+mode: debian-changelog
+End:
