@@ -1,3 +1,7 @@
+2000-05-19  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* code128.c (Barcode_128_make_array): use code C if encoding 2 digits
+
 2000-05-08  Alessandro Rubini  <rubini@morgana.systemy.it>
 
 	* cmdline.c (commandline_errormsg): removed "?:" gcc extension
