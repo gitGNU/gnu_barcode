@@ -213,10 +213,16 @@ int get_encoding(void *arg)
 /* convert a geometry specification */
 int get_geometry(void *arg)
 {
-    double w, h, x = 0.0, y = 0.0;
+    double w = 0.0, h = 0.0;
+    double x = 0.0, y = 0.0;
     int n;
 
-    n = sscanf((char *)arg, "%lfx%lf+%lf+%lf", &w, &h, &x, &y);
+    if (((char *)arg)[0]=='+') {
+	n = sscanf((char *)arg, "+%lf+%lf%s", &x, &y, (char *)arg);
+    } else {
+	n = sscanf((char *)arg, "%lfx%lf+%lf+%lf%s", &w, &h, &x, &y,
+		   (char *)arg);
+    }
     if (n!=4 && n!=2) {
 	fprintf(stderr, "%s: wrong geometry \"%s\"\n", prgname, (char *)arg);
 	return -2;
@@ -367,7 +373,7 @@ struct commandline option_table[] = {
     {'u', CMDLINE_S, NULL, get_unit, "BARCODE_UNIT", NULL,
                     "unit (\"mm\", \"in\", ...) used to decode -g, -t, -p"},
     {'g', CMDLINE_S, NULL, get_geometry, "BARCODE_GEOMETRY", NULL,
-                    "geometry on the page: <wid>x<hei>[+<margin>+<margin>]"},
+                    "geometry on the page: [<wid>x<hei>][+<margin>+<margin>]"},
     {'t', CMDLINE_S, NULL, get_table, "BARCODE_TABLE", NULL,
                     "table geometry: <cols>x<lines>[+<margin>+<margin>]"},
     {'m', CMDLINE_S, NULL, get_margin, "BARCODE_MARGIN", "10",
