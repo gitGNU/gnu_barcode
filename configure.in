@@ -26,7 +26,7 @@ AC_MSG_CHECKING("for gmake")
 GMAKE=no
 ${MAKE=make} --version 2> /dev/null | grep GNU > /dev/null && GMAKE=yes
 AC_MSG_RESULT($GMAKE)
-if test $GMAKE = yes; then
+if test "$GMAKE" = "yes"; then
 	GMAKEDEPEND0='ifeq (.depend,$(wildcard .depend))'
 	GMAKEDEPEND1='include .depend'
 	GMAKEDEPEND2='endif'
@@ -37,7 +37,7 @@ AC_MSG_CHECKING("if makeinfo can output html")
 MAKEINFOHTML=no
 ${MAKEINFO=makeinfo} --help | grep .--html > /dev/null && MAKEINFOHTML=yes
 AC_MSG_RESULT($MAKEINFOHTML)
-if test $MAKEINFOHTML = yes; then
+if test "$MAKEINFOHTML" = "yes"; then
    REMOVEHTMLTAGS="cat"
    INFOTOHTML="$MAKEINFO --html"
 else
@@ -54,9 +54,12 @@ AC_SUBST(NO_STRERROR)
 AC_SUBST(GMAKEDEPEND0)
 AC_SUBST(GMAKEDEPEND1)
 AC_SUBST(GMAKEDEPEND2)
+
+AC_OUTPUT(Makefile)
+
+AC_SUBST(MAKEINFO)
 AC_SUBST(REMOVEHTMLTAGS)
 AC_SUBST(INFOTOHTML)
 
-AC_OUTPUT(Makefile)
 AC_OUTPUT(doc/Makefile)
 
