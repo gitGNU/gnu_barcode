@@ -245,7 +245,7 @@ following way:
 @end table
 
 %--------------------------------------------------------------------------
-@node The Intermediate Representaion,  , The Field List, The Barcode Object
+@node The Intermediate Representation,  , The Field List, The Barcode Object
 @section The Intermediate Representation
 
 The encoding functions print their output into the @t{partial} and
@@ -262,14 +262,14 @@ base dimension which is 1 unless the code is rescaled. Rescaling is
 calculated as the ratio from the requested width and the calculated
 width.  Digits represent bar/space dimensions. Lower-case letters
 represent those bars that should extend lower than the others: 'a' is
-equivalent to '1', 'b' is '2' and so on up to 'i' which is eqivalent to
+equivalent to '1', 'b' is '2' and so on up to 'i' which is equivalent to
 '9'. Other letters will be used for encoding-specific meanings, as soon
 as I implement them.
 
 The @t{extinfo} string is made up of fields @t{%lf:%lf:%c} separated by
 blank space. The first integer is the x position of the character,
 the second is the font size (before rescaling) and the char item is
-the charcter to be printed.
+the character to be printed.
 
 Both the @t{partial} and @t{textinfo} strings may include ``@t{-}'' or
 ``@t{+}'' as special characters (in @t{textinfo} the char should be a
@@ -513,7 +513,7 @@ and encode all of them.
         output or a table of barcodes if @t{-t} is specified).  The
         strings must match the encoding chosen; if it doesn't
         match the program will print a warning to @t{stderr} and
-        generate ``blank'' output (although not zero-lenght).
+        generate ``blank'' output (although not zero-length).
         Please note that a string including spaces or
         other special characters must be properly quoted.
 
@@ -530,7 +530,7 @@ and encode all of them.
 	no intervening spaces). Unspecified margin values will result in
         no margin; unspecified size results in default size.
 	The specified values represent print points by
-	default, and can be incher, millimeters or other units
+	default, and can be inches, millimeters or other units
 	according to the @t{-u} option or the @t{BARCODE_UNIT}
 	environment variable.  The argument is used to place the
 	printout code on the page. Note that an additional white
