@@ -1,3 +1,9 @@
+2000-04-21  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* doc/Makefile: modified to build with both gmake and pmake
+
+	* Makefile: modified to build with both gmake and pmake
+
 2000-04-20  Alessandro Rubini  <rubini@morgana.systemy.it>
 
 	* Makefile.in (.depend): removed gmake-specific features.
