@@ -62,8 +62,15 @@ struct {
     {"code128b", BARCODE_128B},
     {"128",      BARCODE_128},
     {"code128",  BARCODE_128},
+    {"128raw",   BARCODE_128RAW},
     {"i25",      BARCODE_I25},
     {"interleaved 2 of 5", BARCODE_I25},
+    {"cbr",      BARCODE_CBR},
+    {"codabar",  BARCODE_CBR},
+    {"msi",     BARCODE_MSI},
+    {"pls",      BARCODE_PLS},
+    {"plessey",  BARCODE_PLS},
+
     {NULL, 0}
 };
 
