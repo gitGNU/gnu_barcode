@@ -3,10 +3,6 @@ Possible enhancements that I'd like to add
 
 * verbose mode, printing position information to stderr
 
-* code 128 (a) support
-
-	The code can represent ascii 0-96 (control chars, no lowercase)
-
 * shrink the bars to account for ink spreading
 
 	Currently, small barcodes don't get rendered well. While
@@ -19,6 +15,7 @@ Possible enhancements that I'd like to add
 
 * document how a new encoding standard can be added
 
-* include the debian/ directory by Jim Westveer as soon as it is ready for prime time
+* add Barcode_String, which has been contributed
 
+* EAN128 (as agreed with Dani Pardo)
 
