@@ -345,7 +345,7 @@ library:
 %M .br
 %M .BI "int Barcode_Position(struct Barcode_Item *" bc ", int " wid ", int " hei ", int " xoff ", int " yoff " , double " scalef ");"
 %M .br
-%M .BI "int Barcode_Encode_and_Print(char *" text ", FILE *" f ", int " wid ", int " hei ", int " xoff ", int " yoff ", double " scalef ", int " flags ");"
+%M .BI "int Barcode_Encode_and_Print(char *" text ", FILE *" f ", int " wid ", int " hei ", int " xoff ", int " yoff ", int " flags ");"
 %M .br
 %M .BI "int Barcode_Version(char *" versionname ");"
 %M
@@ -395,7 +395,7 @@ header file @t{barcode.h}.  They perform the following tasks:
 	The function is a shortcut to assign values to the data
 	structure.
 
-@item int Barcode_Encode_and_Print(char *text, FILE *f, int wid, int hei, int xoff, int yoff, double scalef, int flags);
+@item int Barcode_Encode_and_Print(char *text, FILE *f, int wid, int hei, int xoff, int yoff, int flags);
 	The function deals with the whole life of the barcode
 	object by calling the other functions; it uses all the specified
 	flags.
