@@ -1,3 +1,9 @@
+2002-07-19  Leonid A Broukhis  <leob@mailcom.com>
+
+	* plessey.c (Barcode_pls_encode): added three missing free()
+
+	* code93.c (Barcode_93_encode): added a missing free()
+
 2002-03-28  Alessandro Rubini  <rubini@linux.it>
 
 	* configure.in (MAKEINFOHTML): fixed. It didn't generate html
