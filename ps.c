@@ -62,6 +62,7 @@
 int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
 {
     int i, j, k, barlen;
+    double f1, f2, fsav;
     int mode = '-'; /* text below bars */
     double scalef=1, xpos, x0, y0, yr;
     unsigned char *ptr;
@@ -209,19 +210,19 @@ int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
 	    if (*ptr == '+' || *ptr == '-') {
 		mode = *ptr; continue;
 	    }
-            if (sscanf(ptr, "%i:%i:%c", &i, &j, &c) != 3) {
+            if (sscanf(ptr, "%lf:%lf:%c", &f1, &f2, &c) != 3) {
                 fprintf(stderr, "barcode: impossible data: %s\n", ptr);
                 continue;
             }
-	    if (k!=j) { /* Don't repeat "findfont" if unneeded */
+	    if (fsav!=f2) { /* Don't repeat "findfont" if unneeded */
 		fprintf(f, "/Helvetica findfont %5.2f scalefont setfont\n",
-			j * scalef);
+			f2 * scalef);
 	    }
-	    k = j; /* for next time */
+	    fsav = f2; /* for next time */
 
             /* FIXME: a ')' can't be printed this way */
             fprintf(f, "%5.2f %5.2f moveto (%c) show\n",
-                    bc->xoff + i * scalef + bc->margin,
+                    bc->xoff + f1 * scalef + bc->margin,
 		    mode == '-'
                        ? (double)bc->yoff + bc->margin
 		       : (double)bc->yoff + bc->margin+bc->height - 8*scalef,
