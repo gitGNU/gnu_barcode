@@ -60,8 +60,9 @@ int commandline_errormsg(FILE *f, struct commandline *args,
 	    if (buffer2) {
 		buffer = malloc(len);
 		if (buffer) {
-		    sprintf(buffer2, ptr->descrip, ptr->default_v ?: "(none)",
-			    ptr->env ?: "(none)");
+		    sprintf(buffer2, ptr->descrip,
+			    ptr->default_v ? ptr->default_v : "(none)",
+			    ptr->env ? ptr->env : "(none)");
 		    sprintf(buffer, "   -%c %s     %s", ptr->option,
 			    ptr->type ? "<arg>" : "     ", buffer2);
 		    fprintf(f, "%s\n",buffer);
