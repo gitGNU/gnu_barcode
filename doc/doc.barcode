@@ -487,10 +487,11 @@ and encode all of them.
 
 @item -g geometry
 
-	The geometry argument is of the form ``@i{<width>} @t{x}
-	@i{<height>} [@t{+} @i{<xmargin>} @t{+} @i{<ymargin>}]'' (with
-	no intervening spaces). The margin values, if missing, default
-	to 0).  The specified values represent print points by
+	The geometry argument is of the form ``[@i{<width>} @t{x}
+	@i{<height>}] [@t{+} @i{<xmargin>} @t{+} @i{<ymargin>}]'' (with
+	no intervening spaces). Unspecified margin values will result in
+        no margin; unspecified size results in default size.
+	The specified values represent print points by
 	default, and can be incher, millimeters or other units
 	according to the @t{-u} option or the @t{BARCODE_UNIT}
 	environment variable.  The argument is used to place the
