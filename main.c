@@ -70,6 +70,8 @@ struct {
     {"msi",     BARCODE_MSI},
     {"pls",      BARCODE_PLS},
     {"plessey",  BARCODE_PLS},
+    {"code93",   BARCODE_93},
+    {"93",       BARCODE_93},
 
     {NULL, 0}
 };
