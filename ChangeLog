@@ -1,3 +1,9 @@
+1999-12-24  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* main.c (get_geometry): fixed the y margin (thanks to Steve Kunath)
+
+====> Version 0.94 released to ftp.prosa.it and ftp.gnu.org
+
 1999-10-24  Alessandro Rubini  <rubini@morgana.systemy.it>
 
 	* INSTALL: added instructions to install on a Debian GNU/Linux system
