@@ -31,8 +31,8 @@
 
 @setchapternewpage off
 
-@set version 0.91.4
-@set update-month August 1999
+@set version 0.93
+@set update-month September 1999
 
 @finalout
 
@@ -50,7 +50,7 @@ This file is the User's Manual for the barcode library (version
 @subtitle A library for drawing bar codes
 @subtitle @value{update-month}
 
-@author by Alessandro Rubini, Prosa Srl (@code{prosa@@prosa.it})
+@author by Alessandro Rubini (@code{rubini@@@{gnu.org,prosa.it@}})
 
 @end titlepage
 @setchapternewpage off
@@ -458,7 +458,7 @@ and encode all of them.
 	Print a usage summary and exit.
 
 @item -i filename
-	Specifies a file where strings to be encoded are read from. If
+	Identify a file where strings to be encoded are read from. If
 	missing (and if @t{-b} is not used) it defaults to standard
 	input. Each data line of the input file will be used to create
 	one barcode output.
@@ -467,7 +467,7 @@ and encode all of them.
 	Output file. It defaults to standard output.
 
 @item -b string
-	Specifies a single ``barcode'' string to be encoded.
+	Specify a single ``barcode'' string to be encoded.
         The option can be used multiple times in order to encode
         multiple strings (this will result in multi-page postscript
         output or a table of barcodes if @t{-t} is specified).  The
@@ -482,34 +482,39 @@ and encode all of them.
 	also unset.
 
 @item -g geometry
-	The geometry argument is of the form
-	``width@t{x}height@t{+}xmargin@t{+}ymargin'' (the
-	margin values are optional). The specified values must be
-	integer numbers and they represent print points (I plan to
-	add support for different units, like inches and millimeters,
-	but this is currently not supported). The argument is used to
-	place the printout code on the page. Note that an additional
-	white margin of 10 points is added to the printout. If the
-        option is unspecified, @t{BARCODE_GEOMETRY} is looked up in the
-        environment, if missing a default size and no margin (but the
-        default  10 points) are used.
+	The geometry argument is of the form ``@i{<width>} @t{x}
+	@i{<height>} [@t{+} @i{<xmargin>} @t{+} @i{<ymargin>}]'' (with
+	no intervening spaces). The margin values, if missing, default
+	to 0).  The specified values must be integer numbers and they
+	represent print points (I plan to add support for different
+	units, like inches and millimeters, but this is currently not
+	supported).  The argument is used to place the printout code
+	on the page. Note that an additional white margin of 10 points
+	is added to the printout. If the option is unspecified,
+	@t{BARCODE_GEOMETRY} is looked up in the environment, if
+	missing a default size and no margin (but the default 10
+	points) are used.
 
 @item -t table-geometry
 	Used to print several barcodes to a single page, this option
         is meant to be used to print stickers. The argument is of the
-        form ``columns@t{x}lines@t{+}xmargin@t{+}ymargin''. The two
-        margin values are applied symmetrically to the page and the
-        page is currently assumed to be A4 format (this @i{is} a bug,
-        and I plan to fix it). If the option is not specified,
-        @t{BARCODE_TABLE} is looked up in the environment, otherwise
-        no table is printed.
+        form ``@i{<columns>} @t{x} @i{<lines>} [@t{+} @i{<leftmargin>}
+        @t{+} @i{<bottommargin>} [@t{-} @i{<rightmargin>} [@t{-}
+        @i{<topmargin>}]]]'' (with no intervening spaces); if missing,
+        the top and right margin will default to be the same as the
+        bottom and left margin. The margins are specified in print
+        points or in the chosen unit (see @t{-u} below).  If the
+        option is not specified, @t{BARCODE_TABLE} is looked up in the
+        environment, otherwise no table is printed and each barcode
+        will get its own page.
 
 @item -m margin(s)
-	Specify an internal margin for each sticker in the table. The
-	argument is of the form ``xmargin@t{,}ymargin'' and the margin
-	is applied symmetrically to the sticker. If unspecified, the
-        environment variable @t{BARCODE_MARGIN} is used or a default
-        internal margin of 10 points is used.
+	Specifies an internal margin for each sticker in the
+	table. The argument is of the form
+	``@i{<xmargin>}@t{,}@i{<ymargin>}'' and the margin is applied
+	symmetrically to the sticker. If unspecified, the environment
+	variable @t{BARCODE_MARGIN} is used or a default internal
+	margin of 10 points is used.
 
 @item -n
 	``Numeric'' output: don't print the ASCII form of the code,
@@ -525,13 +530,29 @@ and encode all of them.
 
 @item -p pagesize
 	Specify a non-default page size. The page size can be specified
-        in millimeters, inches or points (for example: "@t{210x297mm}",
-        "@t{8.5x11in}", "@t{595x842}").  If libpaper is available,
+        in millimeters, inches or plain numbers (for example: "@t{210x297mm}",
+        "@t{8.5x11in}", "@t{595x842}"). A page specification as numbers
+	will be interpreted according to the current unit specification
+	(see @t{-u} below). If libpaper is available,
         you can also specify the page size with its name, like "@t{A3}"
         or "@t{letter}" (libpaper is a standard component of Debian
         GNU/Linux, but may be missing elsewhere). The default page
         size is your system-wide default if libpaper is there, A4 otherwise.
 
+@item -u unit
+
+	Choose the unit used in size specifications. Accepted values
+	are ``mm'', ``cm'', ``in'' and ``pt''. By default, the program
+	will check @t{BARCODE_UNIT} in the environment, and assume
+	points otherwise (this behaviour is compatible with 0.92 and
+	previous versions. If @t{-u} appears more than once, each
+	instance will modified the behaviour for the arguments at its
+	right, as the command line is processes left to right. The
+	program internally works with points, and any size is
+	approximated to the nearest multiple of one point. The @t{-u}
+	option affect @t{-g} (geometry), @t{-t} (table) and @t{-p}
+	(page size).
+	
 @end table
 
 %M .SH ENCODING TYPES
@@ -649,7 +670,6 @@ Code128-A should be supported.
 %MANPAGE END
 
 @iftex
-@unnumbered Table of Contents
 @contents
 @end iftex
 
