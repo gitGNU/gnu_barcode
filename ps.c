@@ -214,13 +214,13 @@ int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
 	xpos += j * scalef;
     }
     fprintf(f,"\n]\t{ {} forall setlinewidth moveto 0 exch rlineto stroke} "
-	    "bind forall\n"
-	    "[\n%%   char    xpos   ypos fontsize\n");
+	    "bind forall\n");
 
     /* Then, the text */
 
     mode = '-'; /* reinstantiate default */
     if (!(bc->flags & BARCODE_NO_ASCII)) {
+	fprintf(f, "[\n%%   char    xpos   ypos fontsize\n");
         k=0; /* k is the "previous font size" */
         for (ptr = bc->textinfo; ptr; ptr = strchr(ptr, ' ')) {
             while (*ptr == ' ') ptr++;
