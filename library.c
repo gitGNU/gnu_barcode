@@ -166,6 +166,7 @@ int Barcode_Encode(struct Barcode_Item *bc, int flags)
  * be a jumpt table like the one for the types. Now we don't need it
  */
 extern int Barcode_ps_print(struct Barcode_Item *bc, FILE *f);
+extern int Barcode_pcl_print(struct Barcode_Item *bc, FILE *f);
 
 /*
  * A function to print a partially decoded string. Meaningful bits for
@@ -186,6 +187,8 @@ int Barcode_Print(struct Barcode_Item *bc, FILE *f, int flags)
 	flags |= bc->flags & BARCODE_OUT_NOHEADERS;
     flags = bc->flags = (flags & validbits) | (bc->flags & ~validbits);
 
+    if (bc->flags & BARCODE_OUT_PCL)
+       return Barcode_pcl_print(bc, f);
     return Barcode_ps_print(bc, f);
 }
 
