@@ -32,7 +32,7 @@ static char *codes[] = {
     "31311", "13311", "11133", "31131", "13131"
 };
 
-static char *guard[] = {"a1a1", "b1a"}; /* begin end */
+static char *guard[] = {"a1a1", "c1a"}; /* begin end */
 
 int Barcode_i25_verify(char *text)
 {
