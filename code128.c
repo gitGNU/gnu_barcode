@@ -74,7 +74,7 @@ static char *codeset[] = {
 
 int Barcode_128b_verify(unsigned char *text)
 {
-    if (!strlen(text))
+    if (text[0] == '\0')
 	return -1;
     while (*text && *text>=32 && !(*text&0x80))
 	text++;
@@ -160,7 +160,7 @@ int Barcode_128b_encode(struct Barcode_Item *bc)
 
 int Barcode_128c_verify(unsigned char *text)
 {
-    if (!strlen(text))
+    if (text[0] == '\0')
 	return -1;
     /* must be an even number of digits */
     if (strlen(text)%2)
@@ -215,7 +215,7 @@ int Barcode_128c_encode(struct Barcode_Item *bc)
     textptr = textinfo;
     textpos = SYMBOL_WID;
 
-    for (i=0; i<strlen(text); i+=2) {
+    for (i=0; text[i]; i+=2) {
         if (!isdigit(text[i]) || !isdigit(text[i+1])) {
             bc->error = EINVAL; /* impossible if text is verified */
             free(partial);
@@ -253,7 +253,7 @@ int Barcode_128c_encode(struct Barcode_Item *bc)
 
 int Barcode_128_verify(unsigned char *text)
 {
-    if (!strlen(text))
+    if (text[0] == '\0')
 	return -1;
     while (*text && (*text<=0x80 || (*text >= 0xc1 && *text <= 0xc4)))
 	text++;
