@@ -26,13 +26,13 @@ Possible enhancements that I'd like to add
 
 * should use libpaper where present (and, thus, autoconf)
 
-* document the intermediate representation in the main document
+* document the intermediate representation in the real docs (instead of ps.c)
 
 * document how a new encoding standard can be added
 
 * allow the ``barcode'' executable to read a cfg file.
 
-	This would allow creating descriptions of barcode output
-	that exploit all the implemented features.
+	This would allow creating descriptions of barcode output that
+	 exploit all the implemented features, but I'm not sure it is useful.
 
-* should make Debian package
+* should make Debian package (paci@prosa.it is working on it)
