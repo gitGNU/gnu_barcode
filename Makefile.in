@@ -124,7 +124,7 @@ tar:
 printv:
 	@grep -n VERSION $(HEADER) /dev/null
 	@grep -n set.version doc/doc.$(TARGET) /dev/null
-	@grep -n dpkg.-i INSTALL
+	@grep -n dpkg.-i INSTALL /dev/null
 
 # and this is how I make the distribution
 distrib: $(INFO) distclean tar printv
