@@ -28,7 +28,7 @@
 #include "cmdline.h"
 #include "barcode.h"
 
-#ifdef HAVE_LIBPAPER
+#ifndef NO_LIBPAPER
 #include <paper.h>
 #endif
 
@@ -244,7 +244,7 @@ int get_page_geometry(void *arg)
     if (n == 2)
 	return 0;
 
-#ifdef HAVE_LIBPAPER 
+#ifndef NO_LIBPAPER
     /*
      * try to use libpaper, since it is available
      */
@@ -295,6 +295,20 @@ struct commandline option_table[] = {
                     "page size (refer to the man page)"},
     {0,}
 };
+
+#ifdef NO_STRERROR
+/*
+ * A strerror replacement (thanks to Thad Floryan <thad@thadlabs.com>)
+ */
+char *strerror(int error)
+{
+    static char msg[16];
+    if (error >= 0 && error < sys_nerr)
+	return sys_errlist[error];
+    sprintf(msg, "Error %d", error);
+    return msg;
+}
+#endif
 	 
 /*
  * The main function
@@ -331,7 +345,7 @@ int main(int argc, char **argv)
     if (!page_name) {
 	page_wid = 595; page_hei = 842;
 	page_name = "A4"; /* I live in Europe :) */
-#ifdef HAVE_LIBPAPER
+#ifndef NO_LIBPAPER
 	get_page_geometry(systempapername()); /* or the system default */
 #endif
     }
