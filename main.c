@@ -2,7 +2,7 @@
  * main.c - a commandline frontend for the barcode library
  *
  * Copyright (c) 1999 Michele Comitini (mcm@glisco.it)
- * Copyright (c) 1999 Alessandro Rubini (rubini@prosa.it)
+ * Copyright (c) 1999 Alessandro Rubini (rubini@gnu.org)
  * Copyright (c) 1999 Prosa Srl. (prosa@prosa.it)
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -60,6 +60,8 @@ struct {
     {"code128c", BARCODE_128C},
     {"128b",     BARCODE_128B},
     {"code128b", BARCODE_128B},
+    {"128",      BARCODE_128},
+    {"code128",  BARCODE_128},
     {"i25",      BARCODE_I25},
     {"interleaved 2 of 5", BARCODE_I25},
     {NULL, 0}
