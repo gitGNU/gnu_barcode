@@ -318,7 +318,9 @@ static int *Barcode_128_make_array(struct Barcode_Item *bc, int *lptr)
     s = bc->ascii;
 
     /* choose the starting code */
-    if (isdigit(s[0]) && isdigit(s[1]) && isdigit(s[2]) && isdigit(s[3])) {
+    if (s[2]=='\0' && isdigit(s[0]) && isdigit(s[1])) {
+      code = 'C';
+    } else if (isdigit(s[0])&&isdigit(s[1]) && isdigit(s[2])&&isdigit(s[3])) {
 	code = 'C';
     } else {
 	code = Barcode_a_or_b(s);
