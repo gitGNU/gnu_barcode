@@ -1,7 +1,7 @@
 /*
  * barcode.h -- definitions for libbarcode
  *
- * Copyright (c) 1999 Alessandro Rubini (rubini@prosa.it)
+ * Copyright (c) 1999 Alessandro Rubini (rubini@gnu.org)
  * Copyright (c) 1999 Prosa Srl. (prosa@prosa.it)
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -24,8 +24,8 @@
 
 #include <stdio.h>
 
-#define BARCODE_VERSION     "0.94" 
-#define BARCODE_VERSION_INT   9400
+#define BARCODE_VERSION     "0.95" 
+#define BARCODE_VERSION_INT   9500
 
 /*
  * The object
@@ -63,7 +63,7 @@ enum {
     BARCODE_UPC,        /* upc == 12-digit ean */
     BARCODE_ISBN,       /* isbn numbers (still EAN13) */
     BARCODE_39,         /* code 39 */
-    BARCODE_128,        /* code 128 (a,b) */
+    BARCODE_128,        /* code 128 (a,b,c: autoselection) */
     BARCODE_128C,       /* code 128 (compact form for digits) */
     BARCODE_128B,       /* code 128, full printable ascii */
     BARCODE_I25         /* interleaved 2 of 5 (only digits) */
