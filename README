@@ -1,0 +1,31 @@
+
+This is GNU-barcode.
+
+The package is meant to solve most needs in barcode creation with a
+conventional printer. It can create printouts for the conventional
+product-ta gging standards: UPC-A, UPC-E, EAN-13, EAN-8, ISBN. Ouput
+is generated as either Postscript or Encapsulated Postscript (other
+back-ends may be added if needed).
+
+The package is released as both a library and a command-line frontend,
+so that you can include barcode-generation into your application.  The
+program is released in the hope that is proves useful but without any
+warranty, according to the GPL Licence (see ./COPYING).
+
+Please take the "no-warranty" disclaimer seriously: even though I
+spent reasonable efforts to make sure the output is useable in
+production you should verify it suits your needs as a faulty bar can
+cost you a bundle, and you'll be on your own. It's up to you to verify
+that the symbol is valid (and, obviously, I'd like to know about any
+problem you encounter).
+
+If you need to print a "real" ISBN symbol, you might try to get
+"bookland.py" by Judah Milgram (http://www.cgpp.com/bookland/). While
+my main target is flexibility his main target is strict adherence to
+the standards. Bookland is free software and will probabily be
+included in the GNU project.
+
+I would like to thank both Judah Milgram and Michele Comitini
+(mcm@glisco.it) for their help with this tool
+
+/alessandro (rubini@prosa.it)
