@@ -1,3 +1,33 @@
+2001-10-16  Boszormenyi Zoltan <zboszor@externet.hu>
+
+	* ean.c: 
+
+	I found that barcode-0.96 does not correctly encodes UPC-E.
+	This was mainly because in upc_e_to_a() the switch() branches
+	all ended without "break;".
+
+	Printing UPC-E did not print the leading encoding number and
+	the trailing UPC-A checksum. Now it does.
+
+	Accept EAN-13 and EAN-8 with and without the checksum.
+	So always treat 7 and 12 digit sequences as valid EAN codes
+	and accept 8 and 13 digit sequences as valid EAN codes when
+	the last digit is the same as the calculated one.
+
+	Accept UPC-A as above (11 or 12 digit sequences.)
+
+	Accepts UPC-E as:
+	6 digit sequence: the middle part of the code (leading '0' assumed)
+	7 digit sequence: the middle part and either a leading '0' or '1',
+	    or a trailing UPC-A checksum. In that case, leading '0' assumed.
+	8 digit sequence: a leading '0' or '1', middle part, checksum
+
+	UPC-A, UPC-E, EAN-13, and EAN-8 may all include
+	an additional barcode to the right of the main barcode.
+
+	As a 7 or a 12 digit sequence may be ambiguous, please remember
+	that EAN is checked before UPC if you specified BARCODE_ANY.
+
 2001-08-20  Alessandro Rubini  <rubini@linux.it>
 
 	* sample.c (main): added upc-e and ean-8 samples
