@@ -163,7 +163,7 @@ are directly related to one or more of these fields.
         They specify the width and height of the @i{active} barcode
 	region (i.e., excluding the white margin), in the units used
 	to create output data (for postscript they are points, 1/72th
-	of an inch, 0.0352 mm). The fields can be either assigned to
+	of an inch, 0.352 mm). The fields can be either assigned to
 	in the structure or via @i{Barcode_Position()}, at your
 	choice.  If either value or both are left to their default
 	value of zero, the output engine will assign default values
