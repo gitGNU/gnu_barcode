@@ -53,7 +53,7 @@ static char *codeset[] = {
 static char shiftset[] =
        "%$$$$$$$$$$$$$$$$$$$$$$$$$$%%%%% ///  ///// /             /%%%%%%                          %%%%%%++++++++++++++++++++++++++%%%%%";
 static char shiftset2[] =
-       "UABCDEFGHIJKLMNOPQRSTUVWXYZABCDE ABC  FGHIJ L             ZFGHIJV                          KLMNOWABCDEFGHIJLKMNOPQRSTUVWXYZPQRST";
+       "UABCDEFGHIJKLMNOPQRSTUVWXYZABCDE ABC  FGHIJ L             ZFGHIJV                          KLMNOWABCDEFGHIJKLMNOPQRSTUVWXYZPQRST";
 
 #define START_STOP 47
 #define EXTEND_DOLLAR   43
