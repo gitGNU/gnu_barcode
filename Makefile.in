@@ -30,6 +30,7 @@ HEADER = $(TARGET).h
 
 LIBOBJECTS = library.o ean.o code128.o code39.o i25.o ps.o
 EXEOBJECTS = main.o cmdline.o $(GETOPT_O)
+ALLSOURCES = $(LIBOBJECTS:.o=.c) $(EXEOBJECT:.o=.c)
 
 all: $(TARGET) $(LIBRARY) $(MAN1) $(MAN3) $(INFO) sample
 
@@ -94,7 +95,7 @@ Makefile: Makefile.in configure
 configure: configure.in
 	autoconf
 
-.depend: $(wildcard *.[c])
+.depend: $(ALLSOURCES)
 	$(CC) $(CFLAGS) -MM $^ > $@
 
 depend: .depend
@@ -123,6 +124,8 @@ distrib: $(INFO) distclean tar printv
 .PHONY: all install uninstall mostlyclean clean disclean depend \
 	tar printv distrib
 
-ifeq (.depend,$(wildcard .depend))
-include .depend
-endif
+# Only if make is gmake, have a rule to conditionally include .depend
+@GMAKEDEPEND0@
+@GMAKEDEPEND1@
+@GMAKEDEPEND2@
+
