@@ -1,9 +1,36 @@
+1999-09-26  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* doc/doc.barcode: fixed the rendering of complex options (-g and -t)
+	Removed extra "table of contents" heading in the ps output
+	Changed attribution on cover page
+
+	* main.c (get_table and others): be more specific in error msgs
+	(get_page_geometry): numeric specification is according to "-u"
+	(get_table): accept unsymmetric margin specification
+	(option_table): added "-u" to accept "cm", "mm", "in", "pt"
+	(get_page_geometry): bugfix: numeric spec was always consideder mm
+
+	* cmdline.c (commandline): don't always print help
+
+	* Makefile.in ($(INFO)): added missing dependency: distributed docs
+		formats were out of date with distributed doc source.
+
+1999-09-13  Alessandro Rubini  <rubini@amelia.prosa.it>
+
+	* main.c (main): print tables: y used xmargin (Tim Withers,Jon Bakken)
+
+1999-09-06  Alessandro Rubini  <rubini@plinio.prosa.it>
+
+	* Makefile.in: prevent -Wall when compiling getopt.
+
+	* i25.c, ean.c, ps.c: switched to unsigned char, to prevent warnings
+		on newer gcc's (thanks Al Piszcz)
 
 ====> Version 0.92 released to ftp.prosa.it and ftp.gnu.org
 
 1999-08-31  Alessandro Rubini  <rubini@plinio.prosa.it>
 
-	* i25.c: the right guard had a thinner bar than the rest of the code
+	* i25.c: the right guard was thinner than other bars
 
 	* doc/doc.barcode: spelling and manpage fixes (thanks Joachim Schaaf)
 
