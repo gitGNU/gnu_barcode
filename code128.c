@@ -136,7 +136,7 @@ int Barcode_128b_encode(struct Barcode_Item *bc)
         }
 	code = text[i]-32;
 	strcat(partial, codeset[code]);
-	checksum += code * i+1; /* first * 1 + second * 2 + third * 3... */
+	checksum += code * (i+1); /* first * 1 + second * 2 + third * 3... */
         sprintf(textptr, "%i:12:%c ", textpos, text[i]);
         textptr += strlen(textptr);
         textpos += SYMBOL_WID; /* width of each code */
