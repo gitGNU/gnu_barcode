@@ -19,9 +19,24 @@ AC_CHECK_HEADER(paper.h, LIBPAPER=-lpaper, NO_LIBPAPER=-DNO_LIBPAPER)
 
 AC_CHECK_FUNC(strerror, , NO_STRERROR=-DNO_STRERROR)
 
+dnl Check if this is gmake
+AC_MSG_CHECKING("for gmake")
+make --version 2> /dev/null | grep GNU > /dev/null || GMAKE=no
+make --version 2> /dev/null | grep GNU > /dev/null && GMAKE=yes
+AC_MSG_RESULT($GMAKE)
+if test $GMAKE = yes; then
+	GMAKEDEPEND0='ifeq (.depend,$(wildcard .depend))'
+	GMAKEDEPEND1='include .depend'
+	GMAKEDEPEND2='endif'
+fi
+
+
 AC_SUBST(GETOPT_O)
 AC_SUBST(NO_GETOPT)
 AC_SUBST(NO_LIBPAPER)
 AC_SUBST(LIBPAPER)
 AC_SUBST(NO_STRERROR)
+AC_SUBST(GMAKEDEPEND0)
+AC_SUBST(GMAKEDEPEND1)
+AC_SUBST(GMAKEDEPEND2)
 AC_OUTPUT(Makefile)
