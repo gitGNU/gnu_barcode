@@ -1,8 +1,8 @@
 /*
  * i25.c -- "interleaved 2 of 5"
  *
- * Copyright (c) 1999 Alessandro Rubini (rubini@gnu.org)
- * Copyright (c) 1999 Prosa Srl. (prosa@prosa.it)
+ * Copyright (c) 1999,2000 Alessandro Rubini (rubini@gnu.org)
+ * Copyright (c) 1999      Prosa Srl. (prosa@prosa.it)
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ int Barcode_i25_encode(struct Barcode_Item *bc)
     unsigned char *partial;  /* dynamic */
     unsigned char *textinfo; /* dynamic */
     unsigned char *textptr, *p1, *p2, *pd;
-    int i, sum[2], textpos, usesum = 0;
+    int i, sum[2], textpos, usesum = 0, uselead = 0;
 
 
     if (bc->partial)
@@ -81,23 +81,22 @@ int Barcode_i25_encode(struct Barcode_Item *bc)
     i = strlen(bc->ascii) + usesum;
     if (i % 2) {
 	/* add a leading 0 */
-	text[0] = '0';
+	text[0] = '0'; uselead = 1;
 	strcpy(text+1, bc->ascii);
     } else {
 	strcpy(text, bc->ascii);
     }
-    /* add the trailing checksum if needed */
+    /* add the trailing checksum if needed, the leading 0 is ignored */
     if (usesum) {
 	sum[0] = sum[1] = 0;
 	for (i=0; text[i]; i++) 
 	    sum[i%2] += text[i]-'0';
-	if (strlen(text) % 2)
+	if (!uselead)
 	    i = sum[0] * 3 + sum[1];
-	else
-	    i = sum[1] * 3 + sum[2];
+	else  /* even and odd were exchanged */
+	    i = sum[1] * 3 + sum[0];
 	strcat(text, "0");
-	if (i%10)
-	    text[strlen(text)-1] += 10-(i%10);
+	text[strlen(text)-1] += (10 - (i%10)) % 10;
     }
 
     /* the partial code is 5 * (text + check) + 4(head) + 3(tail) + term. */
