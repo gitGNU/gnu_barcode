@@ -14,7 +14,8 @@ The current source tree is available by anonymous CVS. See
 The documentation is online at:
 	http://ar.linux.it/software/barcode
 
-
+The cygwin port is maintained by Kees Zeelenberg at:
+	http://gnuwin32.sourceforge.net/packages/barcode.htm
 
 The package is meant to solve most needs in barcode creation with a
 conventional printer. It can create printouts for the conventional
