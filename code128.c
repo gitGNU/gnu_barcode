@@ -3,6 +3,7 @@
  *
  * Copyright (c) 1999,2000 Alessandro Rubini (rubini@gnu.org)
  * Copyright (c) 1999 Prosa Srl. (prosa@prosa.it)
+ * Copyright (c) 2000 Leonid A. Broukhis (leob@mailcom.com)
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -287,14 +288,11 @@ static int Barcode_a_or_b(unsigned char *text)
     return 0; /* any */
 }
 
+/* code is either 'A' or 'B', and value must be valid */
 static int Barcode_encode_as(int code, int value)
 {
-    /* code is either 'A' or 'B', and value must be valid */
-    if (value >= 0x20 && value <= 0x5F)
-	return value - 0x20; /* both codes */
-    if (value == 0x80) return 64; /* code A */
-    if (value < 0x20) return value+64; /* code A */
-    if (value >= 0x60) return value - 0x20; /* code B */
+
+    /* first check the special chars */
     if (value == 0xC1) return FUNC_1;
     if (value == 0xC2) return FUNC_2;
     if (value == 0xC3) return FUNC_3;
@@ -302,6 +300,13 @@ static int Barcode_encode_as(int code, int value)
 	if (code == 'A') return CODE_A;
 	return CODE_B;
     }
+
+    /* then check ascii values */
+    if (value >= 0x20 && value <= 0x5F)
+	return value - 0x20; /* both codes */
+    if (value == 0x80) return 64; /* code A */
+    if (value < 0x20) return value+64; /* code A */
+    if (value >= 0x60) return value - 0x20; /* code B */
     /* can't happen */
     return -1;
 }
@@ -493,3 +498,110 @@ int Barcode_128_encode(struct Barcode_Item *bc)
     free(codes);
     return 0;
 }
+
+/*
+ * A raw 128 code is given as a sequence of space separated numbers
+ * from 0 to 105, starting from the start code to be (Leonid)
+ */
+
+int Barcode_128raw_verify(unsigned char *text)
+{
+    int n;
+    unsigned val;
+
+    if (!strlen(text))
+	return -1;
+    while (*text) {
+	if (sscanf(text, "%u%n", &val, &n) < 1)
+	    return -1;
+	if (val > 105)
+	    return -1;
+	text += n;
+    }
+    return 0;
+}
+
+int Barcode_128raw_encode(struct Barcode_Item *bc)
+{
+    static char *text;
+    static char *partial;  /* dynamic */
+    static char *textinfo; /* dynamic */
+    char *textptr;
+    int i, n, count, code, textpos, checksum = 0;
+
+    if (bc->partial)
+	free(bc->partial);
+    if (bc->textinfo)
+	free(bc->textinfo);
+    bc->partial = bc->textinfo = NULL; /* safe */
+
+    if (!bc->encoding)
+	bc->encoding = strdup("128raw");
+
+    text = bc->ascii;
+    if (!text) {
+        bc->error = EINVAL;
+        return -1;
+    }
+    /*
+     * length of partial code is unknown in advance, but it is
+     * at most  6* (1+text/2 + check + tail) + final + terminator
+     */
+    partial = malloc( (3+ strlen(text)/2) * 6 + 2);
+    if (!partial) {
+        bc->error = errno;
+        return -1;
+    }
+
+    /* the text information is at most "nnn.5:fff:c " * 1+strlen/2 +term */
+    textinfo = malloc(12 * (1+strlen(text)/2) + 2);
+    if (!textinfo) {
+        bc->error = errno;
+        free(partial);
+        return -1;
+    }
+
+    strcpy(partial, "0"); /* the first space */
+    textptr = textinfo;
+    textpos = 0;
+
+    for (i=0, count = 0; i < strlen(text); count++) {
+	if (sscanf(text + i, "%u%n", &code, &n) < 1) {
+            bc->error = EINVAL; /* impossible if text is verified */
+            free(partial);
+            free(textinfo);
+            return -1;
+	}
+	strcat(partial, codeset[code]);
+	
+	/*
+	 * since the start code is part of the "raw" input, it is
+	 * counted in the checksum by itself
+	 */
+	if (!count) checksum += code; /* the start code */
+	else        checksum += code * count; /* first * 1 + second * 2 ... */
+
+	/*
+	 * print as "%s", because we have ".5" positions
+	 * also, use a size of 9 like codeC above, as each symbol is
+	 * represented by two chars
+	 */
+        sprintf(textptr, "%g:9:%c %g:9:%c ", (double)textpos, 
+		code >= 100 ? 'A' : code/10 + '0',
+		textpos + (double)SYMBOL_WID/2,	code%10 + '0');
+        textptr += strlen(textptr);
+        textpos += SYMBOL_WID; /* width of each code */
+	i += n;
+    }
+    /* Add the checksum, independent of BARCODE_NO_CHECKSUM */
+    checksum %= 103;
+    strcat(partial, codeset[checksum]);
+    /* and the end marker */
+    strcat(partial, codeset[STOP]);
+
+    bc->partial = partial;
+    bc->textinfo = textinfo;
+
+    return 0;
+}
+
