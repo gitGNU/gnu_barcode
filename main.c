@@ -548,9 +548,13 @@ int main(int argc, char **argv)
 	int ystep = (page_hei - ymargin0 - ymargin1)/lines;
 	int x = columns, y = -1; /* position in the table, start off-page */
 
+	/* Assign default size unless -g did it (Joachim Reichelt) */
+	if ( !code_width && !code_height) {
+	    code_width = xstep - 2*ximargin;
+	    code_height = ystep - 2*yimargin;
+	}
+
 	page=0;
-
-
 	while ( (line = retrieve_input_string(ifile)) ) {
 	    x++;  /* fit x and y */
 	    if (x >= columns) {
@@ -573,7 +577,7 @@ int main(int argc, char **argv)
 	     * in advance (dirty)
 	     */
 	    if (Barcode_Encode_and_Print(line, ofile,
-		    xstep - 2*ximargin, ystep - 2*yimargin,
+		    code_width, code_height,
 		    xmargin0 + ximargin + x * xstep - BARCODE_DEFAULT_MARGIN,
 		    ymargin0 + yimargin + y * ystep - BARCODE_DEFAULT_MARGIN,
 		    flags)<0) {
