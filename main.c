@@ -561,13 +561,11 @@ int main(int argc, char **argv)
 		x=0; y--;
 		if (y<0) {
 		    y = lines-1; page++;
-		    if (page>1) {
-			if (ps) {
-			    fprintf(ofile, "showpage\n");
-			    fprintf(ofile, "%%%%Page: %i %i\n\n",page,page);
-			}
-			if (pcl) fprintf(ofile, "\f");
-		    }
+		    /* flush page */
+		    if (ps && page > 1) fprintf(ofile, "showpage\n");
+		    if (pcl && page > 1) fprintf(ofile, "\f");
+		    /* new page */
+		    if (ps) fprintf(ofile, "%%%%Page: %i %i\n\n",page,page);
 		}
 	    }
 
