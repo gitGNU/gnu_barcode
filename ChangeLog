@@ -1,3 +1,20 @@
+2000-11-07  Leonid A. Broukhis <leob@mailcom.com>
+
+	* code128.c (Barcode_encode_as): fixed a bug that prevented F
+		symbols to be correctly encoded.
+
+	* plessey.c: new file, for Plessey encoding.
+
+	* msi.c: new file, for MSI encoding.
+
+	* codabar.c: new file, for CodaBar encoding.
+
+	* code128.c (Barcode_128raw_encode): new encoding
+	(Barcode_128raw_verify): checker for new encoding
+
+	* barcode.h, library.c, main.c: added code128raw, codabar,
+		MSI and Plessey
+
 2000-11-07  Hans Schou <chlor@schou.dk>
 
 	* contrib/barcodeps-0.1.tgz: new file, sent to Alessandro on Oct 7
