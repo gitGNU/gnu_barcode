@@ -5,13 +5,6 @@ Possible enhancements that I'd like to add
 
 	The code can represent the whole ascii charset
 
-* code 128c support
-
-	A digit-only code using code-128 symbols (two digits per
-	symbol).  Using a mixed 128A-B and 128C will enter this
-	wish-list after both of them are implemented as standalone
-	backends.
-
 * shrink the bars to account for ink spreading
 
 	Currently, small barcodes don't get rendered well. While
