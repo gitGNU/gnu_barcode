@@ -1,3 +1,11 @@
+2000-01-05  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* main.c (get_page_geometry): avoid using snprintf(), missing in HP/UX
+
+	* code39.c (Barcode_39_verify): added missing parens (a syntax error,
+		but only apparent where islower() is not a macro). Thanks to
+		Alexandre Oliva for finding it out.
+
 2000-01-04  Alessandro Rubini  <rubini@morgana.systemy.it>
 
 	* doc/doc.barcode (The API): removed spurious "flags" argument
