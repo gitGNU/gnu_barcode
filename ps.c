@@ -1,7 +1,7 @@
 /*
  * ps.c -- printing the "partial" bar encoding
  *
- * Copyright (c) 1999 Alessandro Rubini (rubini@prosa.it)
+ * Copyright (c) 1999 Alessandro Rubini (rubini@gnu.org)
  * Copyright (c) 1999 Prosa Srl. (prosa@prosa.it)
  *
  *   This program is free software; you can redistribute it and/or modify
