@@ -261,7 +261,7 @@ int Barcode_ean_encode(struct Barcode_Item *bc)
     int i, xpos, checksum;
 
     if (!bc->ascii) {
-	bc->error = ENODATA;
+	bc->error = EINVAL;
 	return -1;
     }
     if (!bc->encoding) {
@@ -323,7 +323,8 @@ int Barcode_ean_encode(struct Barcode_Item *bc)
 
 	strcpy(partial, guard[0]);
 	if (encoding == EAN13 || encoding == ISBN) { /* The first digit */
-	    tptr += sprintf(tptr,"0:12:%c ",text[0]);
+	    sprintf(tptr,"0:12:%c ",text[0]);
+	    tptr += strlen(tptr);
 	    partial[0] = '9'; /* extra space for the digit */
 	} else if (encoding == UPCA)
 	    partial[0] = '9'; /* UPC has one digit before the symbol, too */
@@ -347,11 +348,13 @@ int Barcode_ean_encode(struct Barcode_Item *bc)
 	     * for the first digit, which is out of the bars
 	     */
 	    if (encoding == UPCA && i==1) {
-		tptr += sprintf(tptr, "0:10:%c ", text[i]);
+		sprintf(tptr, "0:10:%c ", text[i]);
+		tptr += strlen(tptr);
 		ptr1[1] += 'a'-'1'; /* bars are long */
 		ptr1[3] += 'a'-'1';
 	    } else {
-		tptr += sprintf(tptr, "%i:12:%c ", xpos, text[i]);
+		sprintf(tptr, "%i:12:%c ", xpos, text[i]);
+		tptr += strlen(tptr);
 	    }
 	    /* count the width of the symbol */
 	    xpos += 7; /* width_of_partial(ptr2) */
@@ -370,11 +373,13 @@ int Barcode_ean_encode(struct Barcode_Item *bc)
 	     * case for the last digit
 	     */
 	    if (encoding == UPCA && i==12) {
-		tptr += sprintf(tptr, "%i:10:%c ", xpos+13, text[i]);
+		sprintf(tptr, "%i:10:%c ", xpos+13, text[i]);
+		tptr += strlen(tptr);
 		ptr1[0] += 'a'-'1'; /* bars are long */
 		ptr1[2] += 'a'-'1';
 	    } else {
-		tptr += sprintf(tptr, "%i:12:%c ", xpos, text[i]);
+		sprintf(tptr, "%i:12:%c ", xpos, text[i]);
+		tptr += strlen(tptr);
 	    }
 	    xpos += 7; /* width_of_partial(ptr2) */
 	}
@@ -421,7 +426,8 @@ int Barcode_ean_encode(struct Barcode_Item *bc)
 		    ptr1[3] = ptr2[0];
 		}
 		/* and the text */
-		tptr += sprintf(tptr, " %i:12:%c", xpos, text[i]);
+		sprintf(tptr, " %i:12:%c", xpos, text[i]);
+		tptr += strlen(tptr);
 		xpos += 7; /* width_of_partial(ptr2) */
 	    }
 	}
@@ -445,7 +451,8 @@ int Barcode_ean_encode(struct Barcode_Item *bc)
 		ptr1[2] = ptr2[1];
 		ptr1[3] = ptr2[0];
 	    }
-	    tptr += sprintf(tptr, "%i:12:%c ", xpos, text[i]);
+	    sprintf(tptr, "%i:12:%c ", xpos, text[i]);
+	    tptr += strlen(tptr);
 	    xpos += 7; /* width_of_partial(ptr2) */
 	}
 	tptr[-1] = '\0'; /* overwrite last space */
@@ -463,7 +470,8 @@ int Barcode_ean_encode(struct Barcode_Item *bc)
 	/* left part */
 	for (i=0;i<4;i++) {      
 	    strcpy(partial + strlen(partial), digits[text[i]-'0']);
-	    tptr += sprintf(tptr, "%i:12:%c ", xpos, text[i]);
+	    sprintf(tptr, "%i:12:%c ", xpos, text[i]);
+	    tptr += strlen(tptr);
 	    xpos += 7; /* width_of_partial(digits[text[i]-'0' */
 	}
 	strcat(partial, guard[1]); /* middle */
@@ -472,7 +480,8 @@ int Barcode_ean_encode(struct Barcode_Item *bc)
 	/* right part */
 	for (i=4;i<8;i++) {      
 	    strcpy(partial + strlen(partial), digits[text[i]-'0']);
-	    tptr += sprintf(tptr, "%i:12:%c ", xpos, text[i]);
+	    sprintf(tptr, "%i:12:%c ", xpos, text[i]);
+	    tptr += strlen(tptr);
 	    xpos += 7; /* width_of_partial(digits[text[i]-'0' */
 	}
 	tptr[-1] = '\0'; /* overwrite last space */
