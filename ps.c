@@ -111,9 +111,9 @@ int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
     /* The height defaults to 80 points (rescaled) */
     if (!bc->height) bc->height = 80 * scalef;
 
-#if 0 
-    /* If too small (20 + text), enlarge and center */
-    i = 20 + 10 * ((bc->flags & BARCODE_NO_ASCII)==0);
+#if 0
+    /* If too small (5 + text), enlarge and center */
+    i = 5 + 10 * ((bc->flags & BARCODE_NO_ASCII)==0);
     if (bc->height < i * scalef ) {
         int hei = i * scalef;
         bc->yoff -= (hei-bc->height)/2;
@@ -123,9 +123,9 @@ int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
             bc->yoff = 0;
         }
     }
-#else 
-    /* If too small (20 + text), reduce the scale factor and center */
-    i = 20 + 10 * ((bc->flags & BARCODE_NO_ASCII)==0);
+#else
+    /* If too small (5 + text), reduce the scale factor and center */
+    i = 5 + 10 * ((bc->flags & BARCODE_NO_ASCII)==0);
     if (bc->height < i * scalef ) {
         double scaleg = ((double)bc->height) / i;
         int wid = bc->width * scaleg / scalef;
