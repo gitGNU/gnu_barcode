@@ -33,6 +33,9 @@ INFOTOHTML = @INFOTOHTML@
 TARGET = barcode
 ALL    = $(TARGET).ps $(TARGET).info $(TARGET)doc.txt $(TARGET).html \
 		$(TARGET).pdf 
+# shortcuts
+PS = $(TARGET).ps
+PDF = $(TARGET).pdf
 
 all: $(ALL) terse
 
@@ -45,16 +48,15 @@ mpage: all
 	mpage -2A $(TARGET)1.ps > $(TARGET)2.ps && rm $(TARGET)1.ps
 
 terse:
-	# preserve the pdf copy
-	-mv -f $(TARGET).pdf PDF 2> /dev/null && \
-		rm -f *~ *.dvi *.log *.aux \
-		      $(TARGET).*.bak $(TARGET).??? $(TARGET).texinfo && \
-		mv PDF $(TARGET).pdf;
-
-	# preserve the ps copy
-	-mv $(TARGET).ps PS;
-	-rm -f $(TARGET).??;
-	-mv PS $(TARGET).ps;
+	rm -f *~ *.dvi *.log *.aux $(TARGET).*.bak $(TARGET).texinfo
+# preserve the pdf copy
+	if [ -f $(PDF) ]; then \
+		mv -f $(PDF) PDF && rm -f $(TARGET).??? && mv PDF $(PDF); \
+	else rm -f  $(TARGET).???; fi
+# preserve the ps copy
+	if [ -f $(PS) ]; then \
+		mv -f $(PS) PS && rm -f $(TARGET).?? && mv PS $(PS); \
+	else rm -f  $(TARGET).??; fi
 
 clean: terse
 	rm -f $(ALL) $(TARGET)_toc.html
