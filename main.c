@@ -56,11 +56,11 @@ struct {
     {"isbn",     BARCODE_ISBN},
     {"39",       BARCODE_39},
     {"code39",   BARCODE_39},
+    {"128c",     BARCODE_128C},
+    {"code128c", BARCODE_128C},
 #if 0 /* These are not implemented, yet */
     {"128",      BARCODE_128},
     {"code128",  BARCODE_128},
-    {"128c",     BARCODE_128C},
-    {"code128c", BARCODE_128C},
 #endif
     {NULL, 0}
 };
