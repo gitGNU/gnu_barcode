@@ -26,6 +26,6 @@ The suggested installation here includes creation of a Debian package:
 
 Then, just install using dpkg:
 
-	dpkg -i ../barcode-0.94_*.deb
+	dpkg -i ../barcode-0.95_*.deb
 
 (the "*" here will represent your architecture: "i386", "alpha", "sparc", ...)
