@@ -1,5 +1,7 @@
 
-This is GNU-barcode.
+This is GNU-barcode. The latest release can be downloaded from ftp.gnu.org
+and mirrors:
+	ftp://ftp.gnu.org/pub/gnu/barcode/
 
 The package is meant to solve most needs in barcode creation with a
 conventional printer. It can create printouts for the conventional
@@ -33,5 +35,5 @@ I would like to thank both Judah Milgram and Michele Comitini
 (mcm@glisco.it) for their help with this tool, as well as Jim Westveer
 for introducing me to Debian packaging.
 
-/alessandro (rubini@prosa.it, rubini@gnu.org)
+/alessandro (rubini@gnu.org)
 
