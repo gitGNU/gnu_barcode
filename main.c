@@ -314,9 +314,9 @@ int get_page_geometry(void *arg)
 	page_wid = dpw * unit;
 	page_hei = dph * unit;
 	if (unit != 1.0) { /* rebuild the page name */
-	    page_name = malloc(16);
-	    if (page_name) snprintf(page_name, 16, "%dx%d\n",
-				    page_wid, page_hei);
+	    page_name = malloc(32); /* big, to avoid snprintf, missing on HP */
+	    if (page_name)
+		sprintf(page_name, "%dx%d\n", page_wid, page_hei);
 	}
 	return 0;
     }
