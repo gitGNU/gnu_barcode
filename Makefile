@@ -1,6 +1,19 @@
+#
+# This Makefile uses gmake features. 
+#
 
 CFLAGS = -Wall
 LDFLAGS = -L. -l$(TARGET)
+
+## Dirty autodection of libpaper. Should use autoconf instead
+ifeq ($(wildcard /usr/include/paper.h),/usr/include/paper.h)
+  CFLAGS += -DHAVE_LIBPAPER
+  LDFLAGS += -lpaper
+endif
+ifeq ($(wildcard /usr/local/include/paper.h),/usr/local/include/paper.h)
+  CFLAGS += -DHAVE_LIBPAPER
+  LDFLAGS += -lpaper
+endif
 
 PREFIX = /usr/local
 BINDIR = $(PREFIX)/bin
@@ -78,8 +91,8 @@ tar:
 
 #print the version, as I usually forget about it
 printv:
-	@grep VERSION $(HEADER)
-	@grep set.version doc/doc.$(TARGET)
+	@grep -n VERSION $(HEADER) /dev/null
+	@grep -n set.version doc/doc.$(TARGET) /dev/null
 
 distrib: $(INFO) terse tar printv
 
