@@ -101,7 +101,7 @@ int Barcode_128b_encode(struct Barcode_Item *bc)
 
     text = bc->ascii;
     if (!text) {
-        bc->error = ENODATA;
+        bc->error = EINVAL;
         return -1;
     }
     /* the partial code is 6* (head + text + check + tail) + final + term. */
@@ -138,8 +138,8 @@ int Barcode_128b_encode(struct Barcode_Item *bc)
 	strcat(partial, codeset[code]);
 	checksum += code * i+1; /* first * 1 + second * 2 + third * 3... */
         sprintf(textptr, "%i:12:%c ", textpos, text[i]);
-        textpos += SYMBOL_WID; /* width of each code */
         textptr += strlen(textptr);
+        textpos += SYMBOL_WID; /* width of each code */
     }
     /* Add the checksum, independent of BARCODE_NO_CHECKSUM */
     checksum %= 103;
@@ -190,7 +190,7 @@ int Barcode_128c_encode(struct Barcode_Item *bc)
 
     text = bc->ascii;
     if (!text) {
-        bc->error = ENODATA;
+        bc->error = EINVAL;
         return -1;
     }
     /* the partial code is 6* (head + text + check + tail) + final + term. */
@@ -228,8 +228,8 @@ int Barcode_128c_encode(struct Barcode_Item *bc)
 	/* print as "%s", because we have ".5" positions */
         sprintf(textptr, "%g:9:%c %g:9:%c ", (double)textpos, text[i],
 		textpos + (double)SYMBOL_WID/2,	text[i+1]);
-        textpos += SYMBOL_WID; /* width of each code */
         textptr += strlen(textptr);
+        textpos += SYMBOL_WID; /* width of each code */
     }
     /* Add the checksum, independent of BARCODE_NO_CHECKSUM */
     checksum %= 103;
