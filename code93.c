@@ -208,6 +208,7 @@ int Barcode_93_encode(struct Barcode_Item *bc)
     strcat(partial, "1");
     bc->partial = partial;
     bc->textinfo = textinfo;
+    free(checksum_str);
 
     return 0;
 }
