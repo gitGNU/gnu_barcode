@@ -1,3 +1,12 @@
+2000-11-07  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* doc/Makefile.in: a new life for the former Makefile (to build
+		with both gmake and pmake with features added on 2000-09-08)
+
+	* configure.in: use $MAKE in checking for gmake if set
+		(to allow testing with BSD make)
+	Check if makeinfo can manage html, used for doc/Makefile.in
+
 2000-11-07  Leonid A. Broukhis <leob@mailcom.com>
 
 	* code128.c (Barcode_encode_as): fixed a bug that prevented F
@@ -45,6 +54,12 @@
 
 	* barcode.h: added the standard  ``extern "C"'' stuff for C++
 	(bug reported by Dany Pardo <dani@minerva.enpl.es>)
+
+2000-09-08  Andrea Ferraris  <andrea@gnu.systemy.it>
+
+	* doc/Makefile: added support for pdf and html via makeinfo
+
+	* doc/doc.barcode: added a missing trailing dot in an xref
 
 2000-08-28  Alessandro Rubini  <rubini@morgana.systemy.it>
 
