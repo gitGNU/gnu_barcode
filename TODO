@@ -1,9 +1,9 @@
 
 Possible enhancements that I'd like to add
 
-* code 128 (a/b) support
+* code 128 (a) support
 
-	The code can represent the whole ascii charset
+	The code can represent ascii 0-96 (control chars, no lowercase)
 
 * shrink the bars to account for ink spreading
 
