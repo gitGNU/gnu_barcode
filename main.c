@@ -219,7 +219,7 @@ int get_geometry(void *arg)
     code_width  = w * unit;
     code_height = h * unit;
     xmargin0 = x * unit;
-    ymargin1 = y * unit;
+    ymargin0 = y * unit;
     return 0;
 }
 
