@@ -58,10 +58,10 @@ struct {
     {"code39",   BARCODE_39},
     {"128c",     BARCODE_128C},
     {"code128c", BARCODE_128C},
-#if 0 /* These are not implemented, yet */
-    {"128",      BARCODE_128},
-    {"code128",  BARCODE_128},
-#endif
+    {"128b",     BARCODE_128B},
+    {"code128b", BARCODE_128B},
+    {"i25",      BARCODE_I25},
+    {"interleaved 2 of 5", BARCODE_I25},
     {NULL, 0}
 };
 
