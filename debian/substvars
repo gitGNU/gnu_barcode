@@ -1,0 +1,1 @@
+shlibs:Depends=libc6, libpaperg (>= 1.0.3-4)
