@@ -16,8 +16,10 @@ fi
 dnl Check for getopt and libpaper. If getopt is missing, use our version
 AC_CHECK_HEADER(getopt.h, ,NO_GETOPT=-DNO_GETOPT;GETOPT_O=compat/getopt.o)
 AC_CHECK_HEADER(paper.h, LIBPAPER=-lpaper, NO_LIBPAPER=-DNO_LIBPAPER)
+AC_CHECK_HEADERS(unistd.h)
 
 AC_CHECK_FUNC(strerror, , NO_STRERROR=-DNO_STRERROR)
+AC_CHECK_FUNCS(strcasecmp)
 
 dnl Check if this is gmake
 AC_MSG_CHECKING("for gmake")
