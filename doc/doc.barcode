@@ -132,9 +132,10 @@ are directly related to one or more of these fields.
 
 @menu
 * The Field List::              
+* The Intermediate Representaion::  
 @end menu
 
-@node The Field List,  , The Barcode Object, The Barcode Object
+@node The Field List, The Intermediate Representaion, The Barcode Object, The Barcode Object
 @section The Fields
 
 @table @code
@@ -242,6 +243,43 @@ following way:
 	region.
 
 @end table
+
+%--------------------------------------------------------------------------
+@node The Intermediate Representaion,  , The Field List, The Barcode Object
+@section The Intermediate Representation
+
+The encoding functions print their output into the @t{partial} and
+@t{texinfo} fields of the barcode data structure. Those fields, together
+with position information, are then used to generate actual output.
+This is an informal description of the intermediate format.
+
+The first char in @t{partial} tells how much extra space to add to the
+left of the bars. For EAN-13, it is used to leave space to print the
+first digit, other codes may have '0' for no-extra-space-needed.
+
+The next characters are alternating bars and spaces, as multiples of the
+base dimension which is 1 unless the code is rescaled. Rescaling is
+calculated as the ratio from the requested width and the calculated
+width.  Digits represent bar/space dimensions. Lower-case letters
+represent those bars that should extend lower than the others: 'a' is
+equivalent to '1', 'b' is '2' and so on up to 'i' which is eqivalent to
+'9'. Other letters will be used for encoding-specific meanings, as soon
+as I implement them.
+
+The @t{extinfo} string is made up of fields @t{%lf:%lf:%c} separated by
+blank space. The first integer is the x position of the character,
+the second is the font size (before rescaling) and the char item is
+the charcter to be printed.
+
+Both the @t{partial} and @t{textinfo} strings may include ``@t{-}'' or
+``@t{+}'' as special characters (in @t{textinfo} the char should be a
+standalone word).  They state where the text should be printed: below
+the bars (``@t{-}'', default) or above the bars. This is used, for
+example, to print the add-5 and add-2 codes to the right of UPC or EAN
+codes (the add-5 extension is mostly used in ISBN codes.
+
+
+
 
 %==========================================================================
 
