@@ -31,8 +31,8 @@
 
 @setchapternewpage off
 
-@set version 0.93
-@set update-month September 1999
+@set version 0.94
+@set update-month October 1999
 
 @finalout
 
@@ -328,7 +328,7 @@ library:
 @chapter Functions Exported by the Library
 
 %MANPAGE barcode.3
-%M .TH BARCODE 3 "September 1999" "GNU" "GNU barcode"
+%M .TH BARCODE 3 "October 1999" "GNU" "GNU barcode"
 %M .UC 4
 %M .SH NAME
 %M barcode \- a library to create and print bar codes
@@ -419,7 +419,7 @@ header file @t{barcode.h}.  They perform the following tasks:
 @chapter The @i{barcode} frontend program
 
 %MANPAGE barcode.1
-%M .TH BARCODE 1 "September 1999" "GNU" "GNU barcode"
+%M .TH BARCODE 1 "October 1999" "GNU" "GNU barcode"
 %M .UC 4
 %M .SH NAME
 %M barcode \- a stand alone program to run the barcode library
@@ -471,9 +471,11 @@ and encode all of them.
         The option can be used multiple times in order to encode
         multiple strings (this will result in multi-page postscript
         output or a table of barcodes if @t{-t} is specified).  The
-        strings must match the encoding chosen with @t{-e} and no
-	error is printed if they don't match (this may be construed as
-	a bug).
+        strings must match the encoding chosen; if it doesn't
+        match the program will print a warning to @t{stderr} and
+        generate ``blank'' output (although not zero-lenght).
+        Please note that a string including spaces or
+        other special characters must be properly quoted.
 
 @item -e encoding
         @b{encoding} is the name of the chosen encoding format being
