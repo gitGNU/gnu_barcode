@@ -30,27 +30,36 @@
 /*
  * How do the "partial" and "textinfo" strings work?
  *
- * The first char in "partial" tells how much extra space to
- * leave. For ean it is used to print the first digit, for example.
- * This is an integer offset from '0'.
+ * The first char in "partial" tells how much extra space to add to the
+ * left of the bars (for EAN-13, it is used to leave space to print the
+ * first digit), other codes may have '0' for no-extra-space-needed.
  *
  * The next characters are alternating bars and spaces, as multiples
  * of the base dimension which is 1 unless the code is
  * rescaled. Rescaling is calculated as the ratio from the requested
  * width and the calculated width.  Digits represent bar/space
  * dimensions. Lower-case letters represent those bars that should
- * extend lower than the others, as offet from 'a'.
+ * extend lower than the others: 'a' is equivalent to '1', 'b' is '2' and
+ * so on.
  *
  * The "textinfo" string is made up of fields "%i:%i:%c" separated by
  * blank space. The first integer is the x position of the character,
  * the second is the font size (before rescaling) and the char item is
  * the charcter to be printed.
+ *
+ * Both the "partial" and "textinfo" strings may include "-" or "+" as
+ * special characters (in "textinfo" the char should be a standalone
+ * word).  They state where the text should be printed: below the bars
+ * ("-", default) or above the bars. This is used, for example, to
+ * print the add-5 and add-2 codes to the right of UPC or EAN codes
+ * (the add-5 extension is mostly used in ISBN codes.
  */
 
 
 int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
 {
     int i, j, barlen;
+    int mode = '-'; /* text below bars */
     double scalef=1, xpos, x0, y0, yr;
     unsigned char *ptr;
     unsigned char c;
@@ -71,7 +80,7 @@ int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
     for (ptr = bc->partial+1; *ptr; ptr++)
 	if (isdigit(*ptr)) 
 	    barlen += (*ptr - '0');
-	else
+	else if (islower(*ptr))
 	    barlen += (*ptr - 'a'+1);
 
     /* The scale factor depends on bar length */
@@ -155,6 +164,10 @@ int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
 
     xpos = bc->margin + (bc->partial[0]-'0') * scalef;
     for (ptr = bc->partial+1, i=1; *ptr; ptr++, i++) {
+	/* special cases: '+' and '-' */
+	if (*ptr == '+' || *ptr == '-') {
+	    mode = *ptr; /* don't count it */ i++; continue;
+	}
 	/* j is the width of this bar/space */
 	if (isdigit (*ptr))   j = *ptr-'0';
 	else                  j = *ptr-'a'+1;
@@ -162,11 +175,17 @@ int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
 	    x0 = bc->xoff + xpos + (j*scalef)/2;
             y0 = bc->yoff + bc->margin;
             yr = bc->height;
-            if (!(bc->flags & BARCODE_NO_ASCII)) {
-                /* leave some space for the ascii part */
-                y0 += (isdigit(*ptr) ? 10 : 5) * scalef;
-                yr -= (isdigit(*ptr) ? 10 : 5) * scalef;
-            }
+            if (!(bc->flags & BARCODE_NO_ASCII)) { /* leave space for text */
+		if (mode == '-') {
+		    /* text below bars: 10 points or five points */
+		    y0 += (isdigit(*ptr) ? 10 : 5) * scalef;
+		    yr -= (isdigit(*ptr) ? 10 : 5) * scalef;
+		} else { /* '+' */
+		    /* text above bars: 10 or 0 from bottom, and 10 from top */
+		    y0 += (isdigit(*ptr) ? 10 : 0) * scalef;
+		    yr -= (isdigit(*ptr) ? 20 : 10) * scalef; 
+		}
+	    }
             fprintf(f,"%5.2f setlinewidth "
 		    "%6.2f %6.2f moveto "
 		    "0 %5.2f rlineto stroke\n",
@@ -178,20 +197,28 @@ int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
 
     /* Then, the text */
 
+    mode = '-'; /* reinstantiate default */
     if (!(bc->flags & BARCODE_NO_ASCII)) {
         for (ptr = bc->textinfo; ptr; ptr = strchr(ptr, ' ')) {
             while (*ptr == ' ') ptr++;
             if (!*ptr) break;
+	    if (*ptr == '+' || *ptr == '-') {
+		mode = *ptr; continue;
+	    }
             if (sscanf(ptr, "%i:%i:%c", &i, &j, &c) != 3) {
                 fprintf(stderr, "barcode: impossible data: %s\n", ptr);
                 continue;
             }
+	    /* FIXME: what about Helvetica instead? */
             fprintf(f, "/Courier-Bold findfont %5.2f scalefont setfont\n",
                     j * scalef);
             /* FIXME: a ')' can't be printed this way */
             fprintf(f, "%5.2f %5.2f moveto (%c) show\n",
                     bc->xoff + i * scalef + bc->margin,
-                    (double)bc->yoff + bc->margin, c);
+		    mode == '-'
+                       ? (double)bc->yoff + bc->margin
+		       : (double)bc->yoff + bc->margin+bc->height - 8*scalef,
+		    c);
         }
     }
 
