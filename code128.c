@@ -67,20 +67,95 @@ static char *codeset[] = {
 
 #define SYMBOL_WID 11 /* all of them are 11-bar wide */
 
-#if 0
-int Barcode_128_verify(char *text)
+/*
+ * code 128-b includes all printable ascii chars
+ */
+
+int Barcode_128b_verify(char *text)
 {
-    /* not implemented */
-    return -1;
+    if (!strlen(text))
+	return -1;
+    while (*text && *text>=32 && !(*text&0x80))
+	text++;
+    if (*text)
+	return -1; /* a non-ascii char */
+    return 0; /* ok */
 }
 
-int Barcode_128_encode(struct Barcode_Item *bc)
+int Barcode_128b_encode(struct Barcode_Item *bc)
 {
-    /* not implemented */
-    bc->error = ENOSYS;
-    return -1;
+    static char *text;
+    static char *partial;  /* dynamic */
+    static char *textinfo; /* dynamic */
+    char *textptr;
+    int i, code, textpos, checksum = 0;
+
+    if (bc->partial)
+	free(bc->partial);
+    if (bc->textinfo)
+	free(bc->textinfo);
+    bc->partial = bc->textinfo = NULL; /* safe */
+
+    if (!bc->encoding)
+	bc->encoding = strdup("code 128-B");
+
+    text = bc->ascii;
+    if (!text) {
+        bc->error = ENODATA;
+        return -1;
+    }
+    /* the partial code is 6* (head + text + check + tail) + final + term. */
+    partial = malloc( (strlen(text) + 4) * 6 +2);
+    if (!partial) {
+        bc->error = errno;
+        return -1;
+    }
+
+    /* the text information is at most "nnn:fff:c " * strlen +term */
+    textinfo = malloc(10*strlen(text) + 2);
+    if (!textinfo) {
+        bc->error = errno;
+        free(partial);
+        return -1;
+    }
+
+    /* up to now, it was the same code as other encodings */
+
+    strcpy(partial, "0"); /* the first space */
+    strcat(partial, codeset[START_B]);
+    checksum += START_B; /* the start char is counted in the checksum */
+    textptr = textinfo;
+    textpos = SYMBOL_WID;
+
+    for (i=0; i<strlen(text); i++) {
+        if ( text[i] < 32 || (text[i] & 0x80)) {
+            bc->error = EINVAL; /* impossible if text is verified */
+            free(partial);
+            free(textinfo);
+            return -1;
+        }
+	code = text[i]-32;
+	strcat(partial, codeset[code]);
+	checksum += code * i+1; /* first * 1 + second * 2 + third * 3... */
+        sprintf(textptr, "%i:12:%c ", textpos, text[i]);
+        textpos += SYMBOL_WID; /* width of each code */
+        textptr += strlen(textptr);
+    }
+    /* Add the checksum, independent of BARCODE_NO_CHECKSUM */
+    checksum %= 103;
+    strcat(partial, codeset[checksum]);
+    /* and the end marker */
+    strcat(partial, codeset[STOP]);
+
+    bc->partial = partial;
+    bc->textinfo = textinfo;
+
+    return 0;
 }
-#endif
+
+/*
+ * code 128-c is only digits, but two per symbol
+ */
 
 int Barcode_128c_verify(unsigned char *text)
 {
@@ -125,8 +200,8 @@ int Barcode_128c_encode(struct Barcode_Item *bc)
         return -1;
     }
 
-    /* the text information is at most "nnn:fff:c " * strlen +term */
-    textinfo = malloc(10*strlen(text) + 2);
+    /* the text information is at most "nnn.5:fff:c " * strlen +term */
+    textinfo = malloc(12*strlen(text) + 2);
     if (!textinfo) {
         bc->error = errno;
         free(partial);
@@ -150,6 +225,7 @@ int Barcode_128c_encode(struct Barcode_Item *bc)
 	strcat(partial, codeset[code]);
 	checksum += code * (i/2+1); /* first * 1 + second * 2 + third * 3... */
 
+	/* print as "%s", because we have ".5" positions */
         sprintf(textptr, "%g:9:%c %g:9:%c ", (double)textpos, text[i],
 		textpos + (double)SYMBOL_WID/2,	text[i+1]);
         textpos += SYMBOL_WID; /* width of each code */
@@ -166,18 +242,3 @@ int Barcode_128c_encode(struct Barcode_Item *bc)
 
     return 0;
 }
-
-#if 0
-int Barcode_128_verify(char *text)
-{
-    /* not implemented */
-    return -1;
-}
-
-int Barcode_128_encode(struct Barcode_Item *bc)
-{
-    /* not implemented */
-    bc->error = ENOSYS;
-    return -1;
-}
-#endif
