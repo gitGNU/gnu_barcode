@@ -34,7 +34,7 @@
 2001-10-16  Alessandro Rubini  <rubini@linux.it>
 
 	* doc/doc.barcode (Supported Encodings): added documentation for
-		EAN and UPC with checksum, as coded by mr. Zoltan (below)
+		EAN and UPC with checksum, as coded by mr. Böszörményi (below)
 
 2001-10-16  Boszormenyi Zoltan <zboszor@externet.hu>
 
