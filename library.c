@@ -94,6 +94,8 @@ extern int Barcode_msi_verify(unsigned char *text);
 extern int Barcode_msi_encode(struct Barcode_Item *bc);
 extern int Barcode_pls_verify(unsigned char *text);
 extern int Barcode_pls_encode(struct Barcode_Item *bc);
+extern int Barcode_93_verify(unsigned char *text);
+extern int Barcode_93_encode(struct Barcode_Item *bc);
 
 
 struct encoding {
@@ -115,6 +117,7 @@ struct encoding encodings[] = {
     {BARCODE_CBR,    Barcode_cbr_verify,    Barcode_cbr_encode},
     {BARCODE_PLS,    Barcode_pls_verify,    Barcode_pls_encode},
     {BARCODE_MSI,    Barcode_msi_verify,    Barcode_msi_encode},
+    {BARCODE_93,     Barcode_93_verify,     Barcode_93_encode},
     {0,              NULL,                  NULL}
 };
 
