@@ -135,7 +135,7 @@ int commandline(struct commandline *args, int argc, char **argv,
     struct commandline *ptr;
     char *getopt_desc = (char *)calloc(512, 1);
     int desc_offset = 0;
-    int opt;
+    int opt, retval;
     char *value;
 
     /* Build getopt string and process defaults values */
@@ -148,8 +148,14 @@ int commandline(struct commandline *args, int argc, char **argv,
 	    value = getenv(ptr->env);
 	if (!value)
 	    value = ptr->default_v;
-	if (value && commandline_oneopt(ptr, value)) {
-	    return commandline_errormsg(stderr, args, argv[0], errorhead);
+	if (value && (retval = commandline_oneopt(ptr, value))) {
+	    /*
+	     * if the function returns a specific (not -1) value, it already
+	     * printed its message, so avoid the generic help
+	     */
+	    if (retval == -1)
+		commandline_errormsg(stderr, args, argv[0], errorhead);
+	    return retval;
 	}
     }
 
@@ -160,8 +166,11 @@ int commandline(struct commandline *args, int argc, char **argv,
 		break;
 	if (!ptr->option) /* unknown option */
 	    return commandline_errormsg(stderr, args, argv[0], errorhead);
-	if (commandline_oneopt(ptr, optarg)) /* known but wrong arg */
-	    return commandline_errormsg(stderr, args, argv[0], errorhead);
+	if ( (retval = commandline_oneopt(ptr, optarg)) ) { /*  wrong arg */
+	    if (retval == -1)
+		commandline_errormsg(stderr, args, argv[0], errorhead);
+	    return retval;
+	}
     }
     return 0;
 }
