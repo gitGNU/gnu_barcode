@@ -325,7 +325,8 @@ int Barcode_ean_encode(struct Barcode_Item *bc)
 	if (encoding == EAN13 || encoding == ISBN) { /* The first digit */
 	    tptr += sprintf(tptr,"0:12:%c ",text[0]);
 	    partial[0] = '9'; /* extra space for the digit */
-	}
+	} else if (encoding == UPCA)
+	    partial[0] = '9'; /* UPC has one digit before the symbol, too */
 	xpos = width_of_partial(partial);
 	mirror = ean_mirrortab[text[0]-'0'];
 
@@ -341,7 +342,18 @@ int Barcode_ean_encode(struct Barcode_Item *bc)
 		ptr1[2] = ptr2[1];
 		ptr1[3] = ptr2[0];
 	    }
-	    tptr += sprintf(tptr, "%i:12:%c ", xpos, text[i]);
+	    /*
+	     * Write the ascii digit. UPC has a special case
+	     * for the first digit, which is out of the bars
+	     */
+	    if (encoding == UPCA && i==1) {
+		tptr += sprintf(tptr, "0:10:%c ", text[i]);
+		ptr1[1] += 'a'-'1'; /* bars are long */
+		ptr1[3] += 'a'-'1';
+	    } else {
+		tptr += sprintf(tptr, "%i:12:%c ", xpos, text[i]);
+	    }
+	    /* count the width of the symbol */
 	    xpos += 7; /* width_of_partial(ptr2) */
 	}
 
@@ -353,7 +365,17 @@ int Barcode_ean_encode(struct Barcode_Item *bc)
 	    ptr1 = partial + strlen(partial); /* target */
 	    ptr2 =  digits[text[i]-'0'];      /* source */
 	    strcpy(ptr1, ptr2);
-	    tptr += sprintf(tptr, "%i:12:%c ", xpos, text[i]);
+	    /*
+	     * Ascii digit. Once again, UPC has a special
+	     * case for the last digit
+	     */
+	    if (encoding == UPCA && i==12) {
+		tptr += sprintf(tptr, "%i:10:%c ", xpos+13, text[i]);
+		ptr1[0] += 'a'-'1'; /* bars are long */
+		ptr1[2] += 'a'-'1';
+	    } else {
+		tptr += sprintf(tptr, "%i:12:%c ", xpos, text[i]);
+	    }
 	    xpos += 7; /* width_of_partial(ptr2) */
 	}
 	tptr[-1] = '\0'; /* overwrite last space */
