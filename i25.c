@@ -36,7 +36,7 @@ static char *guard[] = {"a1a1", "c1a"}; /* begin end */
 
 int Barcode_i25_verify(unsigned char *text)
 {
-    if (!strlen(text))
+    if (!text[0])
 	return -1;
     while (*text && isdigit(*text))
 	text++;
@@ -51,7 +51,7 @@ int Barcode_i25_encode(struct Barcode_Item *bc)
     unsigned char *partial;  /* dynamic */
     unsigned char *textinfo; /* dynamic */
     unsigned char *textptr, *p1, *p2, *pd;
-    int i, sum[2], textpos, usesum = 0;
+    int i, len, sum[2], textpos, usesum = 0;
 
     if (bc->partial)
 	free(bc->partial);
@@ -124,7 +124,8 @@ int Barcode_i25_encode(struct Barcode_Item *bc)
     textpos = 4; /* width of initial guard */
     textptr = textinfo;
 
-    for (i=0; i<strlen(text); i+=2) {
+    len = strlen(text);
+    for (i=0; i<len; i+=2) {
         if (!isdigit(text[i]) || !isdigit(text[i+1])) {
             bc->error = EINVAL; /* impossible if text is verified */
             free(partial);
