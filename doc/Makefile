@@ -14,14 +14,41 @@
 #	makeing clean and applying my own rules.
 #
 ###################################################################
+#
+# First of all, retrieve features of makeinfo, to know if we can do images
+# and --html. Also, allow MAKEINFO to be specified on the commandline to
+# allow me testing with various versions.
+
+ifndef MAKEINFO  
+MAKEINFO = $(shell type -p makeinfo)
+endif
+
+MAKEINFOCANDOHTML = \
+	$(shell $(MAKEINFO) --help | grep .--html > /dev/null && echo y)
+MAKEINFOCANDOIMAGES = \
+	$(shell strings $(MAKEINFO) | grep '@image' > /dev/null && echo y)
+
+# NOTE: it looks like semi-old versions can do images too, so CANDOIMAGES
+#	is not (yet?) used
+
+
+ifeq "$(MAKEINFOCANDOHTML)" "y"
+   REMOVEHTMLTAGS = cat
+   INFOTOHTML = $(MAKEINFO) --html
+else
+   REMOVEHTMLTAGS = sed 's/ifnottex/ifinfo/; s/ifnotinfo/iftex/'
+   INFOTOHTML = perl ./texi2html -monolithic
+endif
+
 
 ##############################################
 
 
 TARGET = barcode
-ALL    = $(TARGET).ps $(TARGET).info $(TARGET)doc.txt $(TARGET).html
+ALL    = $(TARGET).ps $(TARGET).info $(TARGET)doc.txt $(TARGET).html \
+		$(TARGET).pdf 
 
-all: $(ALL)
+all: $(ALL) terse
 
 info: $(TARGET).info
 
@@ -32,8 +59,12 @@ mpage: all
 	mpage -2A $(TARGET)1.ps > $(TARGET)2.ps && rm $(TARGET)1.ps
 
 terse:
-	rm -f *~ *.dvi *.log *.aux \
-	      $(TARGET).*.bak $(TARGET).??? $(TARGET).texinfo
+	# preserve the pdf copy
+	-mv -f $(TARGET).pdf PDF 2> /dev/null && \
+		rm -f *~ *.dvi *.log *.aux \
+		      $(TARGET).*.bak $(TARGET).??? $(TARGET).texinfo && \
+		mv PDF $(TARGET).pdf;
+
 	# preserve the ps copy
 	-mv $(TARGET).ps PS;
 	-rm -f $(TARGET).??;
@@ -47,8 +78,9 @@ clean: terse
 
 # These rules used to be expressed as "%.texinfo: doc.%" etc. However, this
 # is gmake-specific, so I turned every % to $(TARGET), thus loosing generality
-# but gaining portability. I also had to drop "$^" and while "$<" works
-# with gmake and not pmake, "$<" works with gmake and not pmake.
+# but gaining portability. I also had to drop "$^": it worked with gmake
+# and not pmake, while "$<" worked with pmake and not gmake.
+# with gmake and not pmake.
 #    ARub 2000-04-21
 
 $(TARGET).texinfo: doc.$(TARGET)
@@ -90,6 +122,9 @@ $(TARGET).dvi: $(TARGET).texinfo
 
 $(TARGET).ps: $(TARGET).dvi
 	dvips -f $(TARGET).dvi > $@
+
+$(TARGET).pdf: $(TARGET).ps
+	ps2pdf $(TARGET).ps > $@
 
 $(TARGET).lj: $(TARGET).dvi
 	dvilj -e- $(TARGET).dvi > $@
