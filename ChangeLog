@@ -1,3 +1,20 @@
+
+====> Version 0.91 released to both ftp.prosa.it and ftp.gnu.org
+
+1999-07-08  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* ps.c (Barcode_ps_print): shrink all the bars by 0.15 points
+	(Barcode_ps_print): Use Helvetica as font, not Courier-Bold
+	(Barcode_ps_print): remember previous font to make shorter ps output
+
+1999-07-07  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* bookland/bookland.py: new enntry, by Judah Milgram.
+
+	* ean.c (Barcode_isbn_verify): fixed bug with "-X" codes (thanks Judah)
+
+====> Version 0.90.3 released to ftp.prosa.it/pub/software
+
 1999-07-07  Alessandro Rubini  <rubini@morgana.systemy.it>
 
 	* doc/doc.barcode: fixed the "BUGS" section (remove fixed stuff)
@@ -5,6 +22,8 @@
 	* ean.c (Barcode_ean_encode): added '+' markers in partial and textinfo
 
 	* ps.c (Barcode_ps_print): added support for text over bars ('+' mode)
+
+====> Version 0.90.2, internal checkpoint
 
 1999-07-06  Alessandro Rubini  <rubini@morgana.systemy.it>
 
