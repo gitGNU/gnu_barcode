@@ -65,7 +65,7 @@ int Barcode_i25_encode(struct Barcode_Item *bc)
 
     text = bc->ascii;
     if (!bc->ascii) {
-        bc->error = ENODATA;
+        bc->error = EINVAL;
         return -1;
     }
 
@@ -75,8 +75,6 @@ int Barcode_i25_encode(struct Barcode_Item *bc)
     text = malloc(strlen(bc->ascii) + 3); /* leading 0, checksum, term. */
     if (!text) {
 	bc->error = errno;
-	free(partial);
-	free(textinfo);
 	return -1;
     }
     /* add the leading 0 if needed */
@@ -106,6 +104,7 @@ int Barcode_i25_encode(struct Barcode_Item *bc)
     partial = malloc( (strlen(text) + 3) * 5 +2); /* be large... */
     if (!partial) {
         bc->error = errno;
+	free(text);
         return -1;
     }
 
@@ -114,6 +113,7 @@ int Barcode_i25_encode(struct Barcode_Item *bc)
     if (!textinfo) {
         bc->error = errno;
         free(partial);
+	free(text);
         return -1;
     }
 
