@@ -66,7 +66,11 @@ enum {
     BARCODE_128,        /* code 128 (a,b,c: autoselection) */
     BARCODE_128C,       /* code 128 (compact form for digits) */
     BARCODE_128B,       /* code 128, full printable ascii */
-    BARCODE_I25         /* interleaved 2 of 5 (only digits) */
+    BARCODE_I25,        /* interleaved 2 of 5 (only digits) */
+    BARCODE_128RAW,     /* Raw code 128 (by Leonid A. Broukhis) */
+    BARCODE_CBR,        /* Codabar (by Leonid A. Broukhis) */
+    BARCODE_MSI,        /* MSI (by Leonid A. Broukhis) */
+    BARCODE_PLS         /* Plessey (by Leonid A. Broukhis) */
 };
 
 #define BARCODE_DEFAULT_MARGIN 10
