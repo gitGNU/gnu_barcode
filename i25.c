@@ -34,7 +34,7 @@ static char *codes[] = {
 
 static char *guard[] = {"a1a1", "c1a"}; /* begin end */
 
-int Barcode_i25_verify(char *text)
+int Barcode_i25_verify(unsigned char *text)
 {
     if (!strlen(text))
 	return -1;
@@ -47,10 +47,10 @@ int Barcode_i25_verify(char *text)
 
 int Barcode_i25_encode(struct Barcode_Item *bc)
 {
-    char *text;
-    char *partial;  /* dynamic */
-    char *textinfo; /* dynamic */
-    char *textptr, *p1, *p2, *pd;
+    unsigned char *text;
+    unsigned char *partial;  /* dynamic */
+    unsigned char *textinfo; /* dynamic */
+    unsigned char *textptr, *p1, *p2, *pd;
     int i, sum[2], textpos, usesum = 0;
 
 
