@@ -1,4 +1,10 @@
+2000-11-08  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* doc/doc.barcode (The Intermediate Representaion): new section
+
 2000-11-07  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* Makefile.in (clean): don't remove docs, do that only in distclean
 
 	* doc/Makefile.in: a new life for the former Makefile (to build
 		with both gmake and pmake with features added on 2000-09-08)
