@@ -1,4 +1,7 @@
 
+NETWORK LINKS
+=============
+
 This is GNU-barcode. The latest release can be downloaded from ftp.gnu.org
 and mirrors:
 	ftp://ftp.gnu.org/pub/gnu/barcode/
@@ -20,6 +23,15 @@ The documentation is online at:
 
 The MS-Windows port is maintained at:
 	http://gnuwin32.sourceforge.net/packages/barcode.htm
+
+It as also been included in the FreeBSD ports tree in the "graphics" section.
+This means /usr/ports/graphics/barcode. It's thus available from:
+	http://www.freebsd.org/ports/graphics.html
+
+GLabels, at http://snaught.com/glabels/, uses barcode internally, too.
+
+DESCRIPTION
+===========
 
 The package is meant to solve most needs in barcode creation with a
 conventional printer. It can create printouts for the conventional
@@ -52,10 +64,18 @@ cost you a bundle, and you'll be on your own. It's up to you to verify
 that the symbol is valid (and, obviously, I'd like to know about any
 problem you encounter). [This paragraph copied verbatim from bookland.py]
 
+
+ACKNOWLEDGMENTS
+===============
+
 I would like to thank both Judah Milgram and Michele Comitini
 (mcm@glisco.it) for their help with this tool, as well as Jim Westveer
-for introducing me to Debian packaging. This release includes several
-new encodings implemented by Leonid A. Broukhis (leob@mailcom.com).
+for introducing me to Debian packaging. Several encodings have been
+implemented by Leonid A. Broukhis (leob@mailcom.com).
+
+
+MAILING LISTS
+=============
 
 There is a mailing list where development is coordinated, called
 barcode@lists.linux.it . To get subscribed you should
