@@ -34,11 +34,19 @@ int main(int argc, char **argv)
     Barcode_Encode_and_Print("000000000000",stdout, 300, 0, 240, 170, 
                       BARCODE_EAN | BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS);
 
-    /* And a few code-39 ones */
+    /* A few code-39 ones */
     Barcode_Encode_and_Print("prosa srl",stdout, 0, 0, 40, 350, 
                       BARCODE_39 | BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS);
-    Barcode_Encode_and_Print("SAMPLE CODES",stdout, 60, 30, 240, 500, 
+    Barcode_Encode_and_Print("SAMPLE CODES",stdout, 60, 30, 400, 100, 
                       BARCODE_39 | BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS);
+
+    /* ISBN with add-5 */
+    Barcode_Encode_and_Print("1-56592-292-1 90000",stdout, 0, 0, 40, 500, 
+                      BARCODE_ISBN | BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS);
+
+    /* UPC with add-2 */
+    Barcode_Encode_and_Print("07447084452 07",stdout, 0, 0, 300, 450, 
+                      BARCODE_UPC | BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS);
 
 
     printf("\nshowpage\n");
