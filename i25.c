@@ -51,8 +51,7 @@ int Barcode_i25_encode(struct Barcode_Item *bc)
     unsigned char *partial;  /* dynamic */
     unsigned char *textinfo; /* dynamic */
     unsigned char *textptr, *p1, *p2, *pd;
-    int i, sum[2], textpos, usesum = 0, uselead = 0;
-
+    int i, sum[2], textpos, usesum = 0;
 
     if (bc->partial)
 	free(bc->partial);
@@ -81,7 +80,7 @@ int Barcode_i25_encode(struct Barcode_Item *bc)
     i = strlen(bc->ascii) + usesum;
     if (i % 2) {
 	/* add a leading 0 */
-	text[0] = '0'; uselead = 1;
+	text[0] = '0';
 	strcpy(text+1, bc->ascii);
     } else {
 	strcpy(text, bc->ascii);
@@ -91,10 +90,13 @@ int Barcode_i25_encode(struct Barcode_Item *bc)
 	sum[0] = sum[1] = 0;
 	for (i=0; text[i]; i++) 
 	    sum[i%2] += text[i]-'0';
-	if (!uselead)
-	    i = sum[0] * 3 + sum[1];
-	else  /* even and odd were exchanged */
-	    i = sum[1] * 3 + sum[0];
+	/*
+	 * The "even" sum must be multiplied by three, and the *
+	 * rightmost digit is defined as "even". The digits' position
+	 * is already correct, whether or not we added a leading zero.
+	 * (e.g., they are in pos. 0..4 or 1..4 of the string)
+	 */
+	i = sum[0] * 3 + sum[1];
 	strcat(text, "0");
 	text[strlen(text)-1] += (10 - (i%10)) % 10;
     }
