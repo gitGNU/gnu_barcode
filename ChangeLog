@@ -1,3 +1,11 @@
+1999-07-07  Alessandro Rubini  <rubini@morgana.systemy.it>
+
+	* doc/doc.barcode: fixed the "BUGS" section (remove fixed stuff)
+
+	* ean.c (Barcode_ean_encode): added '+' markers in partial and textinfo
+
+	* ps.c (Barcode_ps_print): added support for text over bars ('+' mode)
+
 1999-07-06  Alessandro Rubini  <rubini@morgana.systemy.it>
 
 	* Makefile: dirty autodetect of libpaper
