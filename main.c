@@ -121,7 +121,7 @@ int lines, columns;                   /* "-t" for tables */
 int xmargin0, ymargin0;               /* both for "-g" and "-t" */
 int xmargin1, ymargin1;               /* same, but right and top */
 int ximargin, yimargin;               /* "-m": internal margins */
-int eps, ps, noascii, nochecksum;     /* boolean flags */
+int eps, pcl, ps, noascii, nochecksum; /* boolean flags */
 int page_wid, page_hei;               /* page size in points */
 char *page_name;                      /* name of the media */
 double unit = 1.0;                    /* unit specification */
@@ -391,6 +391,8 @@ struct commandline option_table[] = {
                     "no Checksum character, if the chosen encoding allows it"},
     {'E', CMDLINE_NONE, &eps, NULL, NULL, NULL,
                     "print one code as eps file (default: multi-page ps)"},
+    {'P', CMDLINE_NONE, &pcl, NULL, NULL, NULL,
+                    "create PCL output instead of postscript"},
     {'p', CMDLINE_S, NULL, get_page_geometry, NULL, NULL,
                     "page size (refer to the man page)"},
     {0,}
@@ -481,11 +483,15 @@ int main(int argc, char **argv)
 	exit(1);
     }
     flags |= encoding_type;  
-    ps = !eps; /* a shortcut */
-    if (eps)
-	flags |= BARCODE_OUT_EPS; /* print headers too */
-    else
-	flags |= BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS;
+    if (pcl) {
+	flags |= BARCODE_OUT_PCL;
+    } else {
+	ps = !eps; /* a shortcut */
+	if (eps)
+	    flags |= BARCODE_OUT_EPS; /* print headers too */
+	else
+	    flags |= BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS;
+    }
     if (noascii)
 	flags |= BARCODE_NO_ASCII;
     if (nochecksum)
@@ -525,7 +531,8 @@ int main(int argc, char **argv)
 		fprintf(stderr, "%s: can't encode \"%s\"\n", argv[0], line);
 	    }
 	    if (eps) break; /* if output is eps, do it once only */
-	    fprintf(ofile, "showpage\n");
+	    if (ps) fprintf(ofile, "showpage\n");
+	    if (pcl) fprintf(ofile, "\f");
 	}
 	/* no more lines, print footers */
 	if (ps) {
@@ -548,8 +555,13 @@ int main(int argc, char **argv)
 		x=0; y--;
 		if (y<0) {
 		    y = lines-1; page++;
-		    if (page>1) fprintf(ofile, "showpage\n");
-		    fprintf(ofile, "%%%%Page: %i %i\n\n",page,page);
+		    if (page>1) {
+			if (ps) {
+			    fprintf(ofile, "showpage\n");
+			    fprintf(ofile, "%%%%Page: %i %i\n\n",page,page);
+			}
+			if (pcl) fprintf(ofile, "\f");
+		    }
 		}
 	    }
 
@@ -566,7 +578,8 @@ int main(int argc, char **argv)
 		fprintf(stderr, "%s: can't encode \"%s\"\n", argv[0], line);
 	    }
 	}
-	fprintf(ofile, "showpage\n\n%%%%Trailer\n\n");
+	if (ps) fprintf(ofile, "showpage\n\n%%%%Trailer\n\n");
+	if (pcl) fprintf(ofile, "\f");
     }
     return 0;
 }
