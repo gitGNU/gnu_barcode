@@ -1,3 +1,21 @@
+2003-04-30  Alessandro Rubini  <rubini@linux.it>
+
+	* main.c (main): return 1 if at least one encoding failed
+		(problem reported by R T J van Leeuwen)
+
+	* Makefile.in (AR): set it to what configure finds. Needed in hp-ux.
+	Force $(INSTALL) to be the local one
+	(problems reported by Sal Mangiapane)
+
+	
+	* configure.in: added AC_CHECK_TOOL(AR)
+	Added AC_CANONICAL stuff too, to be cross-compile friendly.
+	Removed AC_PROG_INSTALL, as on hp-ux it doesn't work 
+
+	* config.sub: new file, shamelessly copied from gcc-3.2.1 sources
+
+	* config.guess: new file, shamelessly copied from gcc-3.2.1 sources
+
 2002-07-20  ??? <roynia@iconlab.co.kr>
 
 	* code93.c (Barcode_93_encode): need 1byte more in allocating partial
