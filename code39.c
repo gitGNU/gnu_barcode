@@ -68,8 +68,8 @@ int Barcode_39_verify(unsigned char *text)
     if (!strlen(text))
 	return -1;
     for (i=0; text[i]; i++) {
-        if isupper(text[i]) upper++;
-        if islower(text[i]) lower++;
+        if (isupper(text[i])) upper++;
+        if (islower(text[i])) lower++;
         if (!strchr(alphabet,toupper(text[i])))
             return -1;
     }
