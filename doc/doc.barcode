@@ -278,10 +278,10 @@ library:
 
 	This special encoding type (represented by a value of zero, so
 	it will be the default) tells the encoding procedure to look
-	for the first enconding type that can deal with a textual
+	for the first encoding type that can deal with a textual
 	string.  Therefore, a 11-digit code will be printed as UPC (as
 	well as 6-digit, 11+2 and 11+5), a 12-digit (or 7-digit, or
-	12+2 or 12+5) as EAN13, an ISBN code (with ot without hiphens,
+	12+2 or 12+5) as EAN13, an ISBN code (with or without hyphens,
 	with or without add-5) will be encoded in its EAN13
 	representation, an even number of digits is encoded using
 	CODE128C and a generic string is encoded using CODE128B. Since
@@ -325,10 +325,10 @@ library:
 %##########################################################################
 
 @node  The API, The barcode Executable, Supported Flags, Top
-@chapter Funcntions Exported by the Library
+@chapter Functions Exported by the Library
 
-%MANPAGE barcode.3 "Prosa Srl"
-%M .TH BARCODE 3 "June 1999"
+%MANPAGE barcode.3
+%M .TH BARCODE 3 "September 1999" "GNU" "GNU barcode"
 %M .UC 4
 %M .SH NAME
 %M barcode \- a library to create and print bar codes
@@ -376,7 +376,7 @@ header file @t{barcode.h}.  They perform the following tasks:
 	BARCODE_NO_CHECKSUM (other flags are silently ignored); if the
 	flag argument is zero, @t{bc->flags} will apply. The function
 	returns 0 on success and -1 in case of error. After
-	successfull termination the data structure will host the
+	successful termination the data structure will host the
 	description of the bar code and its textual representation,
 	after a failure the @t{error} field will include the reason of
 	the failure.
@@ -397,7 +397,7 @@ header file @t{barcode.h}.  They perform the following tasks:
 
 @item int Barcode_Encode_and_Print(char *text, FILE *f, int wid, int hei, int xoff, int yoff, double scalef, int flags);
 	The function deals with the whole life of the barcode
-	object by calling the other functions; it uses all the spefified
+	object by calling the other functions; it uses all the specified
 	flags.
 
 @item int Barcode_Version(char *versionname);
@@ -418,11 +418,11 @@ header file @t{barcode.h}.  They perform the following tasks:
 @node  The barcode Executable,  , The API, Top
 @chapter The @i{barcode} frontend program
 
-%MANPAGE barcode.1 "Prosa Srl"
-%M .TH BARCODE 1 "June 1999"
+%MANPAGE barcode.1
+%M .TH BARCODE 1 "September 1999" "GNU" "GNU barcode"
 %M .UC 4
 %M .SH NAME
-%M barcode \- a standalone program to run the barcode library
+%M barcode \- a stand alone program to run the barcode library
 %M .SH SYNOPSIS
 %M .B barcode
 %M [\-b - | string] [\-e encoding] [\-o - | outfile] [\-w N]
@@ -434,7 +434,7 @@ header file @t{barcode.h}.  They perform the following tasks:
 %M .PP
 The @b{barcode} program is a front-end to access some features of the
 library from the command line.  It is able to read user supplied
-strings from the commandline or a data file (standard input by default)
+strings from the command line or a data file (standard input by default)
 and encode all of them.
 
 %M .SH OPTIONS
@@ -454,8 +454,7 @@ and encode all of them.
 
 @table @code
 
-@item -h
-@itemx --help
+@item --help or -h
 	Print a usage summary and exit.
 
 @item -i filename
@@ -477,19 +476,19 @@ and encode all of them.
 	a bug).
 
 @item -e encoding
-        @b{enconding} is the name of the chosen encoding format being
+        @b{encoding} is the name of the chosen encoding format being
 	used. It defaults to the value of the environment variable
-	@t{BARCODE_ENCODING} or to autodetection if the environment is
+	@t{BARCODE_ENCODING} or to auto detection if the environment is
 	also unset.
 
 @item -g geometry
 	The geometry argument is of the form
 	``width@t{x}height@t{+}xmargin@t{+}ymargin'' (the
 	margin values are optional). The specified values must be
-	integer numbers and they reperesent print points (I plan to
+	integer numbers and they represent print points (I plan to
 	add support for different units, like inches and millimeters,
 	but this is currently not supported). The argument is used to
-	place the printoutcode on the page. Note that an additional
+	place the printout code on the page. Note that an additional
 	white margin of 10 points is added to the printout. If the
         option is unspecified, @t{BARCODE_GEOMETRY} is looked up in the
         environment, if missing a default size and no margin (but the
@@ -525,7 +524,7 @@ and encode all of them.
 	the output is generated a EPS only one text string is encoded.
 
 @item -p pagesize
-	Spacify a non-default page size. The page size can be specified
+	Specify a non-default page size. The page size can be specified
         in millimeters, inches or points (for example: "@t{210x297mm}",
         "@t{8.5x11in}", "@t{595x842}").  If libpaper is available,
         you can also specify the page size with its name, like "@t{A3}"
@@ -543,7 +542,7 @@ and encode all of them.
 
 The program encodes text strings passed either on the command line
 (with -b) or retrieved from standard input. The text representation is
-interpresed according to the following rules. When auto-detection
+interpreted according to the following rules. When auto-detection
 of the encoding is enabled (i.e, no explicit encoding type is specified),
 the encoding types are scanned to find one that can digest the text string.
 
@@ -552,12 +551,12 @@ the encoding types are scanned to find one that can digest the text string.
 @item UPC
 
 	The UPC frontend accepts only strings made up of digits (and,
-	if a supplemental encodation is used, a blank to separate it).
+	if a supplemental encoding is used, a blank to separate it).
 	It accepts strings of 11 digits (UPC-A) or 6 digits (UPC-E).
 	The 12th digit of UPC-A is the checksum and is added by the
 	library, if you pass a 12-digit string it will be rejected as
 	invalid.  For UPC-A, a trailing string of 2 digits or 5 digits
-	is accepted as well. Thefore, valid strings look like one of
+	is accepted as well. Therefore, valid strings look like one of
 	the following: ``@t{01234567890}'' (UPC-A), ``@t{012345}''
 	(UPC-E), ``@t{01234567890 12}'' (UPC-A, add-2) and
 	``@t{01234567890 12345}'' (UPC-A add-5).
@@ -598,7 +597,7 @@ the encoding types are scanned to find one that can digest the text string.
 	represent any even number of digits. The encoder refuses to
 	deal with an odd number of digits because the caller is
 	expected to provide proper padding to an even number of
-	digits. (Since Code-128 includes control symbols to swich
+	digits. (Since Code-128 includes control symbols to switch
 	charset, it is theoretically possible to represent the odd
 	digit as a Code 128-A or 128-B symbol, but this tool doesn't
 	currently implement this option).
@@ -634,14 +633,14 @@ the encoding types are scanned to find one that can digest the text string.
 
 The current management of borders/margins is far from optimal. The
 ``default'' margin applied by the library interferes with the external
-rapresentation, but I feel it is mandatory to avoid creating barcode
+representation, but I feel it is mandatory to avoid creating barcode
 output with no surrounding white space (the problem is especially
 relevant for EPS output).
 
 Code128-A should be supported.
 
 %M .SH "SEE ALSO"
-%M \fBbarcode(3)\f
+%M \fBbarcode(3)\fP
 %M
 %M .SH AUTHORS
 %M Alessandro Rubini, Prosa s.r.l <rubini@prosa.it> (maintainer)
