@@ -1,7 +1,7 @@
 /*
  * i25.c -- "interleaved 2 of 5"
  *
- * Copyright (c) 1999 Alessandro Rubini (rubini@prosa.it)
+ * Copyright (c) 1999 Alessandro Rubini (rubini@gnu.org)
  * Copyright (c) 1999 Prosa Srl. (prosa@prosa.it)
  *
  *   This program is free software; you can redistribute it and/or modify
