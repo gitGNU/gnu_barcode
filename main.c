@@ -419,6 +419,7 @@ char *strerror(int error)
  */
 int main(int argc, char **argv)
 {
+    struct Barcode_Item * bc;
     FILE *ifile = stdin;
     FILE *ofile = stdout;
     char *line;
@@ -548,6 +549,8 @@ int main(int argc, char **argv)
 	int ystep = (page_hei - ymargin0 - ymargin1)/lines;
 	int x = columns, y = -1; /* position in the table, start off-page */
 
+	if (!ximargin) ximargin = BARCODE_DEFAULT_MARGIN;
+	if (!yimargin) yimargin = BARCODE_DEFAULT_MARGIN;
 	/* Assign default size unless -g did it (Joachim Reichelt) */
 	if ( !code_width && !code_height) {
 	    code_width = xstep - 2*ximargin;
@@ -570,17 +573,26 @@ int main(int argc, char **argv)
 	    }
 
 	    /*
-	     * Print this code, using the internal margins as spacing.
-	     * In order to remove the extra (default) margin, subtract it
-	     * in advance (dirty)
+	     * Create a barcode item. This allows to set the margin to 0, as
+	     * we have [xy]imargin to use. But don't use Encode_and_Print(),
+	     * unroll it here instead
 	     */
-	    if (Barcode_Encode_and_Print(line, ofile,
-		    code_width, code_height,
-		    xmargin0 + ximargin + x * xstep - BARCODE_DEFAULT_MARGIN,
-		    ymargin0 + yimargin + y * ystep - BARCODE_DEFAULT_MARGIN,
-		    flags)<0) {
-		fprintf(stderr, "%s: can't encode \"%s\"\n", argv[0], line);
+	    bc = Barcode_Create(line);
+	    if (!bc) {
+		fprintf(stderr, "%s: Barcode_Create(): %s\n", argv[0],
+			strerror(errno));
+		exit(1);
 	    }
+	    bc->margin = 0;
+	    if ( (Barcode_Position(bc, code_width, code_height,
+				   xmargin0 + ximargin + x * xstep,
+				   ymargin0 + yimargin + y * ystep, 0.0) < 0)
+		 || (Barcode_Encode(bc, flags) < 0)
+		 || (Barcode_Print(bc, ofile, flags) < 0) ) {
+		fprintf(stderr, "%s: can't encode \"%s\": %s\n", argv[0],
+			line, strerror(bc->error));
+	    }
+	    Barcode_Delete(bc);
 	}
 	if (ps) fprintf(ofile, "showpage\n\n%%%%Trailer\n\n");
 	if (pcl) fprintf(ofile, "\f");
