@@ -91,7 +91,7 @@ int Barcode_93_encode(struct Barcode_Item *bc)
     static unsigned char *textinfo; /* dynamic */
     char *c, *textptr;
     int *checksum_str;
-    int i, code, textpos, checksum_len=0;
+    int i, j, k, code, textpos, checksum_len=0;
     int c_checksum = 0;
     int k_checksum = 0;
 
@@ -186,13 +186,17 @@ int Barcode_93_encode(struct Barcode_Item *bc)
     c_checksum=0;
     k_checksum=0;
 
-    /* Add the checksum */
+    /* Add the checksum */ 
     if ( (bc->flags & BARCODE_NO_CHECKSUM)==0 ) 
     {
-        for(i=1; i<=checksum_len; i++)
+		/* thanks to Ian Ward for fixing checksums */
+        for(i=1, j=1, k=2; i<=checksum_len; i++, j++, k++)
         {
-           c_checksum += i * (int)checksum_str[checksum_len - i];
-           k_checksum += (i+1) * (int)checksum_str[checksum_len - i];
+	    if(j>20) j=1; /* c_check weight wraps at 20 */
+	    if(k>15) k=1; /* k_check weight wraps at 15 */
+	    
+	    c_checksum += j * (int)checksum_str[checksum_len - i];
+            k_checksum += k * (int)checksum_str[checksum_len - i];
         }
 
         c_checksum = c_checksum % 47;
