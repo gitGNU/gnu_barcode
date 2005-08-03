@@ -3,6 +3,7 @@
  *
  * Copyright (c) 1999 Alessandro Rubini (rubini@gnu.org)
  * Copyright (c) 1999 Prosa Srl. (prosa@prosa.it)
+ * Copyright (c) 2005 Ian Ward (ian@excess.org)
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -56,6 +57,22 @@ static char *fillers[]= {
     "1a3a1c1c1a"
 };
 
+/* extended code39 translation table */
+static char *code39ext[] = {
+    "%U", /*for completeness only, NUL cannot be encoded by barcode*/
+    "$A","$B","$C","$D","$E","$F","$G","$H","$I","$J","$K","$L","$M",
+    "$N","$O","$P","$Q","$R","$S","$T","$U","$V","$W","$X","$Y","$Z",
+    "%A","%B","%C","%D","%E"," ",
+    "/A","/B","/C","/D","/E","/F","/G","/H","/I","/J","/K","/L","-",
+    ".","/O","0","1","2","3","4","5","6","7","8","9","/Z",
+    "%F","%G","%H","%I","%J","%V",
+    "A","B","C","D","E","F","G","H","I","J","K","L","M",
+    "N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
+    "%K","%L","%M","%N","%O","%W",
+    "+A","+B","+C","+D","+E","+F","+G","+H","+I","+J","+K","+L","+M",
+    "+N","+O","+P","+Q","+R","+S","+T","+U","+V","+W","+X","+Y","+Z",
+    "%P","%Q","%R","%S","%T"
+};
 
 /*
  * Check that the text can be encoded. Returns 0 or -1.
@@ -75,6 +92,23 @@ int Barcode_39_verify(unsigned char *text)
     }
     if (lower && upper)
         return -1;
+    return 0;
+}
+
+/*
+ * Check that the text can be encoded. Returns 0 or -1.
+ * Accept all standard ASCII
+ */
+int Barcode_39ext_verify(unsigned char *text)
+{
+    int i;
+
+    if (text[0] == '\0')
+	return -1;
+    for (i=0; text[i]; i++) {
+        if (text[i]>127)
+	    return -1;
+    }
     return 0;
 }
 
@@ -170,4 +204,49 @@ int Barcode_39_encode(struct Barcode_Item *bc)
     bc->textinfo = textinfo;
 
     return 0;
+}
+
+/*
+ * The encoding functions fills the "partial" and "textinfo" fields.
+ * Replace the ascii with extended coding and call 39_encode
+ */
+int Barcode_39ext_encode(struct Barcode_Item *bc)
+{
+    static char *eascii;
+    static char *text;
+    char c, *ptr;
+    int i;
+    
+    text = bc->ascii;
+    if (!text) {
+        bc->error = EINVAL;
+        return -1;
+    }
+    
+    /* worst case 2 chars per original text */
+    eascii = malloc( strlen(text)*2 +1 );
+    if (!eascii) {
+	bc->error = errno;
+	return -1;
+    }
+
+    ptr = eascii;
+    
+    for (i=0; text[i]; i++) {
+	c = text[i];
+	if (c<0) {
+	    bc->error = EINVAL;
+	    free(eascii);
+	    return -1;
+	}
+	
+	strcpy(ptr, code39ext[(int)c]);
+	ptr += strlen(ptr);
+    }
+
+    /* replace original with encoded version */
+    bc->ascii = eascii;
+    free(text);
+
+    return Barcode_39_encode(bc);
 }
