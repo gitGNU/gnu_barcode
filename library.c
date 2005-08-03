@@ -78,6 +78,8 @@ extern int Barcode_isbn_verify(unsigned char *text);
 extern int Barcode_isbn_encode(struct Barcode_Item *bc);
 extern int Barcode_39_verify(unsigned char *text);
 extern int Barcode_39_encode(struct Barcode_Item *bc);
+extern int Barcode_39ext_verify(unsigned char *text);
+extern int Barcode_39ext_encode(struct Barcode_Item *bc);
 extern int Barcode_128b_verify(unsigned char *text);
 extern int Barcode_128b_encode(struct Barcode_Item *bc);
 extern int Barcode_128c_verify(unsigned char *text);
@@ -96,6 +98,8 @@ extern int Barcode_pls_verify(unsigned char *text);
 extern int Barcode_pls_encode(struct Barcode_Item *bc);
 extern int Barcode_93_verify(unsigned char *text);
 extern int Barcode_93_encode(struct Barcode_Item *bc);
+extern int Barcode_11_verify(unsigned char *text);
+extern int Barcode_11_encode(struct Barcode_Item *bc);
 
 
 struct encoding {
@@ -112,12 +116,14 @@ struct encoding encodings[] = {
     {BARCODE_128C,   Barcode_128c_verify,   Barcode_128c_encode},
     {BARCODE_128RAW, Barcode_128raw_verify, Barcode_128raw_encode},
     {BARCODE_39,     Barcode_39_verify,     Barcode_39_encode},
+    {BARCODE_39EXT,  Barcode_39ext_verify,  Barcode_39ext_encode},
     {BARCODE_I25,    Barcode_i25_verify,    Barcode_i25_encode},
     {BARCODE_128,    Barcode_128_verify,    Barcode_128_encode},
     {BARCODE_CBR,    Barcode_cbr_verify,    Barcode_cbr_encode},
     {BARCODE_PLS,    Barcode_pls_verify,    Barcode_pls_encode},
     {BARCODE_MSI,    Barcode_msi_verify,    Barcode_msi_encode},
     {BARCODE_93,     Barcode_93_verify,     Barcode_93_encode},
+	{BARCODE_11,     Barcode_11_verify,     Barcode_11_encode},
     {0,              NULL,                  NULL}
 };
 
