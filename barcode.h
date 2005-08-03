@@ -74,7 +74,9 @@ enum {
     BARCODE_CBR,        /* Codabar (by Leonid A. Broukhis) */
     BARCODE_MSI,        /* MSI (by Leonid A. Broukhis) */
     BARCODE_PLS,        /* Plessey (by Leonid A. Broukhis) */
-    BARCODE_93          /* code 93 (by Nathan D. Holmes) */
+    BARCODE_93,         /* code 93 (by Nathan D. Holmes) */
+    BARCODE_11,         /* code 11 (USD-8) */
+    BARCODE_39EXT       /* code 39 extended (by Ian Ward) */
 };
 
 #define BARCODE_DEFAULT_MARGIN 10
