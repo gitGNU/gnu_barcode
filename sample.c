@@ -79,6 +79,13 @@ int main(int argc, char **argv)
     Barcode_Encode_and_Print("012345",stdout, 0, 0, 50, 720, oflags);
     Barcode_Encode_and_Print("0123456",stdout, 0, 0, 160, 720, oflags);
 
+	/* code-93 */
+	Barcode_Encode_and_Print("sample codes",stdout, 100, 30, 280, 720,
+                      BARCODE_93 | oflags);
+
+	/* code-11 */
+	Barcode_Encode_and_Print("01234-56789",stdout, 100, 30, 400, 720,
+                      BARCODE_11 | oflags);
 
     
     if (pcl) {
