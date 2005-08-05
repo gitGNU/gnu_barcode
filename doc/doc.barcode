@@ -814,6 +814,13 @@ the library uses when auto-detecting a suitable encoding for a string.
       These checksums are specified to be used at the firmware level,
       and their absence will be interpreted as an invalid barcode.
 
+@item code 11
+     The code-11 standard (also known as USD-8) is able to encode the 
+     decimal digits and the dash symbol (-).
+     It is used primarily in labeling telecommunications equipment.
+     As recommended by the standard the current implementation adds 
+     by default a checksum digit. An additional checksum digit is added 
+     for messages that contain 10 or more characters.
 
 @end table
 
