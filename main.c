@@ -55,9 +55,9 @@ struct {
     {"upc-e",    BARCODE_UPC},
     {"isbn",     BARCODE_ISBN},
     {"39",       BARCODE_39},
-    {"code39",   BARCODE_39},    
-    {"39ext",    BARCODE_39EXT},                                                                                                                   
-    {"code39ext",BARCODE_39EXT},       
+    {"code39",   BARCODE_39},
+    {"39ext",    BARCODE_39EXT},
+    {"code39ext",BARCODE_39EXT},
     {"128c",     BARCODE_128C},
     {"code128c", BARCODE_128C},
     {"128b",     BARCODE_128B},
@@ -74,9 +74,8 @@ struct {
     {"plessey",  BARCODE_PLS},
     {"code93",   BARCODE_93},
     {"93",       BARCODE_93},
-	{"code11",   BARCODE_11},
-	{"11",       BARCODE_11},
-
+    {"code11",   BARCODE_11},
+    {"11",       BARCODE_11},
     {NULL, 0}
 };
 
