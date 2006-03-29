@@ -27,7 +27,9 @@ TARGET = barcode
 LIBRARY = lib$(TARGET).a
 MAN1 = $(TARGET).1
 MAN3 = $(TARGET).3
-INFO = doc/$(TARGET).info
+INFO = $(TARGET).info
+
+
 HEADER = $(TARGET).h
 
 LIBOBJECTS = library.o ean.o code128.o code39.o code93.o i25.o \
@@ -65,22 +67,20 @@ $(INFO): doc/doc.$(TARGET)
 	cd doc && $(MAKE) 
 
 install:
-	$(INSTALL) -d $(BINDIR) $(INCDIR) $(LIBDIR) $(MAN1DIR) \
-		$(MAN3DIR) $(INFODIR)
-	$(INSTALL) -c $(TARGET) $(BINDIR)
-	$(INSTALL) -c -m 0644 $(HEADER) $(INCDIR)
-	$(INSTALL) -c -m 0644  $(LIBRARY) $(LIBDIR)
-	$(INSTALL) -c -m 0644  $(MAN1) $(MAN1DIR)
-	$(INSTALL) -c -m 0644  $(MAN3) $(MAN3DIR)
-	$(INSTALL) -c -m 0644  $(INFO) $(INFODIR)
+	$(INSTALL) -c $(TARGET) $(DESTDIR)$(BINDIR)/$(TARGET)
+	$(INSTALL) -c -m 0644 $(HEADER) $(DESTDIR)$(INCDIR)/$(HEADER)
+	$(INSTALL) -c -m 0644 $(LIBRARY) $(DESTDIR)$(LIBDIR)/$(LIBRARY)
+	$(INSTALL) -c -m 0644 $(MAN1) $(DESTDIR)$(MAN1DIR)/$(MAN1)
+	$(INSTALL) -c -m 0644 $(MAN3) $(DESTDIR)$(MAN3DIR)/$(MAN3)
+	$(INSTALL) -c -m 0644  doc/$(INFO) $(DESTDIR)$(INFODIR)/$(INFO)
 
 uninstall:
-	$(RM) -f $(BINDIR)/$(TARGET)
-	$(RM) -f $(INCDIR)/$(HEADER)
-	$(RM) -f $(LIBDIR)/$(LIBRARY)
-	$(RM) -f $(MAN1DIR)/$(MAN1)
-	$(RM) -f $(MAN3DIR)/$(MAN3)
-	$(RM) -f $(INDODIR)/$(INFO)
+	$(RM) -f $(DESTDIR)$(BINDIR)/$(TARGET)
+	$(RM) -f $(DESTDIR)$(INCDIR)/$(HEADER)
+	$(RM) -f $(DESTDIR)$(LIBDIR)/$(LIBRARY)
+	$(RM) -f $(DESTDIR)$(MAN1DIR)/$(MAN1)
+	$(RM) -f $(DESTDIR)$(MAN3DIR)/$(MAN3)
+	$(RM) -f $(DESTDIR)$(INFODIR)/$(INFO)
 
 #Make clean keeps the compiled documents
 clean:
