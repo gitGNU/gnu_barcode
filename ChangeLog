@@ -1,3 +1,7 @@
+2006-12-14  Alessandro Rubini  <rubini@linux.it>
+
+	* pcl.c (Barcode_pcl_print): applied old patch by Andrea Scopece
+
 2004-04-05  Hugh Sasse Staff Elec Eng  <hgs@dmu.ac.uk>
 
 	* doc/Makefile.in: use @AWK@ instead of awk
