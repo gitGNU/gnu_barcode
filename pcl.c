@@ -131,7 +131,7 @@ int Barcode_pcl_print(struct Barcode_Item *bc, FILE *f)
 	if (isdigit (*ptr))   j = *ptr-'0';
 	else                  j = *ptr-'a'+1;
 	if (i%2) { /* bar */
-	    x0 = bc->xoff + xpos;
+	    x0 = bc->xoff + xpos + SHRINK_AMOUNT/2.0;
             y0 = bc->yoff + bc->margin;
             yr = bc->height;
             if (!(bc->flags & BARCODE_NO_ASCII)) { /* leave space for text */
@@ -145,10 +145,10 @@ int Barcode_pcl_print(struct Barcode_Item *bc, FILE *f)
 		}
 	    }
 
-	    fprintf(f,"%c&a%.0fH", 27, x0 * 10.0);
-	    fprintf(f,"%c&a%.0fV", 27, y0 * 10.0);
-	    fprintf(f,"%c*c%.0fH", 27, ((j*scalef)-SHRINK_AMOUNT) * 10.0);
-	    fprintf(f,"%c*c%.0fV", 27, yr * 10.0);
+	    fprintf(f,"%c&a%.1fH", 27, x0 * 10.0);
+	    fprintf(f,"%c&a%.1fV", 27, y0 * 10.0);
+	    fprintf(f,"%c*c%.1fH", 27, ((j*scalef)-SHRINK_AMOUNT) * 10.0);
+	    fprintf(f,"%c*c%.1fV", 27, yr * 10.0);
 	    fprintf(f,"%c*c0P\n", 27);
 	}
 	xpos += j * scalef;
