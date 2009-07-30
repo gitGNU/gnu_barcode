@@ -162,7 +162,7 @@ int get_input_string(void *arg)
 }
 
 /* and this function extracts strings from the pool */
-unsigned char *retrieve_input_string(FILE *ifile)
+char *retrieve_input_string(FILE *ifile)
 {
     char *string;
     static char fileline[128];

@@ -65,8 +65,8 @@ int Barcode_ps_print(struct Barcode_Item *bc, FILE *f)
     double f1, f2, fsav=0;
     int mode = '-'; /* text below bars */
     double scalef=1, xpos, x0, y0, yr;
-    unsigned char *ptr;
-    unsigned char c;
+    char *ptr;
+    char c;
 
     if (!bc->partial || !bc->textinfo) {
 	bc->error = EINVAL;

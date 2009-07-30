@@ -131,10 +131,10 @@ static int ean_make_checksum(char *text, int mode)
  * For both EAN-13 and EAN-8, accept an addon of 2 or 5 digits,
  * separated by ' '
  */
-int Barcode_ean_verify(unsigned char *text)
+int Barcode_ean_verify(char *text)
 {
     int i, len0, len, addon;
-    unsigned char tmp[24], *spc;
+    char tmp[24], *spc;
 
     len = strlen(text);
     spc = strchr(text, ' ');
@@ -175,7 +175,7 @@ int Barcode_ean_verify(unsigned char *text)
 }
 
 /* Expand the middle part of UPC-E to UPC-A */
-static char *upc_e_to_a0(unsigned char *text)
+static char *upc_e_to_a0(char *text)
 {
     static char result[16];
     strcpy(result, "00000000000"); /* 11 0's */
@@ -214,10 +214,10 @@ static char *upc_e_to_a0(unsigned char *text)
  *
  * The checksum for UPC-E is calculated using its UPC-A equivalent.
  */
-static char *upc_e_to_a(unsigned char *text)
+static char *upc_e_to_a(char *text)
 {
-    static unsigned char	result[16], *spc;
-    int				len, chk;
+    static char result[16], *spc;
+    int len, chk;
 
     spc = strchr(text, ' ');
     if (spc)
@@ -266,10 +266,10 @@ static char *upc_e_to_a(unsigned char *text)
  * shrink it into an 8-digit UPC-E equivalent if possible.
  * Return NULL if impossible, the UPC-E barcode if possible.
  */
-static unsigned char *upc_a_to_e(unsigned char *text)
+static char *upc_a_to_e(char *text)
 {
-    static unsigned char	result[16];
-    int				len, chksum;
+    static char	result[16];
+    int		len, chksum;
 
     len = strlen(text);
     switch (len) {
@@ -329,10 +329,10 @@ static unsigned char *upc_a_to_e(unsigned char *text)
  *    8 digits (w/ number system and checksum)
  * plus the 2 or 5-digit add-on
  */
-int Barcode_upc_verify(unsigned char *text)
+int Barcode_upc_verify(char *text)
 {
     int i, len0, len, addon;
-    unsigned char tmp[24], *spc;
+    char tmp[24], *spc;
 
     len = strlen(text);
     spc = strchr(text, ' ');
@@ -376,7 +376,7 @@ int Barcode_upc_verify(unsigned char *text)
  * check character (if specified) is skipped, the extra 5 digits are
  * accepted after a blank.
  */
-int Barcode_isbn_verify(unsigned char *text)
+int Barcode_isbn_verify(char *text)
 {
     int i, ndigit=0;
 
@@ -417,7 +417,7 @@ int Barcode_isbn_verify(unsigned char *text)
     return 0; /* Ok: isbn + 5-digit addon */
 }
 
-static int width_of_partial(unsigned char *partial)
+static int width_of_partial(char *partial)
 {
     int i=0;
     while (*partial) {
@@ -744,8 +744,8 @@ int Barcode_upc_encode(struct Barcode_Item *bc)
 int Barcode_isbn_encode(struct Barcode_Item *bc)
 {
     /* For ISBN we must normalize the string and prefix "978" */
-    unsigned char *text = malloc(24); /* 13 + ' ' + 5 plus some slack */
-    unsigned char *otext;
+    char *text = malloc(24); /* 13 + ' ' + 5 plus some slack */
+    char *otext;
     int i, j, retval;
 
     if (!text) {

@@ -47,10 +47,10 @@ int Barcode_i25_verify(unsigned char *text)
 
 int Barcode_i25_encode(struct Barcode_Item *bc)
 {
-    unsigned char *text;
-    unsigned char *partial;  /* dynamic */
-    unsigned char *textinfo; /* dynamic */
-    unsigned char *textptr, *p1, *p2, *pd;
+    char *text;
+    char *partial;  /* dynamic */
+    char *textinfo; /* dynamic */
+    char *textptr, *p1, *p2, *pd;
     int i, len, sum[2], textpos, usesum = 0;
 
     if (bc->partial)

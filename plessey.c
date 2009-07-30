@@ -41,7 +41,7 @@ static int width = 16, startpos = 16;
  * Check that the text can be encoded. Returns 0 or -1.
  * If it's all lowecase convert to uppercase and accept it
  */
-int Barcode_pls_verify(unsigned char *text)
+int Barcode_pls_verify(char *text)
 {
     int i, upper = 0, lower = 0;
 
@@ -75,9 +75,9 @@ static int add_one(char *ptr, int code)
  */
 int Barcode_pls_encode(struct Barcode_Item *bc)
 {
-    static unsigned char *text;
-    static unsigned char *partial;  /* dynamic */
-    static unsigned char *textinfo; /* dynamic */
+    static char *text;
+    static char *partial;  /* dynamic */
+    static char *textinfo; /* dynamic */
     char *c, *ptr, *textptr;
     unsigned char *checkptr;
     int i, code, textpos;

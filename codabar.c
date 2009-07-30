@@ -50,7 +50,7 @@ static char *patterns[] = {
  * If the first character is a letter (A to D), the last one must be too;
  * no other character should be a letter.
  */
-int Barcode_cbr_verify(unsigned char *text)
+int Barcode_cbr_verify(char *text)
 {
     int i, lower=0, upper=0;
     int startpresent = 0;
@@ -87,9 +87,9 @@ static int add_one(char *ptr, int code)
  */
 int Barcode_cbr_encode(struct Barcode_Item *bc)
 {
-    static unsigned char *text;
-    static unsigned char *partial;  /* dynamic */
-    static unsigned char *textinfo; /* dynamic */
+    static char *text;
+    static char *partial;  /* dynamic */
+    static char *textinfo; /* dynamic */
     char *c, *ptr, *textptr;
     int i, code, textpos, usesum, checksum = 0, startpresent;
 

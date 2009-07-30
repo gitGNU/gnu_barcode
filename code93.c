@@ -65,7 +65,7 @@ static char shiftset2[] =
  * Check that the text can be encoded. Returns 0 or -1.
  * All of ASCII-7 is accepted.
  */
-int Barcode_93_verify(unsigned char *text)
+int Barcode_93_verify(char *text)
 {
     int i;
 
@@ -86,9 +86,9 @@ int Barcode_93_verify(unsigned char *text)
  */
 int Barcode_93_encode(struct Barcode_Item *bc)
 {
-    static unsigned char *text;
-    static unsigned char *partial;  /* dynamic */
-    static unsigned char *textinfo; /* dynamic */
+    static char *text;
+    static char *partial;  /* dynamic */
+    static char *textinfo; /* dynamic */
     char *c, *textptr;
     int *checksum_str;
     int i, j, k, code, textpos, checksum_len=0;
@@ -143,7 +143,7 @@ int Barcode_93_encode(struct Barcode_Item *bc)
         c = strchr(alphabet, text[i]);
         if (!c) {
            /* Encode the shift character */
-	   switch(shiftset[text[i]])
+	   switch(shiftset[(int)(text[i])])
            {
               case '$':
                  code = EXTEND_DOLLAR;
@@ -166,7 +166,7 @@ int Barcode_93_encode(struct Barcode_Item *bc)
            checksum_str[checksum_len++] = code;
 
            /* Encode the second character */
-           code = strchr(alphabet, shiftset2[text[i]]) - alphabet;
+           code = strchr(alphabet, shiftset2[(int)(text[i])]) - alphabet;
            strcat(partial, codeset[code]);
            checksum_str[checksum_len++] = code;
         } else {

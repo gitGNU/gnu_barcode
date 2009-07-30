@@ -38,7 +38,7 @@ static int width = 16 /* each character uses 4 patterns */,
 /*
  * Check that the text can be encoded. Returns 0 or -1.
  */
-int Barcode_msi_verify(unsigned char *text)
+int Barcode_msi_verify(char *text)
 {
     int i;
 
@@ -67,9 +67,9 @@ static int add_one(char *ptr, int code)
  */
 int Barcode_msi_encode(struct Barcode_Item *bc)
 {
-    static unsigned char *text;
-    static unsigned char *partial;  /* dynamic */
-    static unsigned char *textinfo; /* dynamic */
+    static char *text;
+    static char *partial;  /* dynamic */
+    static char *textinfo; /* dynamic */
     char *ptr, *textptr;
     int i, code, textpos, usesum, checksum = 0;
 

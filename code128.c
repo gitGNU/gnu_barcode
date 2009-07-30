@@ -72,7 +72,7 @@ static char *codeset[] = {
  * code 128-b includes all printable ascii chars
  */
 
-int Barcode_128b_verify(unsigned char *text)
+int Barcode_128b_verify(char *text)
 {
     if (text[0] == '\0')
 	return -1;
@@ -85,9 +85,9 @@ int Barcode_128b_verify(unsigned char *text)
 
 int Barcode_128b_encode(struct Barcode_Item *bc)
 {
-    static unsigned char *text;
-    static unsigned char *partial;  /* dynamic */
-    static unsigned char *textinfo; /* dynamic */
+    static char *text;
+    static char *partial;  /* dynamic */
+    static char *textinfo; /* dynamic */
     char *textptr;
     int i, code, textpos, checksum = 0;
 
@@ -158,7 +158,7 @@ int Barcode_128b_encode(struct Barcode_Item *bc)
  * code 128-c is only digits, but two per symbol
  */
 
-int Barcode_128c_verify(unsigned char *text)
+int Barcode_128c_verify(char *text)
 {
     if (text[0] == '\0')
 	return -1;
@@ -174,9 +174,9 @@ int Barcode_128c_verify(unsigned char *text)
 
 int Barcode_128c_encode(struct Barcode_Item *bc)
 {
-    static unsigned char *text;
-    static unsigned char *partial;  /* dynamic */
-    static unsigned char *textinfo; /* dynamic */
+    static char *text;
+    static char *partial;  /* dynamic */
+    static char *textinfo; /* dynamic */
     char *textptr;
     int i, code, textpos, checksum = 0;
 
@@ -277,7 +277,7 @@ int Barcode_128_verify(unsigned char *text)
 #define NEED_CODE_A(c) ((c)<32 || (c)==0x80) 
 #define NEED_CODE_B(c) ((c)>=96 && (c)<128)
 
-static int Barcode_a_or_b(unsigned char *text)
+static int Barcode_a_or_b(char *text)
 {
     for ( ; *text; text++) {
 	if (NEED_CODE_A(*text))
@@ -314,7 +314,7 @@ static int Barcode_encode_as(int code, int value)
 static int *Barcode_128_make_array(struct Barcode_Item *bc, int *lptr)
 {
     int len, *codes;
-    unsigned char *s;
+    char *s;
     int i=0, j, code, checksum;
 
     /* allocate twice the text length + 5, as this is the worst case */
@@ -413,9 +413,9 @@ static int *Barcode_128_make_array(struct Barcode_Item *bc, int *lptr)
  */
 int Barcode_128_encode(struct Barcode_Item *bc)
 {
-    static unsigned char *text;
-    static unsigned char *partial;  /* dynamic */
-    static unsigned char *textinfo; /* dynamic */
+    static char *text;
+    static char *partial;  /* dynamic */
+    static char *textinfo; /* dynamic */
     char *textptr;
     int *codes; /* dynamic */
     int i, c, len;
@@ -504,7 +504,7 @@ int Barcode_128_encode(struct Barcode_Item *bc)
  * from 0 to 105, starting from the start code to be (Leonid)
  */
 
-int Barcode_128raw_verify(unsigned char *text)
+int Barcode_128raw_verify(char *text)
 {
     int n;
     unsigned val;
@@ -523,9 +523,9 @@ int Barcode_128raw_verify(unsigned char *text)
 
 int Barcode_128raw_encode(struct Barcode_Item *bc)
 {
-    static unsigned char *text;
-    static unsigned char *partial;  /* dynamic */
-    static unsigned char *textinfo; /* dynamic */
+    static char *text;
+    static char *partial;  /* dynamic */
+    static char *textinfo; /* dynamic */
     char *textptr;
     int i, n, count, code, textpos, checksum = 0;
 

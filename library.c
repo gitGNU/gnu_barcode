@@ -70,41 +70,41 @@ int Barcode_Delete(struct Barcode_Item *bc)
  * The various supported encodings.  This might be extended to support
  * dynamic addition of extra encodings
  */
-extern int Barcode_ean_verify(unsigned char *text);
+extern int Barcode_ean_verify(char *text);
 extern int Barcode_ean_encode(struct Barcode_Item *bc);
-extern int Barcode_upc_verify(unsigned char *text);
+extern int Barcode_upc_verify(char *text);
 extern int Barcode_upc_encode(struct Barcode_Item *bc);
-extern int Barcode_isbn_verify(unsigned char *text);
+extern int Barcode_isbn_verify(char *text);
 extern int Barcode_isbn_encode(struct Barcode_Item *bc);
-extern int Barcode_39_verify(unsigned char *text);
+extern int Barcode_39_verify(char *text);
 extern int Barcode_39_encode(struct Barcode_Item *bc);
-extern int Barcode_39ext_verify(unsigned char *text);
+extern int Barcode_39ext_verify(char *text);
 extern int Barcode_39ext_encode(struct Barcode_Item *bc);
-extern int Barcode_128b_verify(unsigned char *text);
+extern int Barcode_128b_verify(char *text);
 extern int Barcode_128b_encode(struct Barcode_Item *bc);
-extern int Barcode_128c_verify(unsigned char *text);
+extern int Barcode_128c_verify(char *text);
 extern int Barcode_128c_encode(struct Barcode_Item *bc);
-extern int Barcode_128_verify(unsigned char *text);
+extern int Barcode_128_verify(char *text);
 extern int Barcode_128_encode(struct Barcode_Item *bc);
-extern int Barcode_128raw_verify(unsigned char *text);
+extern int Barcode_128raw_verify(char *text);
 extern int Barcode_128raw_encode(struct Barcode_Item *bc);
-extern int Barcode_i25_verify(unsigned char *text);
+extern int Barcode_i25_verify(char *text);
 extern int Barcode_i25_encode(struct Barcode_Item *bc);
-extern int Barcode_cbr_verify(unsigned char *text);
+extern int Barcode_cbr_verify(char *text);
 extern int Barcode_cbr_encode(struct Barcode_Item *bc);
-extern int Barcode_msi_verify(unsigned char *text);
+extern int Barcode_msi_verify(char *text);
 extern int Barcode_msi_encode(struct Barcode_Item *bc);
-extern int Barcode_pls_verify(unsigned char *text);
+extern int Barcode_pls_verify(char *text);
 extern int Barcode_pls_encode(struct Barcode_Item *bc);
-extern int Barcode_93_verify(unsigned char *text);
+extern int Barcode_93_verify(char *text);
 extern int Barcode_93_encode(struct Barcode_Item *bc);
-extern int Barcode_11_verify(unsigned char *text);
+extern int Barcode_11_verify(char *text);
 extern int Barcode_11_encode(struct Barcode_Item *bc);
 
 
 struct encoding {
     int type;
-    int (*verify)(unsigned char *text);
+    int (*verify)(char *text);
     int (*encode)(struct Barcode_Item *bc);
 };
 
@@ -148,7 +148,7 @@ int Barcode_Encode(struct Barcode_Item *bc, int flags)
     if (!(flags & BARCODE_ENCODING_MASK)) {
 	/* get the first code able to handle the text */
 	for (cptr = encodings; cptr->verify; cptr++)
-	    if (cptr->verify((unsigned char *)bc->ascii)==0)
+	    if (cptr->verify((char *)bc->ascii)==0)
 		break;
 	if (!cptr->verify) {
 	    bc->error = EINVAL; /* no code can handle this text */
