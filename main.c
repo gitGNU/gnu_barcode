@@ -229,10 +229,10 @@ int get_geometry(void *arg)
     double x = 0.0, y = 0.0;
     int n;
 
-    if (((char *)arg)[0]=='+') {
-	n = sscanf((char *)arg, "+%lf+%lf%s", &x, &y, (char *)arg);
+    if (((char *)arg)[0]=='+' || ((char *)arg)[0]=='-') {
+	n = sscanf((char *)arg, "%lf%lf%s", &x, &y, (char *)arg);
     } else {
-	n = sscanf((char *)arg, "%lfx%lf+%lf+%lf%s", &w, &h, &x, &y,
+	n = sscanf((char *)arg, "%lfx%lf%lf%lf%s", &w, &h, &x, &y,
 		   (char *)arg);
     }
     if (n!=4 && n!=2) {
@@ -400,6 +400,8 @@ struct commandline option_table[] = {
                     "create PCL output instead of postscript"},
     {'p', CMDLINE_S, NULL, get_page_geometry, NULL, NULL,
                     "page size (refer to the man page)"},
+    {'s', CMDLINE_NONE, &streaming, NULL, NULL, 0,
+                    "streaming mode (refer to the man page)"},
     {0,}
 };
 
@@ -464,6 +466,14 @@ int main(int argc, char **argv)
 #endif
     }
 
+    if (!pcl && streaming) {
+	fprintf(stderr, "Streaming is only implemented for PCL mode\n");
+	exit(1);
+    }	
+    if (streaming && (lines || columns)) {
+	fprintf(stderr, "Streaming is not intended for table mode\n");
+	exit(1);
+    }	
     /* FIXME: print warnings for incompatible options */
 
     /* open the input stream if specified */
@@ -540,7 +550,7 @@ int main(int argc, char **argv)
 	    }
 	    if (eps) break; /* if output is eps, do it once only */
 	    if (ps) fprintf(ofile, "showpage\n");
-	    if (pcl) fprintf(ofile, "\f");
+	    if (pcl && !streaming) fprintf(ofile, "\f");
 	}
 	/* no more lines, print footers */
 	if (ps) {

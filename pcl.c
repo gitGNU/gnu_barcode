@@ -36,12 +36,34 @@
  */
 
 
+/* relative cursor movement from absolute xold to absolute xnew,
+updating xold in place */
+void gotox(FILE *f,double *xold,double xnew)
+{
+    double delta = xnew - *xold;
+    if (delta) {
+      fprintf(f,"%c&a%+.0fH", 27, delta * 10.0);
+    }
+    *xold = xnew;
+}
+
+/* relative cursor movement from absolute yold to absolute xnew,
+updating yold in place */
+void gotoy(FILE *f,double *yold,double ynew)
+{
+    double delta = ynew - *yold;
+    if (delta)
+      fprintf(f,"%c&a%+.0fV", 27, delta * 10.0);
+    *yold = ynew;
+}
+ 
 int Barcode_pcl_print(struct Barcode_Item *bc, FILE *f)
 {
-    int i, j, k, barlen;
+    int i, j, barlen;
     double f1, f2, fsav=0;
     int mode = '-'; /* text below bars */
-    double scalef=1, xpos, x0, y0, yr;
+    double scalef=1, xpos, xabs, yabs, yr;
+    double textyoffset;
     char *ptr;
     char c;
 
@@ -119,9 +141,18 @@ int Barcode_pcl_print(struct Barcode_Item *bc, FILE *f)
     /*
      * deal with PCL output
      */
-
+    textyoffset = (mode != '-'
+	? ((double)8*scalef)
+	: ((double)bc->height));
+    xabs = - bc->xoff;
+    yabs = - bc->yoff;
+    if (!streaming) {
+    	fprintf(f, "%c&a0H", 27);
+    	fprintf(f, "%c&a0V", 27);
+    }
     xpos = bc->margin + (bc->partial[0]-'0') * scalef;
     for (ptr = bc->partial+1, i=1; *ptr; ptr++, i++) {
+	double x0, y0;
 	/* special cases: '+' and '-' */
 	if (*ptr == '+' || *ptr == '-') {
 	    mode = *ptr; /* don't count it */ i++; continue;
@@ -131,8 +162,8 @@ int Barcode_pcl_print(struct Barcode_Item *bc, FILE *f)
 	if (isdigit (*ptr))   j = *ptr-'0';
 	else                  j = *ptr-'a'+1;
 	if (i%2) { /* bar */
-	    x0 = bc->xoff + xpos + SHRINK_AMOUNT/2.0;
-            y0 = bc->yoff + bc->margin;
+            x0 = xpos + SHRINK_AMOUNT/2.0;
+            y0 = 0;
             yr = bc->height;
             if (!(bc->flags & BARCODE_NO_ASCII)) { /* leave space for text */
 		if (mode == '-') {
@@ -145,20 +176,27 @@ int Barcode_pcl_print(struct Barcode_Item *bc, FILE *f)
 		}
 	    }
 
-	    fprintf(f,"%c&a%.1fH", 27, x0 * 10.0);
-	    fprintf(f,"%c&a%.1fV", 27, y0 * 10.0);
+	    gotox(f,&xabs,x0);
+	    if (streaming)
+               gotoy(f, &yabs, y0 - textyoffset);
+	    else
+               gotoy(f, &yabs, y0);
 	    fprintf(f,"%c*c%.1fH", 27, ((j*scalef)-SHRINK_AMOUNT) * 10.0);
 	    fprintf(f,"%c*c%.1fV", 27, yr * 10.0);
-	    fprintf(f,"%c*c0P\n", 27);
+	    fprintf(f,"%c*c0P", 27);
 	}
 	xpos += j * scalef;
     }
 
     /* the text */
 
+    if (streaming)
+       gotoy(f, &yabs, 0);
+    else
+       gotoy(f, &yabs, textyoffset);
+
     mode = '-'; /* reinstantiate default */
     if (!(bc->flags & BARCODE_NO_ASCII)) {
-        k=0; /* k is the "previous font size" */
         for (ptr = bc->textinfo; ptr; ptr = strchr(ptr, ' ')) {
             while (*ptr == ' ') ptr++;
             if (!*ptr) break;
@@ -172,29 +210,29 @@ int Barcode_pcl_print(struct Barcode_Item *bc, FILE *f)
 
     /* select a Scalable Font */
 
-	    if (fsav != f2)
-	    {   
-    	        if ((bc->flags & BARCODE_OUT_PCL_III) == BARCODE_OUT_PCL_III)
-		{	strcpy(font_id, "4148");	/* font Univers */
-		}
+	    if (fsav != f2 && !streaming) {
+    	       	if ((bc->flags & BARCODE_OUT_PCL_III) == BARCODE_OUT_PCL_III)
+			strcpy(font_id, "4148");	/* font Univers */
 		else
-		{	strcpy(font_id, "16602");	/* font Arial */
-		}
-
-		fprintf(f,"%c(8U%c(s1p%5.2fv0s0b%sT", 27, 27, f2 * scalef, font_id);
+			strcpy(font_id, "16602");	/* font Arial */
+		fprintf(f,"%c(8U", 27);
+	        fprintf(f,"%c(s1p%5.2fv0s0b%sT", 27, f2 * scalef, font_id);
 	    }
 	    fsav = f2;
-	
-	    fprintf(f,"%c&a%.0fH", 27, (bc->xoff + f1 * scalef + bc->margin) * 10.0);
-	    fprintf(f,"%c&a%.0fV", 27,
-		    mode != '-'
-                       ? ((double)bc->yoff + bc->margin              + 8*scalef) * 10.0
-		       : ((double)bc->yoff + bc->margin + bc->height           ) * 10.0);
-
-		fprintf(f, "%c", c);
+	    gotox(f, &xabs, f1 * scalef + bc->margin);
+    /* print the char, reverse print direction by 180, print it again but
+       invisibly, restore print direction, transparency, opacity. After that
+       we are at the original position again, so we know exactly where we
+       are without having to account for the character width */
+	    fprintf(f, "%c%c&a180P%c*vo1T%c%c&a0P%c*v1oT", c, 27, 27, c, 27, 27);
 	}
 
     }
+    if (streaming) {
+	gotox(f, &xabs, xpos + bc->margin);
+	gotoy(f, &yabs, - bc->yoff);
+    }
+	
 
     return 0;
 }

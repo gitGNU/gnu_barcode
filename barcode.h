@@ -118,4 +118,6 @@ extern int Barcode_Version(char *versionname);
 }
 #endif
 
+int streaming;
+
 #endif /* _BARCODE_H_ */
