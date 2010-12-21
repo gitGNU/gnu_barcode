@@ -1,3 +1,9 @@
+2010-12-21  Giuseppe Scrivano  <gscrivano@gnu.org>
+
+	* configure: Remove from the revision control.
+	* configure.in: Rename to..
+	* configure.ac: this.
+
 2009-10-28  Wolfgang Rohdewald <wolfgang@rohdewald.de>
 
 	* added streaming mode for PCL output, allowing to embed the barcode
