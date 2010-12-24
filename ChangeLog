@@ -1,3 +1,7 @@
+2010-12-24  Giuseppe Scrivano  <gscrivano@gnu.org>
+
+	* configure.ac: Pretend to use at least autoconf 2.62.
+
 2010-12-21  Giuseppe Scrivano  <gscrivano@gnu.org>
 
 	* configure: Remove from the revision control.

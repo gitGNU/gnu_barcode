@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(barcode.h)
-AC_PREREQ(2.12)
+AC_PREREQ([2.62])
 
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
