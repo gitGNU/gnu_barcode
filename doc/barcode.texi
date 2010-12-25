@@ -14,12 +14,6 @@ n\input texinfo    @c -*-texinfo-*-
 %
 %------------------------------------------------------------------------------
 
-%
-% This is not a conventional info file...
-% I use two extra features:
-%       - The '%' as a comment marker, if at beg. of line ("\%" -> "%")
-%       - leading blanks are allowed
-%
 
 @comment %**start of header
 @setfilename barcode.info
@@ -949,11 +943,11 @@ then bless the package as version 1.0.
 %M \fBbarcode(3)\fP
 %M
 %M .SH AUTHORS
-%M Alessandro Rubini <rubini@gnu.org> (maintainer)
+%M Alessandro Rubini <rubini@@gnu.org> (maintainer)
 %M .PP
-%M Leonid A. Broukhis <leob@mailcom.com> (several encodings)
+%M Leonid A. Broukhis <leob@@mailcom.com> (several encodings)
 %M .PP
-%M Andrea Scopece <a.scopece@tin.it> (PCL output)
+%M Andrea Scopece <a.scopece@@tin.it> (PCL output)
 %MANPAGE END
 
 @iftex

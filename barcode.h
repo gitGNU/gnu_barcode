@@ -3,6 +3,7 @@
  *
  * Copyright (c) 1999 Alessandro Rubini (rubini@gnu.org)
  * Copyright (c) 1999 Prosa Srl. (prosa@prosa.it)
+ * Copyright (c) 2010 Giuseppe Scrivano <gscrivano@gnu.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -22,6 +23,7 @@
 #ifndef _BARCODE_H_
 #define _BARCODE_H_
 
+#include "config.h"
 #include <stdio.h>
 
 #define BARCODE_VERSION     "0.98" 

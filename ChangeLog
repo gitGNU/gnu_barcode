@@ -1,3 +1,19 @@
+2010-12-25  Giuseppe Scrivano  <gscrivano@gnu.org>
+
+	* m4/: New directory.
+	* barcode.h: Include "config.h"
+	* configure.ac: Use automake and libtool.
+	* NEWS: New file.
+	* AUTHORS: New file.
+	* INSTALL: Remove file.
+	* config.guess: Remove file.
+	* config.sub: Remove file.
+	* install-sh: Remove file.
+	* doc/doc.barcode: Rename to...
+	* doc/barcode.texi: ...this.  Use @@ instead of @.
+	* doc/Makefile.in: Remove.
+	* doc/Makefile.am: New file.
+
 2010-12-24  Giuseppe Scrivano  <gscrivano@gnu.org>
 
 	* configure.ac: Pretend to use at least autoconf 2.62.
