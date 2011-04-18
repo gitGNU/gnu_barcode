@@ -23,7 +23,7 @@ AM_LDFLAGS = -L. @LIBPAPER@
 
 EXTRA_DIST = barcode.h cmdline.h compat/getopt.h compat/getopt.c
 
-bin_PROGRAMS = barcode
+bin_PROGRAMS = barcode sample
 
 noinst_LTLIBRARIES = libbarcode.la
 
@@ -34,5 +34,7 @@ libbarcode_la_SOURCES = library.c ean.c code128.c code39.c code93.c i25.c \
 		ps.c pcl.c code11.c
 
 barcode_SOURCES = main.c cmdline.c
-
 barcode_LDADD = libbarcode.la
+
+sample_SOURCES = sample.c
+sample_LDADD = libbarcode.la
