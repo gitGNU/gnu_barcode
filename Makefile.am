@@ -15,13 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-SUBDIRS = doc
+SUBDIRS = doc lib
 
-AM_CFLAGS = @CFLAGS@ @DEFS@ @NO_GETOPT@ @NO_LIBPAPER@ @NO_STRERROR@
+AM_CFLAGS = @CFLAGS@ @DEFS@ @NO_LIBPAPER@ @NO_STRERROR@
 
 AM_LDFLAGS = -L. @LIBPAPER@
 
-EXTRA_DIST = barcode.h cmdline.h compat/getopt.h compat/getopt.c
+EXTRA_DIST = barcode.h cmdline.h
 
 bin_PROGRAMS = barcode sample
 
@@ -34,7 +34,8 @@ libbarcode_la_SOURCES = library.c ean.c code128.c code39.c code93.c i25.c \
 		ps.c pcl.c code11.c
 
 barcode_SOURCES = main.c cmdline.c
-barcode_LDADD = libbarcode.la
+barcode_LDADD = libbarcode.la lib/libgnu.la
+
 
 sample_SOURCES = sample.c
 sample_LDADD = libbarcode.la

@@ -1,9 +1,11 @@
+
+*.info
 *.o
 *.orig
-*~
-Makefile
-config.*
 *.pdf
 *.ps
-*.info
+*~
+/build-aux
+Makefile
+config.*
 
