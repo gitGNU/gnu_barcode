@@ -204,7 +204,7 @@ int Barcode_pcl_print(struct Barcode_Item *bc, FILE *f)
 		mode = *ptr; continue;
 	    }
             if (sscanf(ptr, "%lf:%lf:%c", &f1, &f2, &c) != 3) {
-		fprintf(stderr, "barcode: impossible data: %s\n", ptr);
+		fprintf(stderr, _("barcode: impossible data: %s\n"), ptr);
                 continue;
             }
 

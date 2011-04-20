@@ -26,6 +26,11 @@
 #include "config.h"
 #include <stdio.h>
 
+#include <gettext.h>
+
+#define _(X) gettext (X)
+#define _N(X) (X)
+
 #define BARCODE_VERSION     "0.98" 
 #define BARCODE_VERSION_INT   9800
 

@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-SUBDIRS = doc lib
+SUBDIRS = po doc lib
 
 AM_CFLAGS = -Ilib @CFLAGS@ @DEFS@ @NO_LIBPAPER@ @NO_STRERROR@
 

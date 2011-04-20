@@ -153,7 +153,7 @@ int Barcode_pls_encode(struct Barcode_Item *bc)
         sprintf(ptr, patterns[checkptr[strlen(text) * 4 + i]]);
 	ptr += 2;
     }
-    fprintf(stderr, "CRC: ");
+    fprintf(stderr, _("CRC: "));
     for (i = 0; i < 8; i++) {
         fputc('0' + checkptr[strlen(text) * 4 + i], stderr);
     }

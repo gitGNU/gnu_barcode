@@ -101,7 +101,7 @@ int list_encodes(FILE *f) /* used in the help message */
     int prev = -1;
     int i;
 
-    fprintf(f, "Known encodings are (synonyms appear on the same line):");
+    fprintf(f, _("Known encodings are (synonyms appear on the same line):"));
     for (i = 0;  encode_tab[i].name; i++) {
 	if (encode_tab[i].type != prev)
 	    fprintf(f, "\n\t");
@@ -235,9 +235,9 @@ int get_geometry(void *arg)
 	n = sscanf((char *)arg, "%lfx%lf%lf%lf%s", &w, &h, &x, &y,
 		   (char *)arg);
     }
-    if (n!=4 && n!=2) {
-	fprintf(stderr, "%s: wrong geometry \"%s\"\n", prgname, (char *)arg);
-	return -2;
+    if (n != 4 && n != 2) {
+  fprintf(stderr, _("%s: wrong geometry \"%s\"\n"), prgname, (char *)arg);
+  return -2;
     }
     /* convert to points */
     code_width  = w * unit;
@@ -257,7 +257,7 @@ int get_table(void *arg)
 	       &columns, &lines, &x0, &y0, &x1, &y1);
 
     if (n==1 || n==3) { /* error: 2, 4, 5, 6 are fine */
-	fprintf(stderr, "%s: wrong table specification \"%s\"\n", prgname,
+  fprintf(stderr, _("%s: wrong table specification \"%s\"\n"), prgname,
 		(char *)arg);
 	return -2;
     }
@@ -290,7 +290,7 @@ int get_margin(void *arg)
 	yimargin = y * unit;
 	return 0;
     }
-    fprintf(stderr, "%s: wrong margin specification \"%s\"\n", prgname,
+    fprintf(stderr, _("%s: wrong margin specification \"%s\"\n"), prgname,
 	    (char *)arg);
 	return -2;
     return 0;
@@ -365,7 +365,7 @@ int get_page_geometry(void *arg)
     }
 #endif
     /* If we got here, the argument is undecipherable: fail */
-    fprintf(stderr, "%s: wrong page size specification \"%s\"\n", prgname,
+    fprintf(stderr, _("%s: wrong page size specification \"%s\"\n"), prgname,
 	    (char *)arg);
     return -2;
 }
@@ -375,33 +375,33 @@ int get_page_geometry(void *arg)
  */
 struct commandline option_table[] = {
     {'i', CMDLINE_S, &ifilename, NULL, NULL, NULL,
-                   "input file (strings to encode), default is stdin"},
+     _N ("input file (strings to encode), default is stdin")},
     {'o', CMDLINE_S, &ofilename, NULL, NULL, NULL,
-                    "output file, default is stdout"},
+        _N ("output file, default is stdout")},
     {'b', CMDLINE_S, NULL, get_input_string, NULL, NULL,
-                   "string to encode (use input file if missing)"},
+        _N ("string to encode (use input file if missing)")},
     {'e', CMDLINE_S, NULL, get_encoding, "BARCODE_ENCODING", NULL,
-                   "encoding type (default is best fit for first string)"},
+        _N ("encoding type (default is best fit for first string)")},
     {'u', CMDLINE_S, NULL, get_unit, "BARCODE_UNIT", NULL,
-                    "unit (\"mm\", \"in\", ...) used to decode -g, -t, -p"},
+     _N ("unit (\"mm\", \"in\", ...) used to decode -g, -t, -p")},
     {'g', CMDLINE_S, NULL, get_geometry, "BARCODE_GEOMETRY", NULL,
-                    "geometry on the page: [<wid>x<hei>][+<margin>+<margin>]"},
+     _N ("geometry on the page: [<wid>x<hei>][+<margin>+<margin>]")},
     {'t', CMDLINE_S, NULL, get_table, "BARCODE_TABLE", NULL,
-                    "table geometry: <cols>x<lines>[+<margin>+<margin>]"},
+     _N ("table geometry: <cols>x<lines>[+<margin>+<margin>]")},
     {'m', CMDLINE_S, NULL, get_margin, "BARCODE_MARGIN", "10",
-                    "internal margin for each item in a table: <xm>[,<ym>]"},
+        _N ("internal margin for each item in a table: <xm>[,<ym>]")},
     {'n', CMDLINE_NONE, &noascii, NULL, NULL, NULL,
-                    "\"numeric\": avoid printing text along with the bars"},
+     _N ("\"numeric\": avoid printing text along with the bars")},
     {'c', CMDLINE_NONE, &nochecksum, NULL, NULL, NULL,
-                    "no Checksum character, if the chosen encoding allows it"},
+     _N ("no Checksum character, if the chosen encoding allows it")},
     {'E', CMDLINE_NONE, &eps, NULL, NULL, NULL,
-                    "print one code as eps file (default: multi-page ps)"},
+     _N ("print one code as eps file (default: multi-page ps)")},
     {'P', CMDLINE_NONE, &pcl, NULL, NULL, NULL,
-                    "create PCL output instead of postscript"},
+     _N ("create PCL output instead of postscript")},
     {'p', CMDLINE_S, NULL, get_page_geometry, NULL, NULL,
-                    "page size (refer to the man page)"},
+     _N ("page size (refer to the man page)")},
     {'s', CMDLINE_NONE, &streaming, NULL, NULL, 0,
-                    "streaming mode (refer to the man page)"},
+     _N ("streaming mode (refer to the man page)")},
     {0,}
 };
 
@@ -414,7 +414,7 @@ char *strerror(int error)
     static char msg[16];
     if (error >= 0 && error < sys_nerr)
 	return sys_errlist[error];
-    sprintf(msg, "Error %d", error);
+    sprintf(msg, _("Error %d"), error);
     return msg;
 }
 #endif
@@ -436,24 +436,24 @@ int main(int argc, char **argv)
 
     /* First of all, accept "--help" and "-h" as a special case */
     if (argc == 2 && (!strcmp(argv[1],"--help") || !strcmp(argv[1],"-h"))) {
-	commandline_errormsg(stderr, option_table, argv[0], "Options:\n");
+  commandline_errormsg(stderr, option_table, argv[0], _("Options:\n"));
 	fprintf(stderr,"\n");
 	list_encodes(stderr);
 	exit(1);
     }
     /* Also, accept "--version" as a special case */
     if (argc == 2 && (!strcmp(argv[1],"--version"))) {
-	printf("barcode frontend (GNU barcode) " BARCODE_VERSION "\n");
+      printf(_("barcode frontend (GNU barcode) %s\n"), BARCODE_VERSION);
 	exit(0);
     }
 
     /* Otherwise, parse the commandline */
-    retval = commandline(option_table, argc, argv, "Use: %s [options]\n");
+    retval = commandline(option_table, argc, argv, _("Use: %s [options]\n"));
     if (retval) {
 	if (retval == -1) /* help printed, complete it */
 	    list_encodes(stderr);
 	else /* no help printed, suggest it */
-	    fprintf(stderr, "%s: try \"%s --help\"\n", prgname, prgname);
+    fprintf(stderr, _("%s: try \"%s --help\"\n"), prgname, prgname);
 	exit(1);
     }
 
@@ -467,11 +467,11 @@ int main(int argc, char **argv)
     }
 
     if (!pcl && streaming) {
-	fprintf(stderr, "Streaming is only implemented for PCL mode\n");
+      fprintf(stderr, _("Streaming is only implemented for PCL mode\n"));
 	exit(1);
     }	
     if (streaming && (lines || columns)) {
-	fprintf(stderr, "Streaming is not intended for table mode\n");
+      fprintf(stderr, _("Streaming is not intended for table mode\n"));
 	exit(1);
     }	
     /* FIXME: print warnings for incompatible options */
@@ -495,7 +495,7 @@ int main(int argc, char **argv)
     }
 
     if (encoding_type < 0) { /* unknown type specified */
-	fprintf(stderr,"%s: Unknown endoding. Try \"%s --help\"\n",
+      fprintf(stderr, _("%s: Unknown encoding. Try \"%s --help\"\n"),
  		argv[0], argv[0]);
 	exit(1);
     }
@@ -516,7 +516,7 @@ int main(int argc, char **argv)
 
     /* the table is not available in eps mode */
     if (eps && (lines>1 || columns>1)) {
-	fprintf(stderr, "%s: can't print tables in EPS format\n",argv[0]);
+      fprintf(stderr, _("%s: can't print tables in EPS format\n"), argv[0]);
 	exit(1);
     }
 
@@ -545,7 +545,7 @@ int main(int argc, char **argv)
 	    }
 	    if (Barcode_Encode_and_Print(line, ofile, code_width, code_height,
 					 xmargin0, ymargin0, flags) < 0) {
-		fprintf(stderr, "%s: can't encode \"%s\"\n", argv[0], line);
+        fprintf(stderr, _("%s: can't encode \"%s\"\n"), argv[0], line);
 		errors++;
 	    }
 	    if (eps) break; /* if output is eps, do it once only */
@@ -594,7 +594,7 @@ int main(int argc, char **argv)
 	     */
 	    bc = Barcode_Create(line);
 	    if (!bc) {
-		fprintf(stderr, "%s: Barcode_Create(): %s\n", argv[0],
+      fprintf(stderr, _("%s: Barcode_Create(): %s\n"), argv[0],
 			strerror(errno));
 		exit(1);
 	    }
@@ -604,7 +604,7 @@ int main(int argc, char **argv)
 				   ymargin0 + yimargin + y * ystep, 0.0) < 0)
 		 || (Barcode_Encode(bc, flags) < 0)
 		 || (Barcode_Print(bc, ofile, flags) < 0) ) {
-		fprintf(stderr, "%s: can't encode \"%s\": %s\n", argv[0],
+      fprintf(stderr, _("%s: can't encode \"%s\": %s\n"), argv[0],
 			line, strerror(bc->error));
 	    }
 	    Barcode_Delete(bc);

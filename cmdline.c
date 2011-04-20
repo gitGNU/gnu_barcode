@@ -33,6 +33,7 @@
   #include <getopt.h>
 #endif
 
+#include "barcode.h"
 #include "cmdline.h"
 
 /* In case of error, print help string and return error (-1) */
@@ -45,14 +46,14 @@ int commandline_errormsg(FILE *f, struct commandline *args,
     struct commandline *ptr;
 
     if (!messagehead) {
-	fprintf(f,"%s: Error in cmdline\nPossible options:\n",prgname);
+  fprintf(f, _("%s: Error in cmdline\nPossible options:\n"), prgname);
     } else {
-	fprintf(f,"%s: %s",prgname,messagehead);
+  fprintf(f,"%s: %s",prgname, messagehead);
     }
 
     for (ptr = args; ptr->option; ptr++) {
-	if (ptr->descrip) {
-	    len = strlen(ptr->descrip);
+    if (_(ptr->descrip)) {
+	    len = strlen(_(ptr->descrip));
 	    len +=  ptr->default_v ? strlen(ptr->default_v) : 6;
 	    len += ptr->env ? strlen(ptr->env) : 6;
 	    buffer2 = malloc(len+3); /* 3 to be safe :) */
@@ -60,7 +61,7 @@ int commandline_errormsg(FILE *f, struct commandline *args,
 	    if (buffer2) {
 		buffer = malloc(len);
 		if (buffer) {
-		    sprintf(buffer2, ptr->descrip,
+          sprintf(buffer2, _(ptr->descrip),
 			    ptr->default_v ? ptr->default_v : "(none)",
 			    ptr->env ? ptr->env : "(none)");
 		    sprintf(buffer, "   -%c %s     %s", ptr->option,
