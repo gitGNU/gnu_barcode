@@ -25,13 +25,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#ifdef NO_GETOPT
-  /* use replacement */
-  #include "compat/getopt.h"
-#else
-  #include <getopt.h>
-#endif
+#include <unistd.h>
 
 #include "cmdline.h"
 
