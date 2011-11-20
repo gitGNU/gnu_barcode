@@ -126,7 +126,7 @@ int lines, columns;                   /* "-t" for tables */
 int xmargin0, ymargin0;               /* both for "-g" and "-t" */
 int xmargin1, ymargin1;               /* same, but right and top */
 int ximargin, yimargin;               /* "-m": internal margins */
-int eps, pcl, ps, noascii, nochecksum; /* boolean flags */
+int eps, svg, pcl, ps, noascii, nochecksum; /* boolean flags */
 int page_wid, page_hei;               /* page size in points */
 char *page_name;                      /* name of the media */
 double unit = 1.0;                    /* unit specification */
@@ -396,6 +396,8 @@ struct commandline option_table[] = {
                     "no Checksum character, if the chosen encoding allows it"},
     {'E', CMDLINE_NONE, &eps, NULL, NULL, NULL,
                     "print one code as eps file (default: multi-page ps)"},
+    {'S', CMDLINE_NONE, &svg, NULL, NULL, NULL,
+                    "print one code as svg file (default: multi-page ps)"},
     {'P', CMDLINE_NONE, &pcl, NULL, NULL, NULL,
                     "create PCL output instead of postscript"},
     {'p', CMDLINE_S, NULL, get_page_geometry, NULL, NULL,
@@ -503,9 +505,11 @@ int main(int argc, char **argv)
     if (pcl) {
 	flags |= BARCODE_OUT_PCL;
     } else {
-	ps = !eps; /* a shortcut */
+	ps = !(eps || svg); /* a shortcut */
 	if (eps)
 	    flags |= BARCODE_OUT_EPS; /* print headers too */
+        else if (svg)
+            flags |= BARCODE_OUT_SVG;
 	else
 	    flags |= BARCODE_OUT_PS | BARCODE_OUT_NOHEADERS;
     }
@@ -515,7 +519,7 @@ int main(int argc, char **argv)
 	flags |= BARCODE_NO_CHECKSUM;
 
     /* the table is not available in eps mode */
-    if (eps && (lines>1 || columns>1)) {
+    if ((eps || svg) && (lines>1 || columns>1)) {
 	fprintf(stderr, "%s: can't print tables in EPS format\n",argv[0]);
 	exit(1);
     }
@@ -548,7 +552,7 @@ int main(int argc, char **argv)
 		fprintf(stderr, "%s: can't encode \"%s\"\n", argv[0], line);
 		errors++;
 	    }
-	    if (eps) break; /* if output is eps, do it once only */
+	    if (eps || svg) break; /* if output is eps, do it once only */
 	    if (ps) fprintf(ofile, "showpage\n");
 	    if (pcl && !streaming) fprintf(ofile, "\f");
 	}

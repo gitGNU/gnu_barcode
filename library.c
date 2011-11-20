@@ -178,6 +178,7 @@ int Barcode_Encode(struct Barcode_Item *bc, int flags)
  */
 extern int Barcode_ps_print(struct Barcode_Item *bc, FILE *f);
 extern int Barcode_pcl_print(struct Barcode_Item *bc, FILE *f);
+extern int Barcode_svg_print(struct Barcode_Item *bc, FILE *f);
 
 /*
  * A function to print a partially decoded string. Meaningful bits for
@@ -200,6 +201,8 @@ int Barcode_Print(struct Barcode_Item *bc, FILE *f, int flags)
 
     if (bc->flags & BARCODE_OUT_PCL)
        return Barcode_pcl_print(bc, f);
+    if (bc->flags & BARCODE_OUT_SVG)
+       return Barcode_svg_print(bc, f);
     return Barcode_ps_print(bc, f);
 }
 

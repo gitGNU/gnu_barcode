@@ -60,6 +60,7 @@ struct Barcode_Item {
 #define BARCODE_OUT_PCL       0x00004000   /* by Andrea Scopece */
 /*                  PCL_III   0x00008000   */
 #define BARCODE_OUT_PCL_III   0x0000C000
+#define BARCODE_OUT_SVG       0x00010000
 #define BARCODE_OUT_NOHEADERS 0x00100000   /* no header nor footer */
 
 enum {

@@ -31,7 +31,7 @@ ACLOCAL_AMFLAGS = -I m4
 
 libbarcode_la_SOURCES = library.c ean.c code128.c code39.c code93.c i25.c \
 		msi.c plessey.c codabar.c \
-		ps.c pcl.c code11.c
+		ps.c svg.c pcl.c code11.c
 
 barcode_SOURCES = main.c cmdline.c
 barcode_LDADD = libbarcode.la lib/libgnu.la
