@@ -1,3 +1,27 @@
+2011-12-27  Giuseppe Scrivano  <gscrivano@gnu.org>
+
+	* COPYING: Update license to GPLv3 or later.
+	* Makefile.am: Likewise.
+	* barcode.h: Likewise.
+	* cmdline.c: Likewise.
+	* cmdline.h: Likewise.
+	* codabar.c: Likewise.
+	* code11.c: Likewise.
+	* code128.c: Likewise.
+	* code39.c: Likewise.
+	* code93.c: Likewise.
+	* doc/Makefile.am: Likewise.
+	* ean.c: Likewise.
+	* i25.c: Likewise.
+	* lib/Makefile.am: Likewise.
+	* library.c: Likewise.
+	* main.c: Likewise.
+	* msi.c: Likewise.
+	* pcl.c: Likewise.
+	* plessey.c: Likewise.
+	* ps.c: Likewise.
+	* svg.c: Likewise.
+
 2010-11-20  Giuseppe Scrivano  <gscrivano@gnu.org>
 
 	* cmdline.c: Include <unistd.h>.  Do not include <getopt.h>.
