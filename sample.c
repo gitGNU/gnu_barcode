@@ -6,9 +6,9 @@
 
 int main(int argc, char **argv)
 {
-    int ps = 1, pcl = 0, oflags;
+    int pcl = 0, oflags;
     if (argc == 2 && !strcmp(argv[1],"-P")) {
-	ps = 0; pcl = 1; argc=1;
+	pcl = 1; argc=1;
     }
     if (argc>2) {
 	fprintf(stderr, _("%s: use \"%s\" for postscript or \"%s -P\" for PCL\n"),

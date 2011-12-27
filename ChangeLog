@@ -1,5 +1,9 @@
 2011-12-27  Giuseppe Scrivano  <gscrivano@gnu.org>
 
+	* sample.c (main): Remove local variable `ps'.
+	* ps.c (Barcode_ps_print): Remove local variable `k'.
+	* svg.c (Barcode_svg_print): Likewise.
+
 	Add support for i18n.
 	* Makefile.am (SUBDIRS): Add `po'.
 	* barcode.h (_, _N): Add definition.

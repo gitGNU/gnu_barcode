@@ -61,7 +61,7 @@
 
 int Barcode_svg_print(struct Barcode_Item *bc, FILE *f)
 {
-    int i, j, k, barlen, printable=1;
+    int i, j, barlen, printable=1;
     double f1, f2, fsav=0;
     int mode = '-'; /* text below bars */
     double scalef=1, xpos, x0, y0, yr;
@@ -215,7 +215,6 @@ int Barcode_svg_print(struct Barcode_Item *bc, FILE *f)
 
     mode = '-'; /* reinstantiate default */
     if (!(bc->flags & BARCODE_NO_ASCII)) {
-        k=0; /* k is the "previous font size" */
         for (ptr = bc->textinfo; ptr; ptr = strchr(ptr, ' ')) {
             while (*ptr == ' ') ptr++;
             if (!*ptr) break;
