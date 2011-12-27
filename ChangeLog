@@ -1,3 +1,33 @@
+2010-11-20  Giuseppe Scrivano  <gscrivano@gnu.org>
+
+	* cmdline.c: Include <unistd.h>.  Do not include <getopt.h>.
+
+2011-11-20  Tiago Gonçalves <tiagogoncalves@ua.pt>
+
+	Add SVG support.
+	* Makefile.am: Add svg.c to libbarcode_la_SOURCES.
+	* barcode.h: Define BARCODE_OUT_SVG.
+	* library.c (Barcode_svg_print): Add declaration.
+	* main.c: Declare variable svg.
+	(option_table): Add svg.
+	(main): Handle the svg output case.
+	* svg.c: New file.
+
+2010-04-20  Giuseppe Scrivano  <gscrivano@gnu.org>
+
+	* Makefile.am (AM_CFLAGS): Add -Ilib.
+
+2010-04-19  Giuseppe Scrivano  <gscrivano@gnu.org>
+
+	* Makefile.am (AM_CFLAGS): Remove @NO_GETOPT@.
+	(EXTRA_DIST): Remove compat/getopt.h and compat/getopt.c.
+	(barcode_LDADD): Add lib/libgnu.la.
+	(AM_LDFLAGS): Add definition.
+	* bootstrap: New file.
+	* bootstrap.conf: New file.
+	* configure.ac: Initialize gnulib.
+	* lib/Makefile.am: New file.
+
 2010-12-25  Giuseppe Scrivano  <gscrivano@gnu.org>
 
 	* bootstrap: New file.
