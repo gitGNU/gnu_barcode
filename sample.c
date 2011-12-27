@@ -11,7 +11,7 @@ int main(int argc, char **argv)
 	ps = 0; pcl = 1; argc=1;
     }
     if (argc>2) {
-	fprintf(stderr, "%s: use \"%s\" for postscript or \"%s -P\" for PCL\n",
+	fprintf(stderr, _("%s: use \"%s\" for postscript or \"%s -P\" for PCL\n"),
 		argv[0], argv[0], argv[0]);
 	exit(1);
     }

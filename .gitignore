@@ -5,6 +5,7 @@
 *.pdf
 *.ps
 *~
+/ABOUT-NLS
 /build-aux
 Makefile
 config.*

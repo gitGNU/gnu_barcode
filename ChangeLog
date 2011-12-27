@@ -1,5 +1,19 @@
 2011-12-27  Giuseppe Scrivano  <gscrivano@gnu.org>
 
+	Add support for i18n.
+	* Makefile.am (SUBDIRS): Add `po'.
+	* barcode.h (_, _N): Add definition.
+	* bootstrap.conf (gnulib_modules): Add "gettext".
+	* configure.ac (AC_INIT, CFLAGS): Check for gettext.
+	* cmdline.c (commandline_errormsg): Translate error messages.
+	* main.c (list_encodes, get_geometry, get_table, get_margin)
+	(get_page_geometry, option_table, strerror, main): Likewise.
+	* pcl.c (Barcode_pcl_print): Likewise.
+	* plessey.c (Barcode_pls_encode): Likewise.
+	* sample.c (main):
+	* po/POTFILES.in: New file.
+
+	Change license to GPLv3+.
 	* COPYING: Update license to GPLv3 or later.
 	* Makefile.am: Likewise.
 	* barcode.h: Likewise.

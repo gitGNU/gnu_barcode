@@ -27,6 +27,8 @@ AC_CHECK_TOOL(AR, ar)
 AC_PROG_LIBTOOL
 LT_INIT
 
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.16])
 
 dnl Add "-Wall" if this is gcc
 if test x$GCC = xyes; then
@@ -54,6 +56,7 @@ AC_SUBST(REMOVEHTMLTAGS)
 AC_SUBST(INFOTOHTML)
 
 AC_CONFIG_FILES([Makefile \
+                 po/Makefile.in \
                  lib/Makefile \
                  doc/Makefile])
 
