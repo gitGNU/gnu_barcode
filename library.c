@@ -247,7 +247,58 @@ int Barcode_Encode_and_Print(char *text, FILE *f, int wid, int hei,
 
 int Barcode_Version(char *vptr)
 {
+    const char *it;
+    int ret = 0;
+
     if (vptr)
-	strcpy(vptr, BARCODE_VERSION);
-    return BARCODE_VERSION_INT;
+	strcpy(vptr, PACKAGE_VERSION);
+
+    for (it = PACKAGE_VERSION; it; it++)
+      {
+        int d;
+      repeat:
+        switch (*it)
+          {
+            /* Poor Peano, nobody ensures that in every locale, we have:
+               '1' = '0' + 1,..., '9' = '8' + 1.  But fortunately we are not
+               using base 1000 so:  */
+          case '0':
+            d = 0;
+            break;
+          case '1':
+            d = 1;
+            break;
+          case '2':
+            d = 2;
+            break;
+          case '3':
+            d = 3;
+            break;
+          case '4':
+            d = 4;
+            break;
+          case '5':
+            d = 5;
+            break;
+          case '6':
+            d = 6;
+            break;
+          case '7':
+            d = 7;
+            break;
+          case '8':
+            d = 8;
+            break;
+          case '9':
+            d = 9;
+            break;
+          case '.':
+            it++;
+            goto repeat;
+          }
+
+        ret = ret * 10 + d;
+      }
+
+    return ret;
 }

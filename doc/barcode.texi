@@ -450,14 +450,10 @@ header file @t{barcode.h}.  They perform the following tasks:
 	flags.
 
 @item int Barcode_Version(char *versionname);
-	Returns the current version as an integer number of the form
-	major * 10000 + minor * 100 + release. Therefore, version
-	1.03.5 will be returned as 10305 and version 0.53 as 5300.  If
+	Returns the current version as an integer number. Therefore, version
+	1.03.5 will be returned as 1035 and version 0.53 as 53.  If
         the argument is non-null, it will be used to return the version
-        number as a string. Note that the same information is available from
-        two preprocessor macros: @t{BARCODE_VERSION} (the string) and
-        @t{BARCODE_VERSION_INT} (the integer number).
-
+        number as a string.
 @end table
 
 %MANPAGE END

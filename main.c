@@ -445,7 +445,7 @@ int main(int argc, char **argv)
     }
     /* Also, accept "--version" as a special case */
     if (argc == 2 && (!strcmp(argv[1],"--version"))) {
-      printf(_("barcode frontend (GNU barcode) %s\n"), BARCODE_VERSION);
+      printf(_("barcode frontend (GNU barcode) %s\n"), PACKAGE_VERSION);
 	exit(0);
     }
 

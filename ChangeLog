@@ -1,5 +1,13 @@
 2012-01-11  Giuseppe Scrivano  <gscrivano@gnu.org>
 
+	* doc/barcode.texi (The API): Update information about version
+	numbers.
+	* main.c (main): Use PACKAGE_VERSION instead of BARCODE_VERSION.
+	* barcode.h (BARCODE_VERSION): Drop define.
+	* barcode.h (BARCODE_VERSION_INT): Drop define.
+	* library.c (Barcode_Version): Compute the version number
+	dinamically.
+
 	* bootstrap.conf (gnulib_modules): Remove `exit'.
 
 2011-12-27  Giuseppe Scrivano  <gscrivano@gnu.org>
