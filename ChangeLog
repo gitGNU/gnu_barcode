@@ -1,3 +1,7 @@
+2012-01-11  Giuseppe Scrivano  <gscrivano@gnu.org>
+
+	* bootstrap.conf (gnulib_modules): Remove `exit'.
+
 2011-12-27  Giuseppe Scrivano  <gscrivano@gnu.org>
 
 	* sample.c (main): Remove local variable `ps'.
