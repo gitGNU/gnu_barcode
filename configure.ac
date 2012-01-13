@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(barcode.h, 0.98, bug-barcode@gnu.org)
+AC_INIT(barcode, 0.98, bug-barcode@gnu.org)
 AC_PREREQ([2.65])
 
 AC_CONFIG_AUX_DIR([build-aux])

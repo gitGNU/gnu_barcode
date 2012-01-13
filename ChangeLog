@@ -1,3 +1,7 @@
+2012-01-13  Giuseppe Scrivano  <gscrivano@gnu.org>
+
+	* configure.ac: Change package name to `barcode'.
+
 2012-01-11  Giuseppe Scrivano  <gscrivano@gnu.org>
 
 	* doc/barcode.texi (The API): Update information about version
