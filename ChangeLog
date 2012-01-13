@@ -1,5 +1,7 @@
 2012-01-13  Giuseppe Scrivano  <gscrivano@gnu.org>
 
+	* configure.ac: Do not force -Wall for GCC.
+
 	* configure.ac: Change package name to `barcode'.
 
 2012-01-11  Giuseppe Scrivano  <gscrivano@gnu.org>

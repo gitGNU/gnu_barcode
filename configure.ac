@@ -30,11 +30,6 @@ LT_INIT
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.16])
 
-dnl Add "-Wall" if this is gcc
-if test x$GCC = xyes; then
-	CFLAGS="$CFLAGS -Wall"
-fi
-
 gl_INIT
 
 dnl Check for getopt and libpaper. If getopt is missing, use our version
