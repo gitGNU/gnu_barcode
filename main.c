@@ -435,17 +435,29 @@ int main(int argc, char **argv)
     int errors = 0;
 
     prgname = argv[0];
+#define SHOW_VERSION() \
+    printf (_("GNU barcode %s is a tool to convert text strings to printed bars.\n"), PACKAGE_VERSION); \
+    printf("\n");
+#define SHOW_BUG_REPORT_ADDR() \
+  printf (_("Mail bug reports and suggestions to <%s>.\n"), PACKAGE_BUGREPORT);
 
     /* First of all, accept "--help" and "-h" as a special case */
     if (argc == 2 && (!strcmp(argv[1],"--help") || !strcmp(argv[1],"-h"))) {
-  commandline_errormsg(stderr, option_table, argv[0], _("Options:\n"));
-	fprintf(stderr,"\n");
-	list_encodes(stderr);
-	exit(1);
+  SHOW_VERSION ();
+  commandline_errormsg(stdout, option_table, argv[0], _("Options:\n"));
+	printf("\n");
+	list_encodes(stdout);
+  SHOW_BUG_REPORT_ADDR ();
+	exit(0);
     }
     /* Also, accept "--version" as a special case */
     if (argc == 2 && (!strcmp(argv[1],"--version"))) {
-      printf(_("barcode frontend (GNU barcode) %s\n"), PACKAGE_VERSION);
+  SHOW_VERSION ();
+  printf ("License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n");
+  printf ("This is free software: you are free to change and redistribute it.\n");
+  printf ("There is NO WARRANTY, to the extent permitted by law.\n");
+	printf("\n");
+  SHOW_BUG_REPORT_ADDR ();
 	exit(0);
     }
 

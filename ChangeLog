@@ -1,5 +1,8 @@
 2012-01-13  Giuseppe Scrivano  <gscrivano@gnu.org>
 
+	* main.c (main): Augment information provided by --help and
+	--version.
+
 	* configure.ac: Do not force -Wall for GCC.
 
 	* configure.ac: Change package name to `barcode'.
