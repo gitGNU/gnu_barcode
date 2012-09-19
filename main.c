@@ -182,6 +182,8 @@ char *retrieve_input_string(FILE *ifile)
 	return NULL;
     if (fileline[strlen(fileline)-1]=='\n')
 	fileline[strlen(fileline)-1]= '\0';
+    if (fileline[strlen(fileline)-1]=='\r')
+	fileline[strlen(fileline)-1]= '\0';
     return strdup(fileline);
 }
 
