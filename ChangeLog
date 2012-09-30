@@ -1,3 +1,11 @@
+2012-09-30  Giuseppe Scrivano  <gscrivano@gnu.org>
+
+	* bootstrap: Upgrade from gnulib.
+
+2012-09-30  Alessandro Rubini  <rubini@gnudd.com>
+
+	* main.c (main): trim dos returns.
+
 2012-01-13  Giuseppe Scrivano  <gscrivano@gnu.org>
 
 	* main.c (main): Augment information provided by --help and
