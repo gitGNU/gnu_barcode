@@ -1,3 +1,11 @@
+2013-03-29  Giuseppe Scrivano  <gscrivano@gnu.org>
+
+	* Makefile.am: Update copyright years.
+	* bootstrap: Likewise.
+	* bootstrap.conf: Likewise.
+	* doc/Makefile.am: Likewise.
+	* po/POTFILES.in: Likewise.
+
 2012-09-30  Giuseppe Scrivano  <gscrivano@gnu.org>
 
 	* bootstrap: Upgrade from gnulib.
