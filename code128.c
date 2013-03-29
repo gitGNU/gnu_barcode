@@ -20,13 +20,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "barcode.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
-
-#include "barcode.h"
 
 static char *codeset[] = {
     "212222", "222122", "222221", "121223", "121322",  /*  0 -  4 */

@@ -1,8 +1,8 @@
+#include "barcode.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "barcode.h"
 
 int main(int argc, char **argv)
 {

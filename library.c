@@ -19,6 +19,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "barcode.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,8 +29,6 @@
 #  include <unistd.h>
 #endif
 #include <errno.h>
-
-#include "barcode.h"
 
 /*
  * This function allocates a barcode structure and strdup()s the

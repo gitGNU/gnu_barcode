@@ -1,5 +1,23 @@
 2013-03-29  Giuseppe Scrivano  <gscrivano@gnu.org>
 
+
+	* cmdline.c: Include "barcode.h" as first file.
+	* codabar.c: Likewise.
+	* code11.c: Likewise.
+	* code128.c: Likewise.
+	* code39.c: Likewise.
+	* code93.c: Likewise.
+	* ean.c: Likewise.
+	* i25.c: Likewise.
+	* library.c: Likewise.
+	* main.c: Likewise.
+	* msi.c: Likewise.
+	* pcl.c: Likewise.
+	* plessey.c: Likewise.
+	* ps.c: Likewise.
+	* sample.c: Likewise.
+	* svg.c: Likewise.
+
 	* Makefile.am: Update copyright years.
 	* bootstrap: Likewise.
 	* bootstrap.conf: Likewise.

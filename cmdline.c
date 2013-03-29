@@ -22,12 +22,12 @@
  *      Michele Comitini (mcm@glisco.it): better handling of numeric type args.
  */
 
+#include "barcode.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
-#include "barcode.h"
 #include "cmdline.h"
 
 /* In case of error, print help string and return error (-1) */

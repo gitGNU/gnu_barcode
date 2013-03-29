@@ -19,13 +19,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "barcode.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
-
-#include "barcode.h"
 
 #define SHRINK_AMOUNT 0.15  /* shrink the bars to account for ink spreading */
 
