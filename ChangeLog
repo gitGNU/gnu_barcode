@@ -1,3 +1,9 @@
+2014-06-28  Giuseppe Scrivano  <gscrivan@redhat.com>
+
+	* configure.ac: Use AM_GNU_GETTEXT_VERSION.
+
+	* bootstrap.conf (gnulib_modules): Use "gettext-h".
+
 2013-03-30  Giuseppe Scrivano  <gscrivano@gnu.org>
 
 	* bootstrap.conf (gnulib_modules): Add git-version-gen.
