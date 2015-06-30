@@ -123,6 +123,6 @@ extern int Barcode_Version(char *versionname);
 }
 #endif
 
-int streaming;
+extern int streaming;
 
 #endif /* _BARCODE_H_ */

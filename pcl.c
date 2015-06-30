@@ -29,6 +29,7 @@
 
 #define SHRINK_AMOUNT 0.15  /* shrink the bars to account for ink spreading */
 
+int streaming;
 
 /*
  * How do the "partial" and "textinfo" strings work? See file "ps.c"
